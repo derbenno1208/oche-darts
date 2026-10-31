@@ -1,0 +1,16 @@
+# Build-Ergebnisse
+android/build/
+*.apk
+*.aab
+# Signierschlüssel nie ins Repository
+*.jks
+*.keystore
+# Test- und Werkzeug-Artefakte
+android/www/test.html
+tests/out/
+node_modules/
+tools/caller/venv/
+tools/caller/models/
+tools/caller/kokoro/
+tools/caller/**/out*/
+tools/caller/**/.key
