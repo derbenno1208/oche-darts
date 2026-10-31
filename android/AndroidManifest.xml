@@ -27,7 +27,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https" android:host="derbenno1208.github.io" android:pathPrefix="/oche-darts"/>
+                <data android:scheme="https" android:host="derbenno1208.github.io" android:path="/oche-darts/"/>
+                <data android:scheme="https" android:host="derbenno1208.github.io" android:path="/oche-darts"/>
+                <data android:scheme="https" android:host="derbenno1208.github.io" android:path="/oche-darts/index.html"/>
             </intent-filter>
         </activity>
     </application>

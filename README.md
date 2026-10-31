@@ -32,7 +32,13 @@ Das Skript erwartet `$SDK/bt/android-14` (Build-Tools), `$SDK/pf/android-34/andr
 
 Einladungslinks haben die Form `https://derbenno1208.github.io/oche-darts/#join-CODE`. Im Browser öffnet sich die Web-Version und tritt dem Raum bei; die Android-App fängt solche Links ebenfalls ab (und `oche://join/CODE`).
 
-Einmalig einrichten: Repository öffentlich stellen (GitHub Pages ist bei kostenlosen Konten nur für öffentliche Repositorys verfügbar), dann unter *Settings → Pages* als Quelle „Deploy from a branch“, Branch `main`, Ordner `/docs` wählen. Nach Änderungen an `src/oche.html` die Web-Version mit `python3 tools/build_web.py` neu erzeugen und committen.
+Einmalig einrichten: Repository öffentlich stellen (GitHub Pages ist bei kostenlosen Konten nur für öffentliche Repositorys verfügbar), dann unter *Settings → Pages* als Quelle „Deploy from a branch“, Branch `main`, Ordner `/docs` wählen. Nach Änderungen an `src/oche.html` die Web-Version neu erzeugen und committen:
+
+```bash
+python3 tools/build_web.py 1.9 10 "Neuerung 1" "Neuerung 2"
+```
+
+Das Skript legt die aktuelle `OcheDarts.apk` (aus dem Hauptordner) und `version.json` in `docs/`. Die App fragt `version.json` regelmäßig ab und zeigt einen Update-Hinweis, sobald dort eine höhere Version steht. Die Web-Version ist installierbar (Manifest und Service Worker) und funktioniert nach dem ersten Laden offline.
 
 ## Tests
 

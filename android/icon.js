@@ -12,7 +12,11 @@ const legacy=w=>`<svg width="${w}" height="${w}" viewBox="-24 -24 48 48"><rect x
 // Adaptiver Vordergrund: Logo innerhalb der sicheren Zone (66 von 108 dp)
 const fg=w=>`<svg width="${w}" height="${w}" viewBox="-54 -54 108 108"><g transform="scale(1.74)">${mark}</g></svg>`;
 const bgOnly=w=>`<svg width="${w}" height="${w}" viewBox="0 0 10 10"><rect width="10" height="10" fill="${BG}"/></svg>`;
-if(out==='preview'){
+if(out==='web'){
+  const dir=process.argv[3];
+  await shot(192,legacy(192),dir+'/icon-192.png');await shot(512,legacy(512),dir+'/icon-512.png');
+  await shot(512,`<svg width="512" height="512" viewBox="-30 -30 60 60"><rect x="-30" y="-30" width="60" height="60" fill="${BG}"/><g transform="scale(.95)">${mark}</g></svg>`,dir+'/icon-maskable-512.png');
+} else if(out==='preview'){
   await shot(512,legacy(512),process.argv[3]+'/big.png');
   await p.setViewportSize({width:512,height:512});
   await p.setContent(`<body style="margin:0;background:#888"><div style="width:512px;height:512px;border-radius:50%;overflow:hidden;position:relative">${bgOnly(512).replace('<svg','<svg style="position:absolute"')}${fg(512).replace('<svg','<svg style="position:absolute"')}</div></body>`);

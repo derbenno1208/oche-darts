@@ -14,3 +14,4 @@ tools/caller/models/
 tools/caller/kokoro/
 tools/caller/**/out*/
 tools/caller/**/.key
+!docs/OcheDarts.apk

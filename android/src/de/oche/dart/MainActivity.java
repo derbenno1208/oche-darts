@@ -276,6 +276,12 @@ public class MainActivity extends Activity {
         public void stop() { if (ttsReady) tts.stop(); }
 
         @JavascriptInterface
+        public String appVersion() {
+            try { return getPackageManager().getPackageInfo(getPackageName(), 0).versionName; }
+            catch (Exception e) { return ""; }
+        }
+
+        @JavascriptInterface
         public boolean isNight() {
             return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         }

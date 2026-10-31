@@ -365,6 +365,7 @@ body.tv .last{font-size:clamp(14px,1.6vw,24px)}
 .pulse{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:pl 1s ease-in-out infinite;flex:none}
 @keyframes pl{50%{opacity:.25;transform:scale(.7)}}
 .lobby{max-width:560px;width:100%;margin:0 auto}
+.update{border-color:var(--green);gap:10px}.update .btn.primary{justify-content:center;text-decoration:none}.updnotes{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
 .langbtn{font-family:var(--f-label);letter-spacing:.08em;min-width:44px;justify-content:center}
 .invite{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:11px;border:1px solid var(--gold);background:var(--bg)}.invite span{color:var(--muted);font-size:14px}.invite a{align-self:flex-start;text-decoration:none}
 .dialog{max-height:calc(100vh - 32px);overflow-y:auto}
@@ -388,6 +389,7 @@ const COLORS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a
 const BOTS=[{l:"Mensch"},{l:"Bot · Anfänger",s:41.5},{l:"Bot · Hobby",s:26.5},{l:"Bot · Kneipe",s:18.5},{l:"Bot · Liga",s:14.3},{l:"Bot · Profi",s:10},{l:"Bot · Weltklasse",s:7}];
 const BOTAVG=["","Ø 20–30","Ø 30–40","Ø 40–50","Ø 50–65","Ø 65–85","Ø 85–105"];
 const IS_APP=/OcheApp/.test(navigator.userAgent);
+const OCHE_VERSION="1.9";
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const val=d=>d.tot!=null?d.tot:d.n*d.m;
@@ -1235,7 +1237,14 @@ const EN={
 /* Bots */
 "Bot · Anfänger":"Bot · Beginner","Bot · Hobby":"Bot · Casual","Bot · Kneipe":"Bot · Pub","Bot · Liga":"Bot · League","Bot · Profi":"Bot · Pro","Bot · Weltklasse":"Bot · World class",
 "Anfänger":"Beginner","Hobby":"Casual","Kneipe":"Pub","Profi":"Pro","Weltklasse":"World class",
-"Letzte Runde":"Last round","Ziel erreicht":"Target reached","mit Publikum":"with crowd","Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben.":"Share the invite: whoever taps the link is straight in, with the app or in the browser. Or enter the code under “Join”."
+"Letzte Runde":"Last round","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
+"Nach Updates suchen":"Check for updates","Die App prüft regelmäßig auf neue Versionen.":"The app checks for new versions regularly.","Update-Prüfung nicht möglich. Internet prüfen.":"Could not check for updates. Check your internet.",
+"Web-Version mit Online-Spiel":"Web version with online play","Installierbar, offline nutzbar und mit Online-Modus":"Installable, works offline and has online mode","Öffnen":"Open","Als App installieren":"Install as app",
+"Oche ist auf diesem Gerät installiert.":"Oche is installed on this device.","Symbol auf dem Startbildschirm, startet ohne Browserleiste und funktioniert offline.":"Icon on the home screen, starts without the browser bar and works offline.",
+"Auf dem iPhone: unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“.":"On iPhone: tap “Share” at the bottom, then “Add to Home Screen”.","Im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.":"Choose “Install app” or “Add to Home screen” in the browser menu.",
+"Installieren":"Install","Android-App":"Android app","Mit Vibration, Android-Stimme und Bildschirm bleibt an":"With vibration, Android voice and the screen staying on","APK laden":"Get APK","Oche ist installiert":"Oche is installed",
+"Neue Version geladen, aktiv beim nächsten Öffnen":"New version loaded, active next time you open it","Online-Spiel geht in dieser Ansicht nicht.":"Online play does not work in this view.",
+"Öffne die Web-Version oder die App, dort funktioniert der Online-Modus.":"Open the web version or the app, online mode works there.","Web-Version öffnen":"Open web version","Ziel erreicht":"Target reached","mit Publikum":"with crowd","Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben.":"Share the invite: whoever taps the link is straight in, with the app or in the browser. Or enter the code under “Join”."
 };
 const EN_PAT=[
  [/^(.+) ist dran$/,"$1 to throw"],[/^(.+) wirft …$/,"$1 throwing …"],[/^(.+) ist dran und trägt auf dem eigenen Gerät ein\.$/,"$1 to throw, entering on their own device."],
@@ -1261,7 +1270,7 @@ const EN_PAT=[
  [/^Sicherung vom (.+) mit (\d+) gespeicherten Spielen\. (.+)$/,(m,a,b)=>`Backup from ${a} with ${b} saved games. All current data in the app (stats, settings, tournament, recordings) will be replaced.`],
  [/^Bitte eine Zahl von (\d+) bis (\d+)$/,"Please enter a number from $1 to $2"],[/^Gotcha! (.+) auf 0$/,"Gotcha! $1 back to zero"],[/^Leg (.+)$/,"Leg $1"],[/^Set (.+)$/,"Set $1"],[/^Erfolg: (.+) \((.+)\)$/,(m,a,b)=>`Achievement: ${tr(a)} (${b})`],
  [/^(.+): (.+)$/,(m,a,b)=>{const t=tr(b);return t===b?m:`${a}: ${t}`}],[/^Ziel (\d+)$/,"Target $1"],[/^(\d+) (Ziel)$/,"$1 target"],[/^Online-Spiel funktioniert in der App und in der Web-Version unter (.+)\.$/,"Online play works in the app and in the web version at $1."],
- [/^Online-Spiel$/,"Online play"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
+ [/^Online-Spiel$/,"Online play"],[/^Neue Version (.+)$/,"New version $1"],[/^Version (.+) ist verfügbar$/,"Version $1 is available"],[/^Du hast die neueste Version \((.+)\)$/,"You have the latest version ($1)"],[/^App-Version (.+)$/,"App version $1"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
 ];
 function tr(t){
   if(lang!=="en"||!t)return t;
@@ -1884,6 +1893,44 @@ function closeRoom(msg,notify){
   else{cfg=loadCfg();view="setup";g=null}
   setStatus(msg||"",!!msg);if(msg)toastLocal(msg,"red");render();
 }
+/* ================= Updates (App) und Installation (Web) ================= */
+const IS_WEB_SITE=!IS_APP&&/github\.io$/.test(location.hostname);
+let update=null,installEvt=null;
+const appVersion=()=>{try{if(window.AndroidTTS&&window.AndroidTTS.appVersion)return window.AndroidTTS.appVersion()}catch(e){}return OCHE_VERSION};
+const cmpVer=(a,b)=>{const x=String(a).split(".").map(Number),y=String(b).split(".").map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d>0?1:-1}return 0};
+async function checkUpdate(manual){
+  if(!IS_APP)return;
+  try{
+    const r=await fetch(SITE+"version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;const v=await r.json();
+    store.set("oche.updchk",Date.now());
+    if(v&&v.version&&cmpVer(v.version,appVersion())>0){update=v;if(manual||store.get("oche.updskip","")!==v.version)render();if(manual)toastLocal(`Version ${v.version} ist verfügbar`,"gold")}
+    else{update=null;if(manual)toastLocal(`Du hast die neueste Version (${appVersion()})`,"green")}
+  }catch(e){if(manual)toastLocal("Update-Prüfung nicht möglich. Internet prüfen.","red")}
+}
+function renderUpdate(){
+  if(!update||store.get("oche.updskip","")===update.version)return"";
+  return`<section class="card update"><div class="dhead"><span class="label">Neue Version ${esc(update.version)}</span><button class="btn small ghost" id="updSkip">Später</button></div>
+    ${update.notes&&update.notes.length?`<ul class="updnotes">${update.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:""}
+    <a class="btn primary" href="${esc(update.apk||SITE+"OcheDarts.apk")}">Herunterladen</a>
+    <span class="status">Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.</span></section>`;
+}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(view==="setup")render()});
+window.addEventListener("appinstalled",()=>{installEvt=null;toastLocal("Oche ist installiert","green")});
+const isStandalone=()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}};
+function renderInstallRow(){
+  if(IS_APP)return`<div class="setrow"><div class="rectxt"><b>App-Version ${esc(appVersion())}</b><span>${update?`Version ${esc(update.version)} ist verfügbar`:"Die App prüft regelmäßig auf neue Versionen."}</span></div><div class="seg"><button id="updCheck">Nach Updates suchen</button></div></div>`;
+  if(!IS_WEB_SITE)return`<div class="setrow"><div class="rectxt"><b>Web-Version mit Online-Spiel</b><span>Installierbar, offline nutzbar und mit Online-Modus</span></div><a class="btn" href="${SITE}" target="_blank" rel="noopener">Öffnen</a></div>`;
+  const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return`<div class="setrow"><div class="rectxt"><b>Als App installieren</b><span>${isStandalone()?"Oche ist auf diesem Gerät installiert.":installEvt?"Symbol auf dem Startbildschirm, startet ohne Browserleiste und funktioniert offline.":ios?"Auf dem iPhone: unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“.":"Im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen."}</span></div>${installEvt&&!isStandalone()?`<div class="seg"><button id="pwaInstall">Installieren</button></div>`:""}</div>
+  <div class="setrow"><div class="rectxt"><b>Android-App</b><span>Mit Vibration, Android-Stimme und Bildschirm bleibt an</span></div><a class="btn" href="${SITE}OcheDarts.apk">APK laden</a></div>`;
+}
+if(IS_WEB_SITE&&"serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+  let had=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had)toastLocal("Neue Version geladen, aktiv beim nächsten Öffnen","green");had=true});
+}
+if(IS_APP&&Date.now()-store.get("oche.updchk",0)>12*3600e3)setTimeout(()=>checkUpdate(false),4000);
+
 /* Einladungslink: öffnet die Web-Version auf GitHub Pages bzw. die App und tritt dem Raum direkt bei */
 const SITE="https://derbenno1208.github.io/oche-darts/";
 const inviteLink=code=>SITE+"#join-"+code;
@@ -1986,13 +2033,13 @@ function renderOnlineCard(){
     body=`<div class="waitmsg"><span class="pulse"></span>${esc(net.status||"Verbinde …")}</div><div class="netrow"><button class="btn" id="closeRoom">Abbrechen</button></div>`;
   }else{
     body=`<p class="rules">Spielt auf mehreren Handys zusammen, auch an verschiedenen Orten. Jeder trägt seine eigenen Würfe ein. Bis zu ${MAX_PLAYERS} Spieler und ${MAX_SPECT} Zuschauer pro Raum.</p>
-    <div class="netrow"><button class="btn" id="hostRoom">Raum erstellen</button></div>
+    <div class="netrow"><button class="btn" id="hostRoom" ${onlineAvailable()?"":"disabled"}>Raum erstellen</button></div>
     ${invite?`<div class="invite"><b>Du wurdest in Raum ${invite} eingeladen.</b><span>Gib deinen Namen ein und tippe auf „Beitreten“.</span>${!IS_APP&&/Android/i.test(navigator.userAgent)?`<a class="btn small" href="intent://join/${invite}#Intent;scheme=oche;package=de.oche.dart;end">In der Oche-App öffnen</a>`:""}</div>`:""}
     <span class="label">Einem Raum beitreten</span>
     <div class="netrow"><input id="joinName" list="proflist" autocomplete="off" placeholder="Dein Name" maxlength="18" value="${esc(net.myName)}" aria-label="Dein Name"><input id="joinCode" class="code" placeholder="CODE" maxlength="5" value="${invite||""}" autocapitalize="characters" autocomplete="off" aria-label="Raumcode"><button class="btn" id="joinRoom">Beitreten</button></div>
     <label class="chk"><input type="checkbox" id="joinSpect"> Nur zuschauen</label>
     ${net.status?`<div class="status ${net.err?"err":""}">${esc(net.status)}</div>`:""}
-    ${onlineAvailable()?"":`<div class="status">Online-Spiel funktioniert in der App und in der Web-Version unter ${SITE.replace("https://","")}.</div>`}`;
+    ${onlineAvailable()?"":`<div class="invite"><b>Online-Spiel geht in dieser Ansicht nicht.</b><span>Öffne die Web-Version oder die App, dort funktioniert der Online-Modus.</span><a class="btn small" href="${SITE}" target="_blank" rel="noopener">Web-Version öffnen</a></div>`}`;
   }
   return`<section class="card"><h2>Online spielen</h2>${body}</section>`;
 }
@@ -2012,7 +2059,7 @@ const OPT_SHORT={legs:["Leg","Legs"],sets:["Set","Sets"],rounds:["Runde","Runden
 function optSummary(M,o){return M.options.map(x=>{const v=x.v.find(v=>v[0]===o[x.k]);const l=v?v[1]:String(o[x.k]);const sh=OPT_SHORT[x.k];return sh&&/^\d+$/.test(l)?`${l} ${+l===1?sh[0]:sh[1]}`:l}).join(" · ")}
 function renderPlay(){
   const M=MODES[cfg.mode],o=optsFor(cfg.mode),min=M.minPlayers||1,max=M.maxPlayers||8,bad=cfg.players.length<min||cfg.players.length>max;
-  return renderDaily()+`<section class="card modecard">
+  return renderUpdate()+renderDaily()+`<section class="card modecard">
     <button class="modehead" id="modePick" aria-label="Spielmodus wechseln"><span class="label">${M.tag}</span><b>${M.name}</b><small>${M.desc}</small><span class="chev">Modus wechseln ›</span></button>
     ${M.options.length?`<button class="optsum" id="optsToggle" aria-expanded="${optsOpen}"><span class="label">Regeln</span><span>${optSummary(M,o)}</span><span class="chev">${optsOpen?"Fertig":"Ändern"}</span></button>
     ${optsOpen?`<p class="rules">${M.rules}</p><div class="opts">${M.options.map(x=>`<div class="opt"><span class="label">${x.l}</span><div class="seg">${x.v.map(([v,l])=>`<button data-opt="${x.k}" data-val='${JSON.stringify(v)}' aria-pressed="${o[x.k]===v}">${l}</button>`).join("")}${x.custom?`<input type="number" inputmode="numeric" class="numin" id="opt-${x.k}" data-optnum="${x.k}" min="${x.custom.min}" max="${x.custom.max}" placeholder="${x.custom.l}" value="${x.v.some(v=>v[0]===o[x.k])?"":o[x.k]}" aria-label="${x.l}: ${x.custom.l}">`:""}</div></div>`).join("")}</div>`:""}`:`<p class="rules">${M.rules}</p>`}
@@ -2039,6 +2086,7 @@ function renderSettings(){
     <div class="setrow"><div class="rectxt"><b>Design</b><span>„System“ folgt der Einstellung deines Handys</span></div><div class="seg">${[["system","System"],["dark","Dunkel"],["light","Hell"]].map(([v,l])=>`<button data-theme-set="${v}" aria-pressed="${themePref===v}">${l}</button>`).join("")}</div></div>
     <div class="setrow"><div class="rectxt"><b>Vibration</b><span>kurzes Vibrieren bei jeder Eingabe</span></div><div class="seg"><button id="vibBtn" aria-pressed="${vibOn}">${vibOn?"An":"Aus"}</button></div></div>
     <div class="setrow"><div class="rectxt"><b>Lieblingsdoppel</b><span>Checkout-Vorschläge und Bots bevorzugen dieses Doppel</span></div><div class="seg">${[[0,"Auto"],[20,"D20"],[16,"D16"],[18,"D18"],[10,"D10"],[8,"D8"],[12,"D12"]].map(([v,l])=>`<button data-prefdbl="${v}" aria-pressed="${PREF_DBL===v}">${l}</button>`).join("")}</div></div>
+    ${renderInstallRow()}
     <div class="setrow"><div class="rectxt"><b>Daten sichern</b><span>Statistik, Profile, Einstellungen, Turnier und eigene Aufnahmen als Datei</span></div><div class="seg"><button id="bkExport">Sichern</button><button id="bkImport">Wiederherstellen</button></div><input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden></div>
     <p class="foot" style="text-align:left">Tastatur im Spiel: <kbd>D</kbd> Double · <kbd>T</kbd> Triple · <kbd>0</kbd> Miss · <kbd>B</kbd> Bull · <kbd>⌫</kbd> Zurück. Bei „Summe“: Ziffern und <kbd>Enter</kbd>.</p>
   </section>`;
@@ -2150,6 +2198,9 @@ document.addEventListener("click",e=>{
   if(t.dataset.tab&&view==="setup"){tab=t.dataset.tab;modePicker=false;statsConfirm=false;render();window.scrollTo(0,0);return}
   if(view==="setup"){
     if(t.dataset.themeSet){themePref=t.dataset.themeSet;store.set("oche.theme",themePref);applyTheme();render();return}
+    if(t.id==="updCheck"){checkUpdate(true);return}
+    if(t.id==="updSkip"){store.set("oche.updskip",update&&update.version);render();return}
+    if(t.id==="pwaInstall"&&installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null;render()});return}
     if(t.id==="vibBtn"){vibOn=!vibOn;store.set("oche.vib",vibOn);if(vibOn)buzz(40);render();return}
     if(t.dataset.prefdbl!=null){PREF_DBL=+t.dataset.prefdbl;store.set("oche.prefdbl",PREF_DBL);coCache.clear();render();return}
     if(t.id==="bkExport"){exportBackup();return}
