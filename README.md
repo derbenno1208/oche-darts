@@ -1,6 +1,8 @@
 # Oche Darts
 
-Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-Caller, Online-Spiel ohne eigenen Server, Turniere, Statistiken mit Erfolgen und Tagesaufgabe, helles und dunkles Design.
+Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-Caller, Online-Spiel ohne eigenen Server mit Einladungslink, Turniere (auch online), Statistiken mit Erfolgen und Tagesaufgabe, helles und dunkles Design, Deutsch und Englisch.
+
+**Web-Version:** https://derbenno1208.github.io/oche-darts/ (sobald GitHub Pages aktiviert ist, siehe unten)
 
 ## Aufbau
 
@@ -10,6 +12,7 @@ Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-C
 | `android/` | Android-Hülle: WebView-Activity (`src/de/oche/dart/MainActivity.java`), Manifest, Icons, Build-Skript |
 | `android/www/` | Eingebaute Dateien: Schriften, PeerJS, Caller-Ansagen (`caller/en.*`, `caller/de.*`) |
 | `tools/caller/` | Skripte, mit denen die Caller-Ansagen erzeugt wurden (Piper bzw. Google Gemini TTS) |
+| `docs/` | Web-Version für GitHub Pages, erzeugt mit `python3 tools/build_web.py` |
 | `tests/` | Browser-Tests mit Playwright |
 
 ## APK bauen
@@ -24,6 +27,12 @@ SDK=/pfad/zum/android-sdk ./build.sh
 Das Skript erwartet `$SDK/bt/android-14` (Build-Tools), `$SDK/pf/android-34/android.jar` und `$SDK/r8.jar`. Die fertige APK landet als `OcheDarts.apk` im Hauptordner.
 
 **Signierschlüssel:** `android/oche-release.jks` gehört nicht ins Repository. Lege die Datei aus deinem Backup in den Ordner `android/`, sonst erzeugt das Skript einen neuen Schlüssel, und die neue APK lässt sich nicht mehr über die alte installieren.
+
+## Web-Version und Einladungslinks
+
+Einladungslinks haben die Form `https://derbenno1208.github.io/oche-darts/#join-CODE`. Im Browser öffnet sich die Web-Version und tritt dem Raum bei; die Android-App fängt solche Links ebenfalls ab (und `oche://join/CODE`).
+
+Einmalig einrichten: Repository öffentlich stellen (GitHub Pages ist bei kostenlosen Konten nur für öffentliche Repositorys verfügbar), dann unter *Settings → Pages* als Quelle „Deploy from a branch“, Branch `main`, Ordner `/docs` wählen. Nach Änderungen an `src/oche.html` die Web-Version mit `python3 tools/build_web.py` neu erzeugen und committen.
 
 ## Tests
 

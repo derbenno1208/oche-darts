@@ -365,6 +365,8 @@ body.tv .last{font-size:clamp(14px,1.6vw,24px)}
 .pulse{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:pl 1s ease-in-out infinite;flex:none}
 @keyframes pl{50%{opacity:.25;transform:scale(.7)}}
 .lobby{max-width:560px;width:100%;margin:0 auto}
+.langbtn{font-family:var(--f-label);letter-spacing:.08em;min-width:44px;justify-content:center}
+.invite{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:11px;border:1px solid var(--gold);background:var(--bg)}.invite span{color:var(--muted);font-size:14px}.invite a{align-self:flex-start;text-decoration:none}
 .dialog{max-height:calc(100vh - 32px);overflow-y:auto}
 .dialog.wide{max-width:540px}
 .recrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:10px;border-top:1px solid var(--line)}
@@ -1117,6 +1119,176 @@ function toast(t,c){if(g&&g.fast&&!g.over)return;toastLocal(t,c);if(net.role==="
 
 
 
+/* ================= Sprache (Deutsch / Englisch) =================
+   Die App ist auf Deutsch geschrieben. Für Englisch übersetzt ein Beobachter jeden angezeigten Text:
+   feste Texte über die Wörterliste, Texte mit Namen oder Zahlen über Muster, Zusammengesetztes mit „ · “ stückweise. */
+const EN={
+"+ Spieler":"+ Player","+ Bot":"+ Bot","Abbrechen":"Cancel","Als Nächstes":"Up next","An":"On","Aus":"Off","Auto":"Auto",
+"Around the Clock starten":"Start Around the Clock","Aufnahme":"Visit","Aufnahmen mit möglichem Checkout und wie oft er gelang":"Visits with a possible checkout and how often it worked",
+"Aufnehmen":"Record","Stopp":"Stop","Average-Verlauf":"Average history","Beenden":"End game","Bei Fehlversuch":"On a miss","Beitreten":"Join","Bereiche":"Sections",
+"Bester Average":"Best average","Bestes Leg":"Best leg","Bilanz":"Head to head","Bis zum Ziel":"To go","Bull am Ende":"Bull at the end","CODE":"CODE",
+"Caller-Einstellungen":"Caller settings","Caller-Stimme":"Caller voice","Bei Bust":"On a bust","Wenn ein Leg, Set oder Spiel gewonnen ist":"When a leg, set or match is won","Zum Spielstart":"At the start",
+"Wird bei jeder 180 abgespielt":"Played on every 180","Eigene Aufnahme":"Own recording","Caller: aus":"Caller: off","Caller: Profi":"Caller: pro","Caller: Handy":"Caller: phone",
+"Checkout-Quote nach Rest":"Checkout rate by score left","Cricket MPR":"Cricket MPR","Cricket starten":"Start Cricket","Cricket-Maschine":"Cricket machine",
+"Dartscheibe, tippe auf ein Segment":"Dartboard, tap a segment","Dartverrückt":"Dart mad","Datei":"File","Daten sichern":"Back up data","Datum":"Date","Dein Name":"Your name",
+"Design":"Theme","Diese Aufnahme":"This visit","Doppel":"Doubles","Doppel getroffen":"Doubles hit","Doppel-Scharfschütze":"Doubles sniper","Doppel-Training":"Doubles training",
+"Doppelquote":"Doubles rate","Doppelquote je Feld":"Doubles rate per field","Duell":"Duel","Dunkel":"Dark","Eigene":"Custom","Eigene Aufnahmen (optional)":"Own recordings (optional)",
+"Ein Spiel beendet":"Finished a game","Ein Spiel gewonnen":"Won a game","Ein Turnier gewonnen":"Won a tournament","Einem Raum beitreten":"Join a room",
+"Einen Shanghai geworfen":"Hit a Shanghai","Eingabe":"Input","Einladung teilen":"Share invite","Einstellen":"Set up","Einstellungen":"Settings","Einzeln":"Single darts",
+"Entfernen":"Remove","Erfolge":"Achievements","Ergebnis":"Result","Erst Killer werden":"Become a killer first","Erster Sieg":"First win","Erster Wurf. Viel Glück.":"First throw. Good luck.",
+"Erstes Spiel":"First game","Erwischt":"Caught","Felder":"Fields","Fertig":"Done","Feste Rundenzahl, höchste Summe gewinnt.":"Fixed number of rounds, highest total wins.",
+"Finale":"Final","Halbfinale":"Semi-final","Viertelfinale":"Quarter-final","Achtelfinale":"Round of 16","Format":"Format","Fortschritt":"Progress","Freilos":"Bye",
+"Fällt dein Handy aus, übernimmt automatisch ein anderes Gerät den Raum.":"If your phone drops out, another device takes over the room automatically.",
+"Ganze Zahl":"Whole number","Gegner":"Opponent","Gegner erwischen mit":"Catch an opponent with","Geschafft":"Done","Großanzeige":"Big screen","Normale Ansicht":"Normal view",
+"Halbiert":"Halved","Handystimme · Deutsch":"Phone voice · German","Handystimme · English":"Phone voice · English","Hell":"Light",
+"Höchste":"Highest","Höchste Aufnahme":"Highest visit","Höchstes Finish":"Highest finish","Höchstes Ziel":"Highest target","Höchststand":"Peak score","Ja":"Yes","Nein":"No",
+"Jede Runde eine Zahl. Single, Double und Triple gewinnt sofort.":"One number per round. Single, double and treble wins instantly.",
+"Jede Runde hat ein festes Ziel: eine Zahl, irgendein Doppel, irgendein Triple oder das Bull. Treffer zählen mit vollem Wert. Wer in einer Aufnahme das Ziel kein einziges Mal trifft, dessen Punktestand wird halbiert.":"Every round has a fixed target: a number, any double, any treble or the bull. Hits count their full value. If you miss the target with all three darts, your score is halved.",
+"Jeder bekommt eine eigene Zahl. Triff dein Doppel, um Killer zu werden. Als Killer kostet jeder Treffer auf das Doppel eines Gegners ihm ein Leben. Triffst du als Killer dein eigenes Doppel, verlierst du selbst eins. Wer zuletzt übrig ist, gewinnt.":"Everyone gets a number. Hit your double to become a killer. As a killer, every hit on an opponent's double costs them a life. Hit your own double as a killer and you lose one yourself. Last player standing wins.",
+"Jeder startet mit der gewählten Punktzahl und zieht seine Würfe ab. Wer genau null erreicht, gewinnt das Leg. Bei Double Out muss der letzte Dart ein Doppel sein, sonst wird überworfen und die Aufnahme zählt nicht. Mit Sets braucht man die eingestellte Zahl Legs für ein Set.":"Everyone starts at the chosen score and subtracts their throws. Reach exactly zero to win the leg. With double out, the last dart must be a double, otherwise it is a bust and the visit does not count. With sets, you need the set number of legs to win a set.",
+"Jedes Doppel drei Darts, mit Quote pro Feld.":"Three darts at every double, with a rate per field.","Jedes Segment":"Any segment","K.-o.-System":"Knockout","K.-o.-Turnier":"Knockout tournament",
+"Kein Score":"No score","Keine Ansagen.":"No announcements.","Kills":"Kills","Klassiker":"Classic","Klick an":"Click on","Klick aus":"Click off","Klick-Ton bei jedem Dart":"Click sound on every dart",
+"Lauf":"Hot streak","Leben":"Lives","Legs":"Legs","Legs zum Sieg (pro Set)":"Legs to win (per set)","Letzte Aufnahme ·":"Last visit ·","Letzte Spiele":"Recent games","Letzten Dart zurück":"Undo last dart",
+"Lieblingsdoppel":"Favourite double","Liga (jeder gegen jeden)":"League (round robin)","Liga":"League","Link kopieren":"Copy link","Mensch":"Human","Mischen":"Shuffle","Modus":"Mode","Modus wechseln ›":"Change mode ›",
+"Multiplikator":"Multiplier","Nach oben":"Move up","Neu freigeschaltet":"Newly unlocked","Neues Spiel":"New game","Neues Turnier":"New tournament","Neun-Darter":"Nine-darter","Niederlage":"Loss","Niederlagen":"Losses",
+"Nur Doppel":"Doubles only","Nur Triple":"Trebles only","Nur zuschauen":"Watch only","Nächste Aufnahme":"Next visit","Nächstes Spiel":"Next match","Offen für dich":"Open for you","Ohne Sets":"No sets",
+"Online spielen":"Play online","Optionen":"Options","Profi geschlagen":"Beat a pro","Profi · Deutsch":"Pro · German","Profi · English":"Pro · English","Profil löschen":"Delete profile","Profile":"Profiles",
+"Punkte":"Points","Quote":"Rate","Quote je Doppel":"Rate per double","Raum erstellen":"Create room","Raum schließen":"Close room","Raumcode":"Room code","Raus":"Out","Regel":"Rule","Regeln":"Rules","Rest":"Left",
+"Restliche Darts als Miss werten":"Count remaining darts as misses","Revanche":"Rematch","Runden":"Rounds","Scheibe":"Board","Sets zum Sieg":"Sets to win","Shanghai-Jagd":"Shanghai hunt","Sichern":"Back up",
+"Sieben Tagesaufgaben geschafft":"Completed seven daily challenges","Siege":"Wins","Sieger":"Winner","Spiel starten":"Start match","Spiele":"Games","Spielen":"Play","Spieler":"Players","Spielmodus":"Game mode",
+"Spielmodus wechseln":"Change game mode","Stammgast":"Regular","Stand":"Position","Stand nach dieser Aufnahme":"Score after this visit","Standard":"Standard","ohne Rundenlimit":"no round limit",
+"Standard-Eingabe":"Default input","Start-Ziel":"Start target","Startpunkte":"Starting score","Statistik":"Stats","Statistik, Profile, Einstellungen, Turnier und eigene Aufnahmen als Datei":"Stats, profiles, settings, tournament and own recordings as a file",
+"Stimme":"Voice","Summe":"Total","System":"System","Taktik":"Tactics","Tastatur im Spiel:":"Keyboard in game:","Ton-Average":"Ton average","Ton-Plus-Checkout":"Ton-plus checkout",
+"Training":"Training","Treffer":"Hits","Trefferzone":"Hit zone","Turnier":"Tournament","Turnier starten":"Start tournament","Turnier wirklich beenden?":"End the tournament?","Turnierbaum":"Bracket","Turniersieger":"Tournament winner",
+"Variante":"Variant","Versuche":"Attempts","Vibration":"Vibration","Weiter":"Next player","Weiterspielen":"Keep playing","Weltklasse geschlagen":"Beat world class","Werde Killer und schieß die anderen raus.":"Become a killer and knock the others out.",
+"Wert":"Value","Wiederherstellen":"Restore","Zahl":"Number","Ziel":"Target","Ziel bleibt":"Target stays","Ziel verfehlt? Dann wird halbiert.":"Missed the target? Your score is halved.","Zielfolge":"Target order","Zielzahl":"Target number",
+"Ziffer löschen":"Delete digit","Zu":"Closed","Zu zweit: Einer schließt Zahlen, der andere punktet.":"Two players: one closes numbers, the other scores.","Zufällig":"Random","Zurück":"Back","Zurück auf Start":"Back to start",
+"Zurück. Bei „Summe“: Ziffern und":"Undo. With “Total”: digits and","Zurückgesetzt":"Reset","aus dem Doppel-Training":"from doubles training","bis zum Ziel":"to go","deine Zahl":"your number","eingestellt, Start unten":"set up, start below",
+"fertig":"done","gegen":"vs","kurzer Ton als Bestätigung":"short confirmation sound","kurzes Vibrieren bei jeder Eingabe":"short vibration on every input","lässt sich im Spiel jederzeit umschalten":"can be switched any time in a game",
+"offen":"open","Ändern":"Change","Überworfen":"Bust","überworfen":"bust","„System“ folgt der Einstellung deines Handys":"“System” follows your phone's setting","↶ Zurück":"↶ Undo","Kein Checkout möglich":"No checkout possible",
+"Stell dir einen Doppel-Rest (z. B. 32 oder 40).":"Leave yourself a double (e.g. 32 or 40).","Zum Öffnen":"To open","nicht offen":"not open","Doppel":"Double","Opfer":"Victims","Alles zu":"All closed","Killer":"Killer",
+"Spielmodus · ":"Game mode · ","Training":"Training","Party":"Party","Scoring":"Scoring","Raus":"Out","Remis":"Draw","Sieg":"Win","Tabelle":"Table","Spielplan":"Fixtures","Spielen":"Play","Turnier":"Tournament",
+"Sp.":"P","S":"W","U":"D","N":"L","Diff.":"Diff.","Pkt.":"Pts","Spieler ":"Player ","Statistik ":"Stats ",
+"Sieg 2 Punkte, Unentschieden 1 Punkt. Diff. = Legs bzw. Punkte.":"Win 2 points, draw 1 point. Diff. = legs or points.",
+"Mehrere Spiele nacheinander, die App führt Turnierbaum oder Tabelle. Modus, Regeln und Teilnehmer kommen aus „Spielen“. Jede Partie ist ein Spiel Mann gegen Mann, Bot gegen Bot läuft im Schnelldurchlauf.":"Several matches in a row; the app keeps the bracket or table. Mode, rules and players come from “Play”. Every match is one on one; bot against bot runs in fast motion.",
+"Füge unter „Spielen“ mindestens 3 Spieler oder Bots hinzu.":"Add at least 3 players or bots under “Play”.","Standardregeln":"Standard rules","Turnier wirklich beenden?":"End the tournament?",
+"Spiel beenden?":"End the game?","Der aktuelle Spielstand geht verloren.":"The current score will be lost.","Raum verlassen?":"Leave the room?","Du verlässt das Online-Spiel.":"You are leaving the online game.","Verlassen":"Leave",
+"Raum verlassen":"Leave room","Warte auf den Host (Revanche oder neues Spiel).":"Waiting for the host (rematch or new game).","Weiter zum Turnier":"Back to the tournament","Unentschieden: nochmal spielen":"Draw: play again",
+"Unentschieden":"Draw","Spiel beendet":"Game over","Statistik":"Stats","Erfolge":"Achievements","Neu freigeschaltet":"Newly unlocked",
+"Spielt auf mehreren Handys zusammen, auch an verschiedenen Orten. Jeder trägt seine eigenen Würfe ein. Bis zu 8 Spieler und 16 Zuschauer pro Raum.":"Play together on several phones, even in different places. Everyone enters their own darts. Up to 8 players and 16 spectators per room.",
+"Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben.":"Share the invite: whoever taps the link is straight in, with the app or in the browser. Or enter the code under “Join”.",
+"Noch niemand beigetreten.":"Nobody has joined yet.","Gib deinen Namen ein und tippe auf „Beitreten“.":"Enter your name and tap “Join”.","In der Oche-App öffnen":"Open in the Oche app",
+"Warte, bis der Host das Spiel startet.":"Waiting for the host to start the game.","Du schaust zu. Warte auf den Spielstart.":"You are watching. Waiting for the game to start.","Verbinde …":"Connecting …",
+"Raum wird erstellt …":"Creating room …","Wieder verbunden":"Reconnected","Verbindung zum Host unterbrochen. Verbinde neu …":"Lost connection to the host. Reconnecting …","Raum wechselt den Host …":"Room is changing host …",
+"Der Host ist weg. Du leitest jetzt den Raum.":"The host is gone. You are running the room now.","Der ursprüngliche Host ist zurück":"The original host is back","Ein anderes Gerät leitet jetzt den Raum":"Another device is running the room now",
+"Keine Internetverbindung. Neuer Versuch …":"No internet connection. Retrying …","Der Raum ist voll.":"The room is full.","Der Host hat den Raum geschlossen.":"The host closed the room.",
+"Verbindung verloren. Der Raum ist nicht mehr erreichbar.":"Connection lost. The room can no longer be reached.","Der Raumcode hat 5 Zeichen.":"The room code has 5 characters.",
+"Keine Verbindung zum Vermittlungsserver. Bitte Internet prüfen.":"No connection to the matchmaking server. Please check your internet.","Raum konnte nicht erstellt werden. Bitte Internetverbindung prüfen.":"Could not create the room. Please check your internet connection.",
+"Raum konnte nicht wiederhergestellt werden.":"Could not restore the room.","Verbindung zum Vermittlungsserver gestört, versuche weiter …":"Connection to the matchmaking server is disturbed, still trying …","Code kopiert":"Code copied","Link kopiert":"Link copied",
+"Online-Spiel ist nur in der Android-App verfügbar.":"Online play is only available in the Android app.","Du schaust zu.":"You are watching.","Online":"Online","Offline":"Offline","Du":"You","Bot":"Bot","verbunden":"connected","getrennt":"disconnected",
+"Backup gespeichert":"Backup saved","Backup nicht gespeichert":"Backup not saved","Backup in die Zwischenablage kopiert":"Backup copied to the clipboard","Backup":"Backup","Schließen":"Close",
+"Kopiere diesen Text und speichere ihn als Datei (z. B. oche-backup.json).":"Copy this text and save it as a file (e.g. oche-backup.json).","Das ist keine Oche-Sicherung":"This is not an Oche backup","Sicherung einspielen?":"Restore backup?",
+"Einspielen":"Restore","Sicherung eingespielt":"Backup restored","Speicher voll: Sicherung konnte nicht eingespielt werden":"Storage full: the backup could not be restored","Behalten":"Keep","Löschen":"Delete",
+"Profi-Stimme wird geladen …":"Loading pro voice …","Profi-Stimme: alle Punktzahlen, „You require“, Game Shot und eine echte 180.":"Pro voice: every score, “You require”, game shot and a real 180.",
+"Die Handystimme sagt auch Spielernamen an, klingt aber weniger nach Halle.":"The phone voice also says player names, but sounds less like an arena.","180 testen":"Test 180","Game Shot":"Game shot",
+"Publikum & Air Horn bei 180, Game Shot und 140+":"Crowd & air horn on 180, game shot and 140+","Eigene Aufnahmen ersetzen die Caller-Stimme für das jeweilige Ereignis. Bis zu 5 Sekunden.":"Own recordings replace the caller voice for that event. Up to 5 seconds.",
+"Aufnahme läuft … jetzt rufen!":"Recording … shout now!","Gespeichert. Tippe auf ▶ zum Anhören.":"Saved. Tap ▶ to listen.","Gespeichert.":"Saved.","Aufnahme gelöscht.":"Recording deleted.",
+"Speicher voll. Lösche eine andere Aufnahme.":"Storage full. Delete another recording.","Mikrofon nicht verfügbar. Erlaube den Mikrofonzugriff oder wähle eine Audiodatei.":"Microphone not available. Allow microphone access or choose an audio file.",
+"Die Datei ist zu groß (max. 700 KB). Nimm einen kurzen Ausschnitt.":"The file is too large (max. 700 KB). Use a short clip.","Caller":"Caller","Caller an":"Caller on",
+"Aufs Doppel geworfen?":"Darts at a double?","Darts für den Checkout":"Darts for the checkout","Davon aufs Doppel":"Of which at a double","Wie viele Darts aufs Doppel?":"How many darts at a double?","Eintragen":"Enter",
+"Diese Aufnahme läuft schon mit einzelnen Darts":"This visit already has single darts entered","Tagesaufgabe":"Daily challenge","Tagesaufgabe geschafft":"Daily challenge completed",
+"Noch keine X01-Spiele gespeichert.":"No X01 games saved yet.","Häufigste Felder":"Most common fields","Trefferbild":"Hit map","Gegner":"Opponent","Ergebnis":"Result","Training":"Training","Sieger":"Winner",
+"Noch keine Spiele gespeichert. Nach jedem beendeten Spiel landen hier die Werte aller menschlichen Spieler dieses Geräts, sortiert nach Namen. Spiel immer unter demselben Namen, dann wächst dein Profil mit: Average-Verlauf, 180er, Checkout-Quote, Doppelquote je Feld und Bilanz gegen deine Gegner.":"No games saved yet. After every finished game, the stats of all human players on this device appear here, sorted by name. Always play under the same name and your profile grows: average history, 180s, checkout rate, doubles rate per field and record against your opponents.",
+"Modus":"Mode","Wert":"Value","Datum":"Date","Unentschieden!":"Draw!","Seitenwechsel":"Change over","Eigentor":"Own goal","Nicht geschafft":"Missed","gold umrandet = gewonnen":"gold outline = won",
+"Keine Spiele":"No games","Profil mit":"Profile with","Für dich":"For you","Bull":"Bull","Miss":"Miss","Single":"Single","Double":"Double","Triple":"Treble","OK":"OK","Enter":"Enter","Statistik":"Stats",
+/* Spielmodi */
+"Around the Clock":"Around the Clock","Cricket":"Cricket","Shanghai":"Shanghai","Killer":"Killer","Halve-It":"Halve-It","High Score":"High Score","Gotcha":"Gotcha","Scram":"Scram","Shanghai!":"Shanghai!",
+"Feste Rundenzahl, höchste Summe gewinnt.":"Fixed number of rounds, highest total wins.","Big Fish":"Big Fish","Maximum":"Maximum","Ton-Forty":"Ton-forty","Dranbleiber":"Stayer","Drei Siege in Folge":"Three wins in a row",
+"Cut-Throat":"Cut-throat","Straight In":"Straight in","Double In":"Double in","Double Out":"Double out","Master Out":"Master out","Single Out":"Single out","Check-In":"Check-in","Check-Out":"Check-out",
+"Jedes Segment":"Any segment","Mit Sprung":"With jumps","Zufällige Reihenfolge":"Random order","Top-Doppel":"Top doubles","Gotcha! ":"Gotcha! ","Stopper":"Stopper","Scorer":"Scorer",
+"Triff offene Zahlen, um sie zu schließen.":"Hit open numbers to close them.","Jeder Treffer auf eine offene Zahl zählt voll.":"Every hit on an open number counts in full.","Zahlen offen · du schließt":"numbers open · you close","Punkte · du punktest":"points · you score",
+"Erst Killer werden":"Become a killer first","deine Zahl · Killer":"your number · killer","Treffer":"Hits","Scoring":"Scoring","Checkout":"Checkout","Zielfolge":"Target order","Spieler":"Players","Doppel-Training":"Doubles training",
+"Zu zweit: Einer schließt Zahlen, der andere punktet.":"Two players: one closes numbers, the other scores.","Hochzählen auf genau 301 und Gegner auf null schicken.":"Count up to exactly 301 and send opponents back to zero.",
+"Checkout-Training: 121 mit 9 Darts finishen.":"Checkout training: finish 121 in 9 darts.","301, 501, 701 – runter auf genau null.":"301, 501, 701 – down to exactly zero.","15 bis 20 und Bull schließen, Punkte sammeln.":"Close 15 to 20 and bull, collect points.",
+"1 bis 20 und Bull der Reihe nach treffen.":"Hit 1 to 20 and bull in order.","Doppel-Training von D1 bis Bull.":"Doubles training from D1 to bull.","Doppel-Training (zufällig): mindestens 25 % Quote":"Doubles training (random): at least 25 % rate",
+"21 Runden · D1 bis Bull":"21 rounds · D1 to bull","D1 bis Bull":"D1 to bull","12 Runden":"12 rounds","Nur Doppel":"Doubles only",
+"Sprung (D=2, T=3)":"Jumps (D=2, T=3)","Bei unter 0":"Below 0","Top-Doppel (2 Runden)":"Top doubles (2 rounds)",
+"Alle starten bei 0 und zählen hoch. Wer genau die Zielzahl erreicht, gewinnt. Wer darüber wirft, fällt auf den Stand vor der Aufnahme zurück. Triffst du genau den Punktestand eines Gegners, muss dieser wieder bei 0 anfangen.":"Everyone starts at 0 and counts up. Whoever reaches the target exactly wins. Going over puts you back to your score before the visit. Hit an opponent's exact score and they have to start again from 0.",
+"In Runde 1 zählt nur die 1, in Runde 2 nur die 2 usw. Gezählt wird der volle Wert inklusive Multiplikator. Wer in einer Aufnahme Single, Double und Triple der Rundenzahl trifft, wirft einen Shanghai und gewinnt sofort. Sonst gewinnt die höchste Punktzahl.":"In round 1 only the 1 counts, in round 2 only the 2, and so on. The full value including the multiplier counts. Hit single, double and treble of the round number in one visit for a Shanghai and win instantly. Otherwise the highest score wins.",
+"Jede Runde gilt einem Doppel, von D1 bis D20 und zum Schluss Bull, zufällig gemischt oder nur die beliebtesten Finish-Doppel. Du hast pro Runde drei Darts. Am Ende siehst du deine Trefferquote für jedes Feld, sie fließt auch in deine Statistik ein.":"Each round targets one double, from D1 to D20 and finally the bull, shuffled or only the most popular finishing doubles. You have three darts per round. At the end you see your hit rate for every field, and it also goes into your stats.",
+"Jeder wirft die festgelegte Anzahl Aufnahmen. Alle Punkte werden addiert, die höchste Summe gewinnt. Gut für Scoring-Training auf die T20.":"Everyone throws the set number of visits. All points are added up and the highest total wins. Good for scoring practice on the T20.",
+"Du hast 9 Darts (drei Aufnahmen), um das Ziel mit Double Out zu checken. Gelingt es, steigt das Ziel um eins. Sonst bleibt es gleich oder fällt auf den Start zurück, je nach Einstellung. Gewertet wird das höchste geschaffte Ziel.":"You have 9 darts (three visits) to check out the target with double out. If you do, the target goes up by one. Otherwise it stays or drops back to the start, depending on the setting. The highest target reached counts.",
+"Nur für zwei Spieler. In Halbzeit 1 ist Spieler 1 der Stopper: Jeder Treffer schließt eine Zahl (1–20 und Bull). Spieler 2 ist der Scorer und sammelt Punkte nur auf offenen Zahlen. Sind alle Zahlen zu, werden die Rollen getauscht. Wer am Ende mehr Punkte hat, gewinnt.":"Two players only. In half 1, player 1 is the stopper: every hit closes a number (1–20 and bull). Player 2 is the scorer and collects points only on open numbers. When all numbers are closed, the roles swap. Whoever has more points at the end wins.",
+"Start mit 27 Punkten. Runde für Runde wird ein Doppel angespielt, von D1 bis D20 und zum Schluss Bull. Jeder Treffer bringt den Wert des Doppels. Ohne Treffer in der Aufnahme wird der Wert des Doppels abgezogen. Wer unter null fällt, ist raus.":"Start with 27 points. Round by round you aim at one double, from D1 to D20 and finally the bull. Every hit adds the double's value. With no hit in a visit, the double's value is subtracted. Drop below zero and you are out.",
+"Triff die Zahlen der Reihe nach von 1 bis 20, am Ende das Bull. Wer zuerst durch ist, gewinnt. Mit „Sprung“ bringt ein Double zwei Felder weiter und ein Triple drei. Mit „Nur Doppel“ zählen nur die Doppelfelder.":"Hit the numbers in order from 1 to 20, and the bull at the end. First one through wins. With “Jumps”, a double moves you two fields and a treble three. With “Doubles only”, only the double ring counts.",
+"Ziele sind 15–20 und Bull. Drei Treffer (Double zählt zwei, Triple drei) schließen eine Zahl. Weitere Treffer bringen Punkte, solange ein Gegner sie noch offen hat. Bei Cut-Throat bekommen die Gegner die Punkte, wenig ist gut. Wer alles geschlossen hat und vorne liegt, gewinnt.":"Targets are 15–20 and bull. Three marks (a double counts two, a treble three) close a number. Further hits score points as long as an opponent still has it open. In cut-throat the points go to your opponents, so low is good. Whoever has closed everything and is ahead wins.",
+"Checkout-Vorschläge und Bots bevorzugen dieses Doppel":"Checkout suggestions and bots prefer this double",
+"Profi-Stimme Englisch: erzeugt mit Google Gemini TTS (Stimme „en-gb-concierge-10“). Profi-Stimme Deutsch: Piper TTS mit Thorsten-Voice von Thorsten Müller (CC0).":"English pro voice: generated with Google Gemini TTS (voice “en-gb-concierge-10”). German pro voice: Piper TTS with Thorsten-Voice by Thorsten Müller (CC0).",
+/* Erfolge */
+"10 Spiele beendet":"Finished 10 games","100 Spiele beendet":"Finished 100 games","Eine Aufnahme mit 140 oder mehr":"A visit of 140 or more","Eine 180 geworfen":"Threw a 180","Ein Checkout über 100":"A checkout over 100","170 gecheckt":"Checked out 170",
+"15-Darter":"15-darter","12-Darter":"12-darter","Ein Leg mit höchstens 15 Darts":"A leg in 15 darts or fewer","Ein Leg mit höchstens 12 Darts":"A leg in 12 darts or fewer","Ein Leg mit 9 Darts":"A leg in 9 darts",
+"Ø 60":"Avg 60","Ø 80":"Avg 80","Ein X01-Spiel mit Average ab 60":"An X01 game averaging 60+","Ein X01-Spiel mit Average ab 80":"An X01 game averaging 80+","Ein X01-Spiel mit Average ab 100":"An X01 game averaging 100+",
+"Ein Cricket-Spiel mit MPR ab 3":"A cricket game with MPR 3+","Doppel-Training mit mindestens 50 % Quote":"Doubles training with at least 50 % rate","Einen Bot der Stufe Profi oder Weltklasse besiegt":"Beat a pro or world-class bot","Einen Weltklasse-Bot besiegt":"Beat a world-class bot",
+/* Tagesaufgaben */
+"121 mit 10 Versuchen: Ziel 124 oder höher schaffen":"121 with 10 attempts: reach target 124 or higher","Around the Clock in höchstens 60 Darts":"Around the Clock in 60 darts or fewer","501 Double Out: mit Average ab 45 beenden":"501 double out: finish with a 45+ average",
+"Bob's 27 mit mindestens 100 Punkten beenden":"Finish Bob's 27 with at least 100 points","High Score, 10 Runden: mindestens 450 Punkte":"High Score, 10 rounds: at least 450 points","Cricket mit MPR ab 2,0 beenden":"Finish cricket with an MPR of 2.0+","Halve-It: mindestens 250 Punkte":"Halve-It: at least 250 points",
+/* Bots */
+"Bot · Anfänger":"Bot · Beginner","Bot · Hobby":"Bot · Casual","Bot · Kneipe":"Bot · Pub","Bot · Liga":"Bot · League","Bot · Profi":"Bot · Pro","Bot · Weltklasse":"Bot · World class",
+"Anfänger":"Beginner","Hobby":"Casual","Kneipe":"Pub","Profi":"Pro","Weltklasse":"World class",
+"Letzte Runde":"Last round","Ziel erreicht":"Target reached","mit Publikum":"with crowd","Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben.":"Share the invite: whoever taps the link is straight in, with the app or in the browser. Or enter the code under “Join”."
+};
+const EN_PAT=[
+ [/^(.+) ist dran$/,"$1 to throw"],[/^(.+) wirft …$/,"$1 throwing …"],[/^(.+) ist dran und trägt auf dem eigenen Gerät ein\.$/,"$1 to throw, entering on their own device."],
+ [/^(.+) ist offline\. Du kannst für (.+) eintragen\.$/,"$1 is offline. You can enter for $2."],[/^(.+) ist offline\. Der Host kann eintragen\.$/,"$1 is offline. The host can enter for them."],
+ [/^Du schaust zu\. (.+) ist dran\.$/,"You are watching. $1 to throw."],[/^(.+) ist Killer$/,"$1 is a killer"],[/^(.+) ist raus$/,"$1 is out"],[/^(.+) ist beigetreten$/,"$1 joined"],
+ [/^(.+) ist wieder da$/,"$1 is back"],[/^(.+) schaut zu( \(Raum voll\))?$/,(m,a,b)=>`${a} is watching${b?" (room full)":""}`],[/^(.+) ist getrennt$/,"$1 disconnected"],[/^(.+) hat den Raum verlassen$/,"$1 left the room"],
+ [/^Runde (\d+)$/,"Round $1"],[/^Runde (\d+)\/(\d+)$/,"Round $1/$2"],[/^Runde (\d+) von (\d+)$/,"Round $1 of $2"],[/^Leg (\d+)$/,"Leg $1"],[/^Set (\d+)$/,"Set $1"],[/^Dart (\d)\/3$/,"Dart $1/3"],
+ [/^(\d+) Darts?$/,"$1 darts"],[/^(\d+) Spiele$/,"$1 games"],[/^(\d+) Treffer$/,"$1 hits"],[/^(\d+) Teilnehmer$/,"$1 players"],[/^(\d+) Legs?$/,(m,a)=>`${a} ${a==="1"?"leg":"legs"}`],[/^(\d+) Sets?$/,(m,a)=>`${a} ${a==="1"?"set":"sets"}`],
+ [/^(\d+) Runden?$/,(m,a)=>`${a} ${a==="1"?"round":"rounds"}`],[/^(\d+) (Versuche?)$/,(m,a)=>`${a} ${a==="1"?"attempt":"attempts"}`],[/^(\d+) Leben$/,"$1 lives"],[/^(\d+) Pkt\.$/,"$1 pts"],[/^(\d+) % Quote$/,"$1 % rate"],
+ [/^(\d+)× halbiert$/,"halved $1×"],[/^(\d+)\/7 zu$/,"$1/7 closed"],[/^(\d+)× erwischt$/,"caught $1×"],[/^noch (\d+)$/,"$1 to go"],[/^noch (\d+) bis zum Finish-Bereich$/,"$1 to go to the finish zone"],
+ [/^Checkout · (\d) Darts?$/,(m,a)=>`Checkout · ${a} dart${a==="1"?"":"s"}`],[/^Danach: (.+)$/,"Then: $1"],[/^Ziel (\d+)$/,"Target $1"],[/^Ziel (\d+) · Aufnahme (\d)\/3$/,"Target $1 · visit $2/3"],[/^Versuch (\d+) von (\d+)$/,"Attempt $1 of $2"],
+ [/^Start (\d+) · (\d+) Versuche$/,"Start $1 · $2 attempts"],[/^Gecheckt! Neues Ziel (\d+)$/,"Checked out! New target $1"],[/^Nicht geschafft · Ziel (\d+)$/,"Missed · target $1"],[/^Treffer \+(\d+) · sonst −(\d+)$/,"Hit +$1 · otherwise −$2"],
+ [/^Halbzeit (\d) von 2$/,"Half $1 of 2"],[/^Halbzeit (\d+)$/,"Half $1"],[/^(\d+)× → (-?\d+)$/,"$1× → $2"],[/^(.+) starten$/,(m,a)=>`Start ${tr(a)}`],[/^Name Spieler (\d+)$/,"Name player $1"],[/^Typ Spieler (\d+)$/,"Type player $1"],
+ [/^Spieler (\d+)$/,"Player $1"],[/^Raum (\w{5})$/,"Room $1"],[/^Raum (\w{5}) · Host$/,"Room $1 · host"],[/^Raum (\w{5}) nicht gefunden\. Stimmt der Code\?$/,"Room $1 not found. Is the code right?"],[/^Verbinde mit Raum (\w{5}) …$/,"Connecting to room $1 …"],
+ [/^Verbinde wieder mit Raum (\w{5}) …$/,"Reconnecting to room $1 …"],[/^Öffne Raum (\w{5}) wieder …$/,"Reopening room $1 …"],[/^Raum (\w{5}) ist wieder offen$/,"Room $1 is open again"],[/^Verbunden mit Raum (\w{5})$/,"Connected to room $1"],
+ [/^Verbindung zum Host unterbrochen\. Verbinde neu … \((\d+) s\)$/,"Lost connection to the host. Reconnecting … ($1 s)"],[/^Du wurdest in Raum (\w{5}) eingeladen\.$/,"You were invited to room $1."],
+ [/^(\d+) von (\d+) Online-Spielern verbunden\.$/,"$1 of $2 online players connected."],[/^(\d+) Zuschauer\.?$/,"$1 spectators"],[/^(\d+) von (\d+) freigeschaltet$/,"$1 of $2 unlocked"],[/^(\d+) Tagesaufgaben geschafft$/,"$1 daily challenges completed"],
+ [/^geschafft: (.+)$/,"done: $1"],[/^Letzte (\d+) Darts, eingegeben über die Scheibe$/,"Last $1 darts, entered via the board"],[/^3-Dart-Average pro X01-Spiel$/,"3-dart average per X01 game"],[/^letzte (\d+) Spiele$/,"last $1 games"],
+ [/^Average pro X01-Spiel, letzte (\d+) Spiele$/,"Average per X01 game, last $1 games"],[/^Ø gesamt (.+)$/,"Avg overall $1"],[/^Ø (\d.*)$/,"Avg $1"],[/^First-9-Average$/,"First-9 average"],[/^X01-Average$/,"X01 average"],
+ [/^(.+) (ist für genau|braucht mindestens|erlaubt höchstens) (\d+) Spieler\.$/,(m,a,b,c)=>`${tr(a)} ${b==="ist für genau"?"is for exactly":b==="braucht mindestens"?"needs at least":"allows at most"} ${c} players.`],
+ [/^(.+) abspielen$/,(m,a)=>`Play ${tr(a)}`],[/^(.+) löschen$/,(m,a)=>`Delete ${tr(a)}`],[/^Profil mit (\d+) Spielen löschen\?$/,"Delete profile with $1 games?"],[/^Ein Turnier braucht mindestens 3 Spieler$/,"A tournament needs at least 3 players"],
+ [/^(\d+) geht mit drei Darts nicht$/,"$1 is not possible with three darts"],[/^(\d+) lässt sich nicht checken$/,"$1 can't be checked out"],[/^Check mit (\d+)!$/,"Checkout with $1!"],[/^Check (\d+)$/,"Check $1"],
+ [/^Sicherung vom (.+) mit (\d+) gespeicherten Spielen\. (.+)$/,(m,a,b)=>`Backup from ${a} with ${b} saved games. All current data in the app (stats, settings, tournament, recordings) will be replaced.`],
+ [/^Bitte eine Zahl von (\d+) bis (\d+)$/,"Please enter a number from $1 to $2"],[/^Gotcha! (.+) auf 0$/,"Gotcha! $1 back to zero"],[/^Leg (.+)$/,"Leg $1"],[/^Set (.+)$/,"Set $1"],[/^Erfolg: (.+) \((.+)\)$/,(m,a,b)=>`Achievement: ${tr(a)} (${b})`],
+ [/^(.+): (.+)$/,(m,a,b)=>{const t=tr(b);return t===b?m:`${a}: ${t}`}],[/^Ziel (\d+)$/,"Target $1"],[/^(\d+) (Ziel)$/,"$1 target"],[/^Online-Spiel funktioniert in der App und in der Web-Version unter (.+)\.$/,"Online play works in the app and in the web version at $1."],
+ [/^Online-Spiel$/,"Online play"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
+];
+function tr(t){
+  if(lang!=="en"||!t)return t;
+  const s=String(t),k=s.trim();if(!k)return s;
+  let out=EN[k];
+  if(out==null){for(const [re,rp] of EN_PAT){if(re.test(k)){const r=k.replace(re,rp);if(r!==k){out=r;break}}}}
+  if(out==null&&/^(Anfänger|Hobby|Kneipe|Liga|Profi|Weltklasse) \((.+)\)$/.test(k))out=k.replace(/^(\S+) /,(m,a)=>tr(a)+" ");
+  if(out==null&&k.includes(", ")){const parts=k.split(", ").map(x=>tr(x));const j=parts.join(", ");if(j!==k)out=j}
+  if(out==null&&/[.!?] \S/.test(k)){const parts=k.split(/(?<=[.!?]) (?=\S)/);if(parts.length>1){const j=parts.map(x=>tr(x)).join(" ");if(j!==k)out=j}}
+  if(out==null&&k.includes(" · ")){const parts=k.split(" · ").map(x=>tr(x));const j=parts.join(" · ");if(j!==k)out=j}
+  if(out==null)return s;
+  return s.replace(k,out);
+}
+let lang=store.get("oche.lang",/^de/i.test(navigator.language||"de")?"de":"en");
+function translateNode(root){
+  if(lang!=="en"||!root)return;
+  if(root.nodeType===3){const v=root.nodeValue,t=tr(v);if(t!==v)root.nodeValue=t;return}
+  if(root.nodeType!==1||root.closest&&root.closest("script,style"))return;
+  ["placeholder","aria-label","title"].forEach(a=>{const v=root.getAttribute&&root.getAttribute(a);if(v){const t=tr(v);if(t!==v)root.setAttribute(a,t)}});
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let n;
+  while(n=w.nextNode()){if(n.nodeType===3){const v=n.nodeValue,t=tr(v);if(t!==v)n.nodeValue=t}else ["placeholder","aria-label","title"].forEach(a=>{const v=n.getAttribute(a);if(v){const t=tr(v);if(t!==v)n.setAttribute(a,t)}})}
+}
+const langObs=new MutationObserver(ms=>{if(lang!=="en")return;for(const m of ms){if(m.type==="characterData")translateNode(m.target);else m.addedNodes.forEach(translateNode)}});
+langObs.observe(document.body,{childList:true,subtree:true,characterData:true});
+function setLang(l){lang=l;store.set("oche.lang",l);document.documentElement.lang=l;render();if(l==="en")translateNode(document.body)}
+document.documentElement.lang=lang;
+
 /* ================= Design (hell/dunkel) ================= */
 let themePref=store.get("oche.theme","system");
 function applyTheme(){
@@ -1712,11 +1884,32 @@ function closeRoom(msg,notify){
   else{cfg=loadCfg();view="setup";g=null}
   setStatus(msg||"",!!msg);if(msg)toastLocal(msg,"red");render();
 }
+/* Einladungslink: öffnet die Web-Version auf GitHub Pages bzw. die App und tritt dem Raum direkt bei */
+const SITE="https://derbenno1208.github.io/oche-darts/";
+const inviteLink=code=>SITE+"#join-"+code;
 function shareCode(){
-  const txt=`Spiel mit mir Darts in der Oche-App! Raumcode: ${net.code}`;
+  const link=inviteLink(net.code);
+  const txt=`Spiel mit mir Darts in Oche! Tippe auf den Link, um meinem Raum beizutreten (geht auch ohne App im Browser):\n${link}\n\nOder in der Oche-App unter „Online“ den Code ${net.code} eingeben.`;
   try{if(window.AndroidTTS&&window.AndroidTTS.share){window.AndroidTTS.share(txt);return}}catch(e){}
-  try{navigator.clipboard.writeText(net.code).then(()=>toastLocal("Code kopiert","green"),()=>toastLocal("Code: "+net.code))}catch(e){toastLocal("Code: "+net.code)}
+  try{if(navigator.share){navigator.share({title:"Oche Darts",text:txt}).catch(()=>{});return}}catch(e){}
+  copyLink();
 }
+function copyLink(){
+  const link=inviteLink(net.code);
+  try{navigator.clipboard.writeText(link).then(()=>toastLocal("Link kopiert","green"),()=>toastLocal(link))}catch(e){toastLocal(link)}
+}
+/* Einladung aus Link (#join-CODE) oder aus der App (oche://join/CODE) */
+let invite=null;
+function takeInvite(code){
+  code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);if(code.length!==5)return;
+  if(net.role&&net.code===code)return;
+  invite=code;view=view==="game"&&g?view:"setup";tab="online";
+  if(net.myName&&!net.role){joinRoom(code,net.myName,false);invite=null;return}
+  render();setTimeout(()=>{const n=$("#joinName");n&&n.focus()},50);
+}
+window.ocheJoin=takeInvite;
+function inviteFromHash(){const m=/^#join-([A-Za-z0-9]{5})$/.exec(location.hash||"");if(m){try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}takeInvite(m[1])}}
+window.addEventListener("hashchange",inviteFromHash);
 /* App wurde geschlossen und wieder geöffnet: laufenden Raum fortsetzen */
 function resumeSession(){
   const s=store.get("oche.session",null);
@@ -1778,7 +1971,7 @@ function input(d,pos){
 
 /* ================= Rendering ================= */
 const logo=`<svg viewBox="-20 -20 40 40" aria-hidden="true"><circle r="19" fill="var(--b-dark)" stroke="var(--b-wire)" stroke-width="1"/><circle r="15" fill="none" stroke="var(--b-red)" stroke-width="3"/><circle r="9" fill="none" stroke="var(--b-green)" stroke-width="2.5"/><circle r="3.2" fill="var(--b-red)"/></svg>`;
-function topbar(extra,home){return`<header class="top"><div class="brand">${logo}<h1>Oche<span>.</span></h1></div><div class="tools">${net.code&&net.role?`<span class="badge ${net.role==="reconnecting"?"gold":"blue"}">Raum ${net.code}${net.role==="host"?" · Host":""}</span>`:""}${extra||""}${home?"":`<button class="btn small ghost" id="caller" aria-pressed="${caller!=="off"}" title="Caller-Einstellungen">Caller: ${caller==="off"?"aus":caller.startsWith("pro")?"Profi":"Handy"}</button><button class="btn small ghost" id="sound" aria-pressed="${sound}">${sound?"Klick an":"Klick aus"}</button>`}</div></header>`}
+function topbar(extra,home){return`<header class="top"><div class="brand">${logo}<h1>Oche<span>.</span></h1></div><div class="tools"><button class="btn small ghost langbtn" id="langBtn" aria-label="${lang==="en"?"Sprache: Englisch, auf Deutsch umstellen":"Sprache: Deutsch, auf Englisch umstellen"}" title="Sprache / Language">${lang==="en"?"EN":"DE"}</button>${net.code&&net.role?`<span class="badge ${net.role==="reconnecting"?"gold":"blue"}">Raum ${net.code}${net.role==="host"?" · Host":""}</span>`:""}${extra||""}${home?"":`<button class="btn small ghost" id="caller" aria-pressed="${caller!=="off"}" title="Caller-Einstellungen">Caller: ${caller==="off"?"aus":caller.startsWith("pro")?"Profi":"Handy"}</button><button class="btn small ghost" id="sound" aria-pressed="${sound}">${sound?"Klick an":"Klick aus"}</button>`}</div></header>`}
 function typeLabel(p){return p.remote?'<span class="badge blue">Online</span>':p.bot?`<span class="badge gold">${BOTS[p.bot].l.replace("Bot · ","Bot ")}</span>`:""}
 
 function renderOnlineCard(){
@@ -1786,19 +1979,20 @@ function renderOnlineCard(){
   if(net.role==="host"){
     const guests=cfg.players.filter(p=>p.remote),on=guests.filter(p=>net.conns[p.remote]).length,sp=Object.keys(net.spect).filter(t=>net.conns[t]).length;
     body=`<span class="label">Raumcode</span><div class="roomcode">${net.code}</div>
-    <p class="rules">Die anderen öffnen Oche, tippen auf „Beitreten“ und geben den Code ein. ${guests.length?`${on} von ${guests.length} Online-Spielern verbunden.`:"Noch niemand beigetreten."}${sp?` ${sp} Zuschauer.`:""}</p>
-    <div class="netrow"><button class="btn primary" id="share">Code teilen</button><button class="btn" id="closeRoom">Raum schließen</button></div>
+    <p class="rules">Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben. ${guests.length?`${on} von ${guests.length} Online-Spielern verbunden.`:"Noch niemand beigetreten."}${sp?` ${sp} Zuschauer.`:""}</p>
+    <div class="netrow"><button class="btn primary" id="share">Einladung teilen</button><button class="btn" id="copyLink">Link kopieren</button><button class="btn" id="closeRoom">Raum schließen</button></div>
     <div class="status">Fällt dein Handy aus, übernimmt automatisch ein anderes Gerät den Raum.</div>`;
   }else if(net.role==="connecting"||net.role==="reconnecting"){
     body=`<div class="waitmsg"><span class="pulse"></span>${esc(net.status||"Verbinde …")}</div><div class="netrow"><button class="btn" id="closeRoom">Abbrechen</button></div>`;
   }else{
     body=`<p class="rules">Spielt auf mehreren Handys zusammen, auch an verschiedenen Orten. Jeder trägt seine eigenen Würfe ein. Bis zu ${MAX_PLAYERS} Spieler und ${MAX_SPECT} Zuschauer pro Raum.</p>
     <div class="netrow"><button class="btn" id="hostRoom">Raum erstellen</button></div>
+    ${invite?`<div class="invite"><b>Du wurdest in Raum ${invite} eingeladen.</b><span>Gib deinen Namen ein und tippe auf „Beitreten“.</span>${!IS_APP&&/Android/i.test(navigator.userAgent)?`<a class="btn small" href="intent://join/${invite}#Intent;scheme=oche;package=de.oche.dart;end">In der Oche-App öffnen</a>`:""}</div>`:""}
     <span class="label">Einem Raum beitreten</span>
-    <div class="netrow"><input id="joinName" list="proflist" autocomplete="off" placeholder="Dein Name" maxlength="18" value="${esc(net.myName)}" aria-label="Dein Name"><input id="joinCode" class="code" placeholder="CODE" maxlength="5" autocapitalize="characters" autocomplete="off" aria-label="Raumcode"><button class="btn" id="joinRoom">Beitreten</button></div>
+    <div class="netrow"><input id="joinName" list="proflist" autocomplete="off" placeholder="Dein Name" maxlength="18" value="${esc(net.myName)}" aria-label="Dein Name"><input id="joinCode" class="code" placeholder="CODE" maxlength="5" value="${invite||""}" autocapitalize="characters" autocomplete="off" aria-label="Raumcode"><button class="btn" id="joinRoom">Beitreten</button></div>
     <label class="chk"><input type="checkbox" id="joinSpect"> Nur zuschauen</label>
     ${net.status?`<div class="status ${net.err?"err":""}">${esc(net.status)}</div>`:""}
-    ${IS_APP?"":`<div class="status">Online-Spiel funktioniert in der Android-App.</div>`}`;
+    ${onlineAvailable()?"":`<div class="status">Online-Spiel funktioniert in der App und in der Web-Version unter ${SITE.replace("https://","")}.</div>`}`;
   }
   return`<section class="card"><h2>Online spielen</h2>${body}</section>`;
 }
@@ -1948,6 +2142,7 @@ function render(){
 function saveCfg(){if(isGuest())return;store.set("oche.cfg",{mode:cfg.mode,opts:cfg.opts,players:cfg.players.filter(p=>!p.remote)})}
 document.addEventListener("click",e=>{
   const t=e.target.closest("button,[data-n],[data-miss]");if(!t||t.disabled)return;
+  if(t.id==="langBtn"){setLang(lang==="de"?"en":"de");return}
   if(t.id==="sound"){sound=!sound;store.set("oche.sound",sound);render();return}
   if(t.id==="caller"){openCaller();return}
   if(t.id==="leave"){leaveRoom();return}
@@ -1988,7 +2183,8 @@ document.addEventListener("click",e=>{
     if(t.id==="shuf"){cfg.players.sort(()=>Math.random()-.5);saveCfg();render();return}
     if(t.id==="go"){startGame();return}
     if(t.id==="hostRoom"){hostRoom();return}
-    if(t.id==="joinRoom"){joinRoom($("#joinCode").value,$("#joinName").value,$("#joinSpect").checked);return}
+    if(t.id==="copyLink"){copyLink();return}
+    if(t.id==="joinRoom"){invite=null;joinRoom($("#joinCode").value,$("#joinName").value,$("#joinSpect").checked);return}
     if(t.id==="closeRoom"){closeRoom("",net.role==="host");return}
   }
   if(view==="game"){
@@ -2048,6 +2244,7 @@ window.ocheBack=function(){
   return false;
 };
 resumeSession();
+inviteFromHash();
 render();
 })();
 </script>

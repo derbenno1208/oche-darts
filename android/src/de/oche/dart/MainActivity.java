@@ -37,6 +37,8 @@ public class MainActivity extends Activity {
     volatile boolean ttsReady = false;
     PermissionRequest pendingPermission;
     ValueCallback<Uri[]> fileCallback;
+    String pendingJoin;
+    boolean pageReady = false;
 
     @Override
     protected void onCreate(Bundle saved) {
@@ -62,10 +64,43 @@ public class MainActivity extends Activity {
 
         if (saved != null) web.restoreState(saved);
         else web.loadUrl("https://" + HOST + "/index.html");
+        handleIntent(getIntent());
+    }
+
+    /* Einladungslinks: oche://join/CODE oder https://derbenno1208.github.io/oche-darts/#join-CODE */
+    void handleIntent(Intent in) {
+        if (in == null || in.getData() == null) return;
+        Uri u = in.getData(); String code = null;
+        if ("oche".equals(u.getScheme())) code = u.getLastPathSegment();
+        else if (u.getFragment() != null && u.getFragment().startsWith("join-")) code = u.getFragment().substring(5);
+        if (code == null) return;
+        code = code.replaceAll("[^A-Za-z0-9]", "");
+        if (code.length() != 5) return;
+        pendingJoin = code;
+        if (pageReady) deliverJoin();
+    }
+
+    void deliverJoin() {
+        if (pendingJoin == null || web == null) return;
+        web.evaluateJavascript("window.ocheJoin&&window.ocheJoin('" + pendingJoin + "')", null);
+        pendingJoin = null;
+    }
+
+    @Override
+    protected void onNewIntent(Intent in) {
+        super.onNewIntent(in);
+        setIntent(in);
+        handleIntent(in);
     }
 
     /* Liefert die Web-App aus den Assets unter einer https-Adresse aus */
     class Client extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            pageReady = true;
+            deliverJoin();
+        }
+
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest req) {
             Uri u = req.getUrl();
