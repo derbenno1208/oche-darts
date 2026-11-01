@@ -14,6 +14,8 @@ Alles, was du in der Play Console brauchst. Texte zum Kopieren stehen weiter unt
 
 Die Play-Fassung hat **keinen eigenen Update-Hinweis und keinen APK-Download**, weil Google Play verbietet, dass sich Apps am Store vorbei aktualisieren. Updates kommen dort über den Play Store.
 
+Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchstens alle 3 Minuten, beim Verlassen des Ergebnisbildschirms) und bietet den Einmalkauf **„Werbung entfernen“ (Produkt-ID `remove_ads`)** an. Die GitHub-APK und die Web-Version bleiben werbefrei.
+
 ## Schritt für Schritt
 
 1. **App erstellen** (Play Console → „App erstellen“)
@@ -26,7 +28,8 @@ Die Play-Fassung hat **keinen eigenen Update-Hinweis und keinen APK-Download**, 
 2. **App einrichten** (Dashboard → „App einrichten“), die Fragen der Reihe nach:
    - **Datenschutzerklärung:** URL von oben.
    - **App-Zugriff:** „Alle Funktionen sind ohne besonderen Zugriff verfügbar.“
-   - **Anzeigen:** „Nein, meine App enthält keine Anzeigen.“
+   - **Anzeigen:** „**Ja**, meine App enthält Anzeigen.“
+   - **Werbe-ID:** „Ja, die App verwendet die Werbe-ID“, Zweck: **Werbung oder Marketing**.
    - **Einstufung des Inhalts (IARC):** Kategorie „Alle anderen App-Typen“. Gewalt, Sexualität, Sprache, Drogen, Glücksspiel: jeweils **Nein**. „Können Nutzer miteinander interagieren oder Inhalte austauschen?“ → **Ja** (im Online-Modus sehen Mitspielende den gewählten Spielernamen). Standortweitergabe: Nein. Digitale Käufe: Nein.
    - **Zielgruppe:** **13 Jahre und älter** (also nicht „für Kinder“, sonst gelten die strengeren Familien-Richtlinien).
    - **Datensicherheit:** siehe eigener Abschnitt unten.
@@ -51,16 +54,29 @@ Die Play-Fassung hat **keinen eigenen Update-Hinweis und keinen APK-Download**, 
 
 ## Datensicherheit (Vorschlag)
 
-Diese Angaben verantwortest du; sie passen zum aktuellen Stand der App:
+Diese Angaben verantwortest du. Für die Werbung gelten die Angaben, die Google für das AdMob-SDK empfiehlt; prüfe sie in der aktuellen Google-Hilfe „Datenoffenlegung für das Google Mobile Ads SDK“.
 
-- **Werden Nutzerdaten erhoben oder weitergegeben?** Ja (nur für den Online-Modus).
-- **Datentyp:** Persönliche Daten → **Name** (der selbst gewählte Spielername).
-  - Erhoben, nicht weitergegeben an Dritte zu deren Zwecken.
-  - Zweck: **App-Funktionalität**.
-  - **Optional** (nur wenn man online spielt), **flüchtige Verarbeitung** (wird nicht gespeichert).
-- **Verschlüsselung bei der Übertragung:** Ja (WebRTC ist immer verschlüsselt).
-- **Löschung beantragen:** Die App speichert nichts auf Servern; alle Daten liegen auf dem Gerät und verschwinden beim Deinstallieren.
-- Mikrofon-Aufnahmen, Statistiken und Einstellungen bleiben auf dem Gerät und gelten deshalb nicht als „erhoben“.
+- **Werden Nutzerdaten erhoben oder weitergegeben?** Ja.
+- **Persönliche Daten → Name** (selbst gewählter Spielername, nur Online-Modus): erhoben, Zweck App-Funktionalität, optional, flüchtige Verarbeitung.
+- **Durch das AdMob-SDK** (nur wenn Werbung läuft), jeweils erhoben **und weitergegeben** an Google:
+  - **Geräte- oder andere IDs** (Werbe-ID): Werbung oder Marketing, Analysen, Betrugsprävention.
+  - **Standort → Ungefährer Standort** (aus der IP-Adresse): Werbung oder Marketing, Analysen, Betrugsprävention.
+  - **App-Aktivität → App-Interaktionen** (Interaktion mit der Werbung): Werbung oder Marketing, Analysen.
+  - **App-Informationen und Leistung → Absturzprotokolle, Diagnose**: Analysen, Betrugsprävention.
+- **Käufe** laufen über Google Play und müssen nicht angegeben werden.
+- **Verschlüsselung bei der Übertragung:** Ja.
+- **Löschung beantragen:** Die App speichert nichts auf eigenen Servern. Die Werbe-ID kann in den Android-Einstellungen gelöscht werden.
+
+## Werbung und Freikauf einrichten
+
+1. **AdMob-Konto** auf admob.google.com anlegen (gleiches Google-Konto wie die Play Console), Zahlungsdaten hinterlegen.
+2. In AdMob **App hinzufügen** (Android, „noch nicht veröffentlicht“), dann einen **Anzeigenblock vom Typ „Interstitial“** anlegen.
+3. Die beiden IDs in `android/gradle.properties` eintragen: `admobAppId` (Form `ca-app-pub-…~…`) und `admobInterstitialId` (Form `ca-app-pub-…/…`). Bis dahin nutzt die App Googles **Test-IDs** und zeigt Testwerbung.
+4. In AdMob unter **Datenschutz und Mitteilungen** eine **DSGVO-Mitteilung** (Europäische Vorschriften) anlegen und veröffentlichen. Ohne sie erscheint kein Einwilligungsdialog.
+5. **Zahlungsprofil** in der Play Console einrichten (Einstellungen → Zahlungsprofil). Ohne Zahlungsprofil kannst du keine Kaufprodukte anlegen.
+6. Nachdem ein App Bundle mit der Play-Fassung hochgeladen ist: **Monetarisieren → Produkte → In-App-Produkte → Produkt erstellen**, Produkt-ID **`remove_ads`**, Name „Werbung entfernen“, Preis **2,99 €**, aktivieren.
+7. **Testen:** In der Play Console unter Einstellungen → Lizenztests dein Google-Konto eintragen. Dann kannst du den Kauf kostenlos testen. Klicke **nie** auf echte Werbung in deiner eigenen App, sonst sperrt AdMob dein Konto; nutze die Test-IDs oder trage dein Handy in AdMob als Testgerät ein.
+8. **app-ads.txt** (empfohlen): AdMob zeigt dir den Inhalt. Die Datei muss auf der Website liegen, die im Store-Eintrag steht, und zwar im Hauptverzeichnis der Domain. Bei GitHub Pages geht das über ein zusätzliches Repository namens `derbenno1208.github.io`.
 
 ## Berechtigungen
 
@@ -126,7 +142,7 @@ Average-Verlauf, First-9-Average, 180er, Checkout-Quote nach Rest, Doppelquote j
 UND MEHR
 Großanzeige für Tablet oder Fernseher, helles und dunkles Design, Deutsch und Englisch, Daten sichern und wiederherstellen.
 
-Keine Werbung, kein Konto, kein Tracking.
+Kein Konto nötig. Werbung nur kurz nach einem Spiel, für 2,99 € dauerhaft abschaltbar.
 ```
 
 ### English
@@ -176,7 +192,7 @@ Average history, first-9 average, 180s, checkout rate by score left, doubles rat
 AND MORE
 Big screen mode for tablets or TVs, light and dark theme, English and German, backup and restore.
 
-No ads, no account, no tracking.
+No account needed. Ads only briefly after a game, removable for good for €2.99.
 ```
 
 ### Versionshinweis für die erste Version

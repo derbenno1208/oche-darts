@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     PermissionRequest pendingPermission;
     ValueCallback<Uri[]> fileCallback;
     String pendingJoin;
+    Monetization mon;
     FrameLayout root;
     boolean pageReady = false;
 
@@ -77,6 +78,8 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new Chrome());
         tts = new TextToSpeech(this, new TtsInit());
         web.addJavascriptInterface(new Bridge(), "AndroidTTS");
+        mon = new Monetization(this, web);
+        mon.init();
 
         if (saved != null) web.restoreState(saved);
         else web.loadUrl("https://" + HOST + "/index.html");
@@ -335,6 +338,19 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void share(String text) { runOnUiThread(new ShareTask(text)); }
+
+        /* Werbung und Freikauf (nur Play-Fassung, sonst ohne Wirkung) */
+        @JavascriptInterface
+        public String monState() { return mon.stateJson(); }
+
+        @JavascriptInterface
+        public void showAd() { runOnUiThread(() -> mon.showAfterGame()); }
+
+        @JavascriptInterface
+        public void buyNoAds() { runOnUiThread(() -> mon.buy()); }
+
+        @JavascriptInterface
+        public void adPrivacy() { runOnUiThread(() -> mon.showPrivacyOptions()); }
 
         @JavascriptInterface
         public void vibrate(int ms) {

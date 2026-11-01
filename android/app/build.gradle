@@ -1,0 +1,61 @@
+plugins { id "com.android.application" }
+
+android {
+    namespace "de.oche.dart"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "de.oche.dart"
+        minSdk 24
+        targetSdk 36
+        versionCode Integer.parseInt(project.findProperty("ocheVersionCode") ?: "1")
+        versionName project.findProperty("ocheVersionName") ?: "1.0"
+    }
+
+    buildFeatures { buildConfig true }
+
+    // Zwei Fassungen: "github" (Direkt-Download, werbefrei, eigener Update-Hinweis)
+    // und "play" (Google Play, Werbung nach dem Spiel, Freikauf über Google Play)
+    flavorDimensions += "store"
+    productFlavors {
+        github {
+            dimension "store"
+            resValue "bool", "play_store", "false"
+            manifestPlaceholders = [admobAppId: ""]
+        }
+        play {
+            dimension "store"
+            resValue "bool", "play_store", "true"
+            manifestPlaceholders = [admobAppId: project.findProperty("admobAppId")]
+            buildConfigField "String", "ADMOB_INTERSTITIAL", "\"${project.findProperty("admobInterstitialId")}\""
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("oche-release.jks")
+            storePassword "ochedarts"
+            keyAlias "oche"
+            keyPassword "ochedarts"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    // Die eingebaute Web-App liegt in build/generated/oche-assets (erzeugt von build.sh)
+    sourceSets { main { assets.srcDirs += ["build/generated/oche-assets"] } }
+    packaging { resources { excludes += ["META-INF/*.kotlin_module"] } }
+}
+
+dependencies {
+    playImplementation "com.google.android.gms:play-services-ads:24.4.0"
+    playImplementation "com.google.android.ump:user-messaging-platform:3.2.0"
+    playImplementation "com.android.billingclient:billing:8.0.0"
+}

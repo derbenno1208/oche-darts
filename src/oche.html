@@ -366,6 +366,7 @@ body.tv .last{font-size:clamp(14px,1.6vw,24px)}
 .pulse{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:pl 1s ease-in-out infinite;flex:none}
 @keyframes pl{50%{opacity:.25;transform:scale(.7)}}
 .lobby{max-width:560px;width:100%;margin:0 auto}
+.linkbtn{background:none;border:0;padding:0;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer}
 .hoststart{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
 .hoststart .setrow{border-top:0;padding-top:0}
 .hplayers{display:flex;flex-wrap:wrap;gap:6px}
@@ -395,7 +396,7 @@ const COLORS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a
 const BOTS=[{l:"Mensch"},{l:"Bot · Anfänger",s:41.5},{l:"Bot · Hobby",s:26.5},{l:"Bot · Kneipe",s:18.5},{l:"Bot · Liga",s:14.3},{l:"Bot · Profi",s:10},{l:"Bot · Weltklasse",s:7}];
 const BOTAVG=["","Ø 20–30","Ø 30–40","Ø 40–50","Ø 50–65","Ø 65–85","Ø 85–105"];
 const IS_APP=/OcheApp/.test(navigator.userAgent);
-const OCHE_VERSION="2.1";
+const OCHE_VERSION="2.2";
 const IS_PLAY=/OcheApp\/\S*\s+Play\b/.test(navigator.userAgent);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1244,7 +1245,11 @@ const EN={
 /* Bots */
 "Bot · Anfänger":"Bot · Beginner","Bot · Hobby":"Bot · Casual","Bot · Kneipe":"Bot · Pub","Bot · Liga":"Bot · League","Bot · Profi":"Bot · Pro","Bot · Weltklasse":"Bot · World class",
 "Anfänger":"Beginner","Hobby":"Casual","Kneipe":"Pub","Profi":"Pro","Weltklasse":"World class",
-"Letzte Runde":"Last round","online":"online","1 Online-Spieler ist gerade getrennt.":"1 online player is currently disconnected.","Du kannst trotzdem starten und für sie eintragen.":"You can start anyway and enter their darts.","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
+"Letzte Runde":"Last round","Werbung entfernen":"Remove ads","Werbefrei. Danke für deine Unterstützung!":"Ad-free. Thanks for your support!",
+"Einmalig bezahlen, dauerhaft keine Werbung nach dem Spiel. Gilt für alle Geräte mit deinem Google-Konto.":"Pay once, no more ads after games. Works on all devices with your Google account.",
+"Datenschutz für Werbung":"Ad privacy","Einwilligung für personalisierte Werbung ändern":"Change consent for personalised ads","Nach dem Spiel kommt kurz Werbung.":"A short ad plays after the game.",
+"Danke! Die Werbung ist jetzt ausgeschaltet.":"Thank you! Ads are now turned off.","Zahlung ausstehend. Die Werbung verschwindet, sobald sie bestätigt ist.":"Payment pending. Ads will disappear once it is confirmed.",
+"Der Kauf ist gerade nicht verfügbar. Bitte später erneut versuchen.":"The purchase is not available right now. Please try again later.","online":"online","1 Online-Spieler ist gerade getrennt.":"1 online player is currently disconnected.","Du kannst trotzdem starten und für sie eintragen.":"You can start anyway and enter their darts.","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
 "Nach Updates suchen":"Check for updates","Updates kommen automatisch über den Play Store.":"Updates come automatically through the Play Store.","Die App prüft regelmäßig auf neue Versionen.":"The app checks for new versions regularly.","Update-Prüfung nicht möglich. Internet prüfen.":"Could not check for updates. Check your internet.",
 "Web-Version mit Online-Spiel":"Web version with online play","Installierbar, offline nutzbar und mit Online-Modus":"Installable, works offline and has online mode","Öffnen":"Open","Als App installieren":"Install as app",
 "Oche ist auf diesem Gerät installiert.":"Oche is installed on this device.","Symbol auf dem Startbildschirm, startet ohne Browserleiste und funktioniert offline.":"Icon on the home screen, starts without the browser bar and works offline.",
@@ -1277,7 +1282,7 @@ const EN_PAT=[
  [/^Sicherung vom (.+) mit (\d+) gespeicherten Spielen\. (.+)$/,(m,a,b)=>`Backup from ${a} with ${b} saved games. All current data in the app (stats, settings, tournament, recordings) will be replaced.`],
  [/^Bitte eine Zahl von (\d+) bis (\d+)$/,"Please enter a number from $1 to $2"],[/^Gotcha! (.+) auf 0$/,"Gotcha! $1 back to zero"],[/^Leg (.+)$/,"Leg $1"],[/^Set (.+)$/,"Set $1"],[/^Erfolg: (.+) \((.+)\)$/,(m,a,b)=>`Achievement: ${tr(a)} (${b})`],
  [/^(.+): (.+)$/,(m,a,b)=>{const t=tr(b);return t===b?m:`${a}: ${t}`}],[/^Ziel (\d+)$/,"Target $1"],[/^(\d+) (Ziel)$/,"$1 target"],[/^Online-Spiel funktioniert in der App und in der Web-Version unter (.+)\.$/,"Online play works in the app and in the web version at $1."],
- [/^Online-Spiel$/,"Online play"],[/^(\d+) Online-Spieler sind gerade getrennt\.$/,"$1 online players are currently disconnected."],[/^Neue Version (.+)$/,"New version $1"],[/^Version (.+) ist verfügbar$/,"Version $1 is available"],[/^Du hast die neueste Version \((.+)\)$/,"You have the latest version ($1)"],[/^App-Version (.+)$/,"App version $1"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
+ [/^Online-Spiel$/,"Online play"],[/^Werbung für (.+) entfernen$/,"Remove ads for $1"],[/^(\d+) Online-Spieler sind gerade getrennt\.$/,"$1 online players are currently disconnected."],[/^Neue Version (.+)$/,"New version $1"],[/^Version (.+) ist verfügbar$/,"Version $1 is available"],[/^Du hast die neueste Version \((.+)\)$/,"You have the latest version ($1)"],[/^App-Version (.+)$/,"App version $1"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
 ];
 function tr(t){
   if(lang!=="en"||!t)return t;
@@ -1900,6 +1905,27 @@ function closeRoom(msg,notify){
   else{cfg=loadCfg();view="setup";g=null}
   setStatus(msg||"",!!msg);if(msg)toastLocal(msg,"red");render();
 }
+/* ================= Werbung nach dem Spiel und Freikauf (nur Play-Fassung) ================= */
+let mon={enabled:false};
+function monRefresh(){try{if(window.AndroidTTS&&window.AndroidTTS.monState)mon=JSON.parse(window.AndroidTTS.monState())}catch(e){}}
+window.ocheMon=st=>{mon=st||{enabled:false};if(view!=="game")render()};
+window.ocheToast=t=>toastLocal(t,"green");
+let lastAd=0;
+/* Wird beim Verlassen des Ergebnisbildschirms aufgerufen: höchstens alle 3 Minuten, nie bei Bot-Schnellspielen */
+function adAfterGame(){
+  if(!mon.enabled||mon.adsRemoved||!window.AndroidTTS||!window.AndroidTTS.showAd)return;
+  if(g&&g.fast)return;
+  if(Date.now()-lastAd<180000)return;
+  lastAd=Date.now();try{window.AndroidTTS.showAd()}catch(e){}
+}
+const monPrice=()=>mon.price||"2,99 €";
+function renderMonRows(){
+  if(!mon.enabled)return"";
+  return`<div class="setrow"><div class="rectxt"><b>Werbung entfernen</b><span>${mon.adsRemoved?"Werbefrei. Danke für deine Unterstützung!":"Einmalig bezahlen, dauerhaft keine Werbung nach dem Spiel. Gilt für alle Geräte mit deinem Google-Konto."}</span></div>${mon.adsRemoved?"":`<div class="seg"><button id="buyNoAds">${monPrice()}</button></div>`}</div>
+  ${mon.privacy?`<div class="setrow"><div class="rectxt"><b>Datenschutz für Werbung</b><span>Einwilligung für personalisierte Werbung ändern</span></div><div class="seg"><button id="adPrivacy">Ändern</button></div></div>`:""}`;
+}
+monRefresh();
+
 /* ================= Updates (App) und Installation (Web) ================= */
 const IS_WEB_SITE=!IS_APP&&/github\.io$/.test(location.hostname);
 let update=null,installEvt=null;
@@ -2106,6 +2132,7 @@ function renderSettings(){
     <div class="setrow"><div class="rectxt"><b>Design</b><span>„System“ folgt der Einstellung deines Handys</span></div><div class="seg">${[["system","System"],["dark","Dunkel"],["light","Hell"]].map(([v,l])=>`<button data-theme-set="${v}" aria-pressed="${themePref===v}">${l}</button>`).join("")}</div></div>
     <div class="setrow"><div class="rectxt"><b>Vibration</b><span>kurzes Vibrieren bei jeder Eingabe</span></div><div class="seg"><button id="vibBtn" aria-pressed="${vibOn}">${vibOn?"An":"Aus"}</button></div></div>
     <div class="setrow"><div class="rectxt"><b>Lieblingsdoppel</b><span>Checkout-Vorschläge und Bots bevorzugen dieses Doppel</span></div><div class="seg">${[[0,"Auto"],[20,"D20"],[16,"D16"],[18,"D18"],[10,"D10"],[8,"D8"],[12,"D12"]].map(([v,l])=>`<button data-prefdbl="${v}" aria-pressed="${PREF_DBL===v}">${l}</button>`).join("")}</div></div>
+    ${renderMonRows()}
     ${renderInstallRow()}
     <div class="setrow"><div class="rectxt"><b>Daten sichern</b><span>Statistik, Profile, Einstellungen, Turnier und eigene Aufnahmen als Datei</span></div><div class="seg"><button id="bkExport">Sichern</button><button id="bkImport">Wiederherstellen</button></div><input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden></div>
     <p class="foot" style="text-align:left">Tastatur im Spiel: <kbd>D</kbd> Double · <kbd>T</kbd> Triple · <kbd>0</kbd> Miss · <kbd>B</kbd> Bull · <kbd>⌫</kbd> Zurück. Bei „Summe“: Ziffern und <kbd>Enter</kbd>.</p>
@@ -2192,7 +2219,8 @@ function renderResult(){
   <section class="card"><h2>Statistik</h2><div class="tscroll"><table class="stats"><thead><tr><th>Spieler</th>${M.stats.map(s=>`<th>${s[0]}</th>`).join("")}<th>Darts</th></tr></thead><tbody>${sorted.map(p=>`<tr class="${ws.includes(p)?"win":""}"><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:8px"></span>${esc(p.name)}${p.bot?" · Bot":""}</td>${M.stats.map(s=>`<td>${s[1](p)}</td>`).join("")}<td>${p.darts}</td></tr>`).join("")}</tbody></table></div></section>
   ${(g.newAch||[]).length?`<section class="card newach"><h2>Neu freigeschaltet</h2>${g.newAch.map(n=>`<div class="setrow"><b>${esc(n.name)}</b><span>${n.list.map(esc).join(" · ")}</span></div>`).join("")}</section>`:""}
   ${M.resultExtra?M.resultExtra(g):""}
-  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center">${btns}</div></div>`;
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center">${btns}</div>
+  ${mon.enabled&&!mon.adsRemoved&&!guestish()?`<p class="foot">Nach dem Spiel kommt kurz Werbung. <button class="linkbtn" id="buyNoAds">Werbung für ${monPrice()} entfernen</button></p>`:""}</div>`;
 }
 
 function render(){
@@ -2211,6 +2239,8 @@ function saveCfg(){if(isGuest())return;store.set("oche.cfg",{mode:cfg.mode,opts:
 document.addEventListener("click",e=>{
   const t=e.target.closest("button,[data-n],[data-miss]");if(!t||t.disabled)return;
   if(t.id==="langBtn"){setLang(lang==="de"?"en":"de");return}
+  if(t.id==="buyNoAds"){try{window.AndroidTTS.buyNoAds()}catch(e){}return}
+  if(t.id==="adPrivacy"){try{window.AndroidTTS.adPrivacy()}catch(e){}return}
   if(t.id==="sound"){sound=!sound;store.set("oche.sound",sound);render();return}
   if(t.id==="caller"){openCaller();return}
   if(t.id==="leave"){leaveRoom();return}
@@ -2276,6 +2306,7 @@ document.addEventListener("click",e=>{
     if(t.id==="fill"){if(isGuest())guestSend({t:"fill"});else fillTurn();return}
   }
   if(view==="result"&&!isGuest()){
+    if(t.id==="toTour"||t.id==="again"||t.id==="menu")adAfterGame();
     if(t.id==="toTour"){const again=g.tour&&tour&&tour.type==="ko"&&(g.winList||[]).length!==1;const mid=g.tour&&g.tour.mid;if(again){tourStart(mid);return}view="setup";tab="tour";g=null;render();window.scrollTo(0,0);return}
     if(t.id==="again"){startGame();return}
     if(t.id==="menu"){view="setup";g=null;render();return}
