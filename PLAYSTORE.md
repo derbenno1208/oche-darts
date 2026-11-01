@@ -42,6 +42,7 @@ Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchs
    - Testen → Geschlossene Tests → Track erstellen → `OcheDarts.aab` hochladen, Versionshinweis eintragen.
    - Tester: mindestens **12 Personen** mit Google-Konto (E-Mail-Liste oder Google-Gruppe). Die Tester müssen über den **Opt-in-Link** zustimmen und die App installieren.
    - Mindestens **14 Tage am Stück** dabeibleiben. Wer zwischendurch austritt, zählt erst nach 14 neuen Tagen.
+   - **Tester finden:** Familie, Freunde, Schule oder Arbeit (Tester müssen keine Dartspieler sein), Dart-Gruppen auf Facebook, Discord oder Reddit (als Dank „Werbung entfernen“ per Gutscheincode verschenken) oder Tester-Plattformen wie **Testers Community: https://www.testerscommunity.com/de**. Vor der Nutzung einer Plattform deren Bedingungen und Kosten prüfen und den Testern eine kleine Aufgabe geben (z. B. „ein 301 gegen den Bot spielen und Rückmeldung geben“), damit der Test für Google echt aussieht und brauchbares Feedback bringt.
    - Danach unter Dashboard → „Zugriff auf Produktion beantragen“. Google stellt dort Fragen zum Test.
 
 5. **Produktion:** Nach der Freigabe eine Produktionsversion mit dem gleichen oder einem neueren App Bundle erstellen und zur Prüfung einreichen. Die erste Prüfung dauert meist einige Tage.
