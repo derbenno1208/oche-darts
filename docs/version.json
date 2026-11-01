@@ -1,11 +1,11 @@
 {
- "version": "1.9",
- "code": 10,
+ "version": "2.0",
+ "code": 11,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
- "date": "2026-10-31",
+ "date": "2026-11-01",
  "notes": [
-  "Update-Hinweis direkt in der App",
-  "Web-Version installierbar und offline nutzbar",
-  "Einladungslink und Sprachumschaltung Deutsch/Englisch"
+  "Läuft mit Android 16 (randlose Darstellung, neue Zurück-Geste)",
+  "Kompaktere Kopfleiste im Spiel, Statistik zweispaltig am Handy",
+  "Vorbereitung für den Google Play Store"
  ]
 }

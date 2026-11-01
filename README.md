@@ -15,18 +15,26 @@ Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-C
 | `docs/` | Web-Version für GitHub Pages, erzeugt mit `python3 tools/build_web.py` |
 | `tests/` | Browser-Tests mit Playwright |
 
-## APK bauen
+## App bauen
 
-Voraussetzungen: Java (JDK 17 oder neuer), Python 3, Android SDK mit `platforms/android-34` und `build-tools 34`, dazu D8 aus R8 8.5 als `r8.jar`.
+Voraussetzungen: Java (JDK 17 oder neuer), Python 3 und ein Ordner mit den Android-Werkzeugen:
+
+| Pfad im SDK-Ordner | Inhalt |
+|---|---|
+| `bt36/android-16/` | Build-Tools 36.1 (`aapt2`, `zipalign`, `apksigner`) |
+| `pf36/android-36/android.jar` | Plattform Android 16 (API 36) |
+| `r8.jar` | D8/R8 8.5 |
+| `bundletool.jar` | bundletool 1.17 (`bundletool-all`) |
 
 ```bash
 cd android
-SDK=/pfad/zum/android-sdk ./build.sh
+SDK=/pfad/zum/sdk VERSION_CODE=11 VERSION_NAME=2.0 ./build.sh              # APK für GitHub (mit Update-Hinweis)
+SDK=/pfad/zum/sdk VERSION_CODE=11 VERSION_NAME=2.0 FLAVOR=play ./build.sh  # App Bundle für Google Play
 ```
 
-Das Skript erwartet `$SDK/bt/android-14` (Build-Tools), `$SDK/pf/android-34/android.jar` und `$SDK/r8.jar`. Die fertige APK landet als `OcheDarts.apk` im Hauptordner.
+Ergebnis: `OcheDarts.apk` bzw. `OcheDarts.aab` im Hauptordner. Die Play-Fassung hat keinen eigenen Update-Hinweis (Play-Richtlinie). Wie die App in den Play Store kommt, steht in [PLAYSTORE.md](PLAYSTORE.md); die Store-Grafiken erzeugt `node tools/store_assets.js` nach `store/`.
 
-**Signierschlüssel:** `android/oche-release.jks` gehört nicht ins Repository. Lege die Datei aus deinem Backup in den Ordner `android/`, sonst erzeugt das Skript einen neuen Schlüssel, und die neue APK lässt sich nicht mehr über die alte installieren.
+**Signierschlüssel:** `android/oche-release.jks` gehört nicht ins Repository. Lege die Datei aus deinem Backup in den Ordner `android/`, sonst erzeugt das Skript einen neuen Schlüssel, und neue Versionen lassen sich nicht mehr über die alte installieren bzw. nicht mehr in den Play Store hochladen.
 
 ## Web-Version und Einladungslinks
 

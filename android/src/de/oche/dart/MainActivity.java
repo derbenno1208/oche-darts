@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.widget.FrameLayout;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +43,7 @@ public class MainActivity extends Activity {
     PermissionRequest pendingPermission;
     ValueCallback<Uri[]> fileCallback;
     String pendingJoin;
+    FrameLayout root;
     boolean pageReady = false;
 
     @Override
@@ -46,7 +52,14 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         web = new WebView(this);
         web.setBackgroundColor(Color.parseColor("#0d1512"));
-        setContentView(web);
+        // Randloses Display (Android 15+): Inhalt um Status-, Navigationsleiste und Tastatur einrücken
+        root = new FrameLayout(this);
+        root.setBackgroundColor(Color.parseColor("#0d1512"));
+        root.addView(web, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        root.setOnApplyWindowInsetsListener(new InsetsListener());
+        setContentView(root);
+        if (Build.VERSION.SDK_INT >= 33)
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new BackInvoked());
 
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
@@ -55,7 +68,10 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(true);
-        s.setUserAgentString(s.getUserAgentString() + " OcheApp/1.1");
+        String ver = "";
+        try { ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception ignored) { }
+        boolean play = getResources().getBoolean(R.bool.play_store);
+        s.setUserAgentString(s.getUserAgentString() + " OcheApp/" + ver + (play ? " Play" : ""));
 
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new Chrome());
@@ -220,15 +236,43 @@ public class MainActivity extends Activity {
         }
     }
 
+    class InsetsListener implements View.OnApplyWindowInsetsListener {
+        @Override
+        public WindowInsets onApplyWindowInsets(View v, WindowInsets in) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets i = in.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.ime() | WindowInsets.Type.displayCutout());
+                v.setPadding(i.left, i.top, i.right, i.bottom);
+            } else {
+                v.setPadding(in.getSystemWindowInsetLeft(), in.getSystemWindowInsetTop(), in.getSystemWindowInsetRight(), in.getSystemWindowInsetBottom());
+            }
+            return in;
+        }
+    }
+
+    /* Zurück-Geste ab Android 13 (ab Android 16 Pflicht) */
+    class BackInvoked implements OnBackInvokedCallback {
+        @Override
+        public void onBackInvoked() { handleBack(); }
+    }
+
+    void handleBack() {
+        web.evaluateJavascript("(window.ocheBack&&window.ocheBack())?'y':'n'", new BackCallback());
+    }
+
     class BarsTask implements Runnable {
         final boolean light;
         BarsTask(boolean l) { light = l; }
         @Override
         public void run() {
             int c = Color.parseColor(light ? "#eef1ec" : "#0d1512");
-            getWindow().setStatusBarColor(c);
-            getWindow().setNavigationBarColor(c);
+            if (Build.VERSION.SDK_INT < 35) { getWindow().setStatusBarColor(c); getWindow().setNavigationBarColor(c); }
             web.setBackgroundColor(c);
+            if (root != null) root.setBackgroundColor(c);
+            if (Build.VERSION.SDK_INT >= 30 && getWindow().getInsetsController() != null) {
+                int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+                getWindow().getInsetsController().setSystemBarsAppearance(light ? mask : 0, mask);
+                return;
+            }
             View d = getWindow().getDecorView();
             int f = d.getSystemUiVisibility();
             if (light) { f |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; if (Build.VERSION.SDK_INT >= 26) f |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; }
@@ -318,9 +362,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onBackPressed() {
-        web.evaluateJavascript("(window.ocheBack&&window.ocheBack())?'y':'n'", new BackCallback());
-    }
+    public void onBackPressed() { handleBack(); }
 
     @Override
     protected void onSaveInstanceState(Bundle out) {

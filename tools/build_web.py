@@ -52,4 +52,5 @@ if os.path.exists(apk): shutil.copy(apk, os.path.join(OUT, "OcheDarts.apk"))
 json.dump({"version": version, "code": code, "apk": SITE + "OcheDarts.apk", "date": datetime.date.today().isoformat(), "notes": notes},
           open(os.path.join(OUT, "version.json"), "w"), ensure_ascii=False, indent=1)
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
+for f in os.listdir(os.path.join(R, "web")): shutil.copy(os.path.join(R, "web", f), OUT)  # z. B. Datenschutzerklärung
 print("docs/ gebaut:", sorted(os.listdir(OUT)))

@@ -220,7 +220,8 @@ kbd{font-family:var(--f-label);background:var(--panel2);border:1px solid var(--l
 .profbtn small{color:var(--muted);font-weight:500;font-size:12px}
 .profbtn[aria-selected="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 .profhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.profhead h2{margin-right:auto}
-.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px}
+@media (max-width:480px){.narrow-hide{display:none}}
 .kpi{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .kpi b{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
 .chartwrap{position:relative;width:100%;max-width:760px}
@@ -389,7 +390,8 @@ const COLORS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a
 const BOTS=[{l:"Mensch"},{l:"Bot · Anfänger",s:41.5},{l:"Bot · Hobby",s:26.5},{l:"Bot · Kneipe",s:18.5},{l:"Bot · Liga",s:14.3},{l:"Bot · Profi",s:10},{l:"Bot · Weltklasse",s:7}];
 const BOTAVG=["","Ø 20–30","Ø 30–40","Ø 40–50","Ø 50–65","Ø 65–85","Ø 85–105"];
 const IS_APP=/OcheApp/.test(navigator.userAgent);
-const OCHE_VERSION="1.9";
+const OCHE_VERSION="2.0";
+const IS_PLAY=/OcheApp\/\S*\s+Play\b/.test(navigator.userAgent);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const val=d=>d.tot!=null?d.tot:d.n*d.m;
@@ -1238,7 +1240,7 @@ const EN={
 "Bot · Anfänger":"Bot · Beginner","Bot · Hobby":"Bot · Casual","Bot · Kneipe":"Bot · Pub","Bot · Liga":"Bot · League","Bot · Profi":"Bot · Pro","Bot · Weltklasse":"Bot · World class",
 "Anfänger":"Beginner","Hobby":"Casual","Kneipe":"Pub","Profi":"Pro","Weltklasse":"World class",
 "Letzte Runde":"Last round","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
-"Nach Updates suchen":"Check for updates","Die App prüft regelmäßig auf neue Versionen.":"The app checks for new versions regularly.","Update-Prüfung nicht möglich. Internet prüfen.":"Could not check for updates. Check your internet.",
+"Nach Updates suchen":"Check for updates","Updates kommen automatisch über den Play Store.":"Updates come automatically through the Play Store.","Die App prüft regelmäßig auf neue Versionen.":"The app checks for new versions regularly.","Update-Prüfung nicht möglich. Internet prüfen.":"Could not check for updates. Check your internet.",
 "Web-Version mit Online-Spiel":"Web version with online play","Installierbar, offline nutzbar und mit Online-Modus":"Installable, works offline and has online mode","Öffnen":"Open","Als App installieren":"Install as app",
 "Oche ist auf diesem Gerät installiert.":"Oche is installed on this device.","Symbol auf dem Startbildschirm, startet ohne Browserleiste und funktioniert offline.":"Icon on the home screen, starts without the browser bar and works offline.",
 "Auf dem iPhone: unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“.":"On iPhone: tap “Share” at the bottom, then “Add to Home Screen”.","Im Browsermenü „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.":"Choose “Install app” or “Add to Home screen” in the browser menu.",
@@ -1899,7 +1901,7 @@ let update=null,installEvt=null;
 const appVersion=()=>{try{if(window.AndroidTTS&&window.AndroidTTS.appVersion)return window.AndroidTTS.appVersion()}catch(e){}return OCHE_VERSION};
 const cmpVer=(a,b)=>{const x=String(a).split(".").map(Number),y=String(b).split(".").map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d>0?1:-1}return 0};
 async function checkUpdate(manual){
-  if(!IS_APP)return;
+  if(!IS_APP||IS_PLAY)return;
   try{
     const r=await fetch(SITE+"version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;const v=await r.json();
     store.set("oche.updchk",Date.now());
@@ -1918,6 +1920,7 @@ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=
 window.addEventListener("appinstalled",()=>{installEvt=null;toastLocal("Oche ist installiert","green")});
 const isStandalone=()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}};
 function renderInstallRow(){
+  if(IS_APP&&IS_PLAY)return`<div class="setrow"><div class="rectxt"><b>App-Version ${esc(appVersion())}</b><span>Updates kommen automatisch über den Play Store.</span></div></div>`;
   if(IS_APP)return`<div class="setrow"><div class="rectxt"><b>App-Version ${esc(appVersion())}</b><span>${update?`Version ${esc(update.version)} ist verfügbar`:"Die App prüft regelmäßig auf neue Versionen."}</span></div><div class="seg"><button id="updCheck">Nach Updates suchen</button></div></div>`;
   if(!IS_WEB_SITE)return`<div class="setrow"><div class="rectxt"><b>Web-Version mit Online-Spiel</b><span>Installierbar, offline nutzbar und mit Online-Modus</span></div><a class="btn" href="${SITE}" target="_blank" rel="noopener">Öffnen</a></div>`;
   const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -2018,7 +2021,7 @@ function input(d,pos){
 
 /* ================= Rendering ================= */
 const logo=`<svg viewBox="-20 -20 40 40" aria-hidden="true"><circle r="19" fill="var(--b-dark)" stroke="var(--b-wire)" stroke-width="1"/><circle r="15" fill="none" stroke="var(--b-red)" stroke-width="3"/><circle r="9" fill="none" stroke="var(--b-green)" stroke-width="2.5"/><circle r="3.2" fill="var(--b-red)"/></svg>`;
-function topbar(extra,home){return`<header class="top"><div class="brand">${logo}<h1>Oche<span>.</span></h1></div><div class="tools"><button class="btn small ghost langbtn" id="langBtn" aria-label="${lang==="en"?"Sprache: Englisch, auf Deutsch umstellen":"Sprache: Deutsch, auf Englisch umstellen"}" title="Sprache / Language">${lang==="en"?"EN":"DE"}</button>${net.code&&net.role?`<span class="badge ${net.role==="reconnecting"?"gold":"blue"}">Raum ${net.code}${net.role==="host"?" · Host":""}</span>`:""}${extra||""}${home?"":`<button class="btn small ghost" id="caller" aria-pressed="${caller!=="off"}" title="Caller-Einstellungen">Caller: ${caller==="off"?"aus":caller.startsWith("pro")?"Profi":"Handy"}</button><button class="btn small ghost" id="sound" aria-pressed="${sound}">${sound?"Klick an":"Klick aus"}</button>`}</div></header>`}
+function topbar(extra,home){return`<header class="top"><div class="brand">${logo}<h1>Oche<span>.</span></h1></div><div class="tools"><button class="btn small ghost langbtn" id="langBtn" aria-label="${lang==="en"?"Sprache: Englisch, auf Deutsch umstellen":"Sprache: Deutsch, auf Englisch umstellen"}" title="Sprache / Language">${lang==="en"?"EN":"DE"}</button>${net.code&&net.role?`<span class="badge ${net.role==="reconnecting"?"gold":"blue"}">Raum ${net.code}${net.role==="host"?" · Host":""}</span>`:""}${extra||""}${home?"":`<button class="btn small ghost narrow-hide" id="caller" aria-pressed="${caller!=="off"}" title="Caller-Einstellungen">Caller: ${caller==="off"?"aus":caller.startsWith("pro")?"Profi":"Handy"}</button><button class="btn small ghost narrow-hide" id="sound" aria-pressed="${sound}">${sound?"Klick an":"Klick aus"}</button>`}</div></header>`}
 function typeLabel(p){return p.remote?'<span class="badge blue">Online</span>':p.bot?`<span class="badge gold">${BOTS[p.bot].l.replace("Bot · ","Bot ")}</span>`:""}
 
 function renderOnlineCard(){
