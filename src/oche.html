@@ -366,6 +366,11 @@ body.tv .last{font-size:clamp(14px,1.6vw,24px)}
 .pulse{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:pl 1s ease-in-out infinite;flex:none}
 @keyframes pl{50%{opacity:.25;transform:scale(.7)}}
 .lobby{max-width:560px;width:100%;margin:0 auto}
+.hoststart{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.hoststart .setrow{border-top:0;padding-top:0}
+.hplayers{display:flex;flex-wrap:wrap;gap:6px}
+.hp{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-weight:600;font-size:14px}
+.hp i{width:9px;height:9px;border-radius:50%}.hp em{font-style:normal;font-size:12px;color:var(--muted)}.hp em.on{color:var(--green-t)}.hp em.off{color:var(--red-t)}
 .update{border-color:var(--green);gap:10px}.update .btn.primary{justify-content:center;text-decoration:none}.updnotes{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
 .langbtn{font-family:var(--f-label);letter-spacing:.08em;min-width:44px;justify-content:center}
 .invite{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:11px;border:1px solid var(--gold);background:var(--bg)}.invite span{color:var(--muted);font-size:14px}.invite a{align-self:flex-start;text-decoration:none}
@@ -390,7 +395,7 @@ const COLORS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a
 const BOTS=[{l:"Mensch"},{l:"Bot · Anfänger",s:41.5},{l:"Bot · Hobby",s:26.5},{l:"Bot · Kneipe",s:18.5},{l:"Bot · Liga",s:14.3},{l:"Bot · Profi",s:10},{l:"Bot · Weltklasse",s:7}];
 const BOTAVG=["","Ø 20–30","Ø 30–40","Ø 40–50","Ø 50–65","Ø 65–85","Ø 85–105"];
 const IS_APP=/OcheApp/.test(navigator.userAgent);
-const OCHE_VERSION="2.0";
+const OCHE_VERSION="2.1";
 const IS_PLAY=/OcheApp\/\S*\s+Play\b/.test(navigator.userAgent);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1239,7 +1244,7 @@ const EN={
 /* Bots */
 "Bot · Anfänger":"Bot · Beginner","Bot · Hobby":"Bot · Casual","Bot · Kneipe":"Bot · Pub","Bot · Liga":"Bot · League","Bot · Profi":"Bot · Pro","Bot · Weltklasse":"Bot · World class",
 "Anfänger":"Beginner","Hobby":"Casual","Kneipe":"Pub","Profi":"Pro","Weltklasse":"World class",
-"Letzte Runde":"Last round","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
+"Letzte Runde":"Last round","online":"online","1 Online-Spieler ist gerade getrennt.":"1 online player is currently disconnected.","Du kannst trotzdem starten und für sie eintragen.":"You can start anyway and enter their darts.","Später":"Later","Herunterladen":"Download","Nach dem Download die Datei öffnen und „Aktualisieren“ tippen. Deine Daten bleiben erhalten.":"After downloading, open the file and tap “Update”. Your data is kept.",
 "Nach Updates suchen":"Check for updates","Updates kommen automatisch über den Play Store.":"Updates come automatically through the Play Store.","Die App prüft regelmäßig auf neue Versionen.":"The app checks for new versions regularly.","Update-Prüfung nicht möglich. Internet prüfen.":"Could not check for updates. Check your internet.",
 "Web-Version mit Online-Spiel":"Web version with online play","Installierbar, offline nutzbar und mit Online-Modus":"Installable, works offline and has online mode","Öffnen":"Open","Als App installieren":"Install as app",
 "Oche ist auf diesem Gerät installiert.":"Oche is installed on this device.","Symbol auf dem Startbildschirm, startet ohne Browserleiste und funktioniert offline.":"Icon on the home screen, starts without the browser bar and works offline.",
@@ -1272,7 +1277,7 @@ const EN_PAT=[
  [/^Sicherung vom (.+) mit (\d+) gespeicherten Spielen\. (.+)$/,(m,a,b)=>`Backup from ${a} with ${b} saved games. All current data in the app (stats, settings, tournament, recordings) will be replaced.`],
  [/^Bitte eine Zahl von (\d+) bis (\d+)$/,"Please enter a number from $1 to $2"],[/^Gotcha! (.+) auf 0$/,"Gotcha! $1 back to zero"],[/^Leg (.+)$/,"Leg $1"],[/^Set (.+)$/,"Set $1"],[/^Erfolg: (.+) \((.+)\)$/,(m,a,b)=>`Achievement: ${tr(a)} (${b})`],
  [/^(.+): (.+)$/,(m,a,b)=>{const t=tr(b);return t===b?m:`${a}: ${t}`}],[/^Ziel (\d+)$/,"Target $1"],[/^(\d+) (Ziel)$/,"$1 target"],[/^Online-Spiel funktioniert in der App und in der Web-Version unter (.+)\.$/,"Online play works in the app and in the web version at $1."],
- [/^Online-Spiel$/,"Online play"],[/^Neue Version (.+)$/,"New version $1"],[/^Version (.+) ist verfügbar$/,"Version $1 is available"],[/^Du hast die neueste Version \((.+)\)$/,"You have the latest version ($1)"],[/^App-Version (.+)$/,"App version $1"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
+ [/^Online-Spiel$/,"Online play"],[/^(\d+) Online-Spieler sind gerade getrennt\.$/,"$1 online players are currently disconnected."],[/^Neue Version (.+)$/,"New version $1"],[/^Version (.+) ist verfügbar$/,"Version $1 is available"],[/^Du hast die neueste Version \((.+)\)$/,"You have the latest version ($1)"],[/^App-Version (.+)$/,"App version $1"],[/^(\d+) von (\d+)$/,"$1 of $2"],[/^Leg (\d+) · Runde (\d+)$/,"Leg $1 · round $2"]
 ];
 function tr(t){
   if(lang!=="en"||!t)return t;
@@ -2024,6 +2029,17 @@ const logo=`<svg viewBox="-20 -20 40 40" aria-hidden="true"><circle r="19" fill=
 function topbar(extra,home){return`<header class="top"><div class="brand">${logo}<h1>Oche<span>.</span></h1></div><div class="tools"><button class="btn small ghost langbtn" id="langBtn" aria-label="${lang==="en"?"Sprache: Englisch, auf Deutsch umstellen":"Sprache: Deutsch, auf Englisch umstellen"}" title="Sprache / Language">${lang==="en"?"EN":"DE"}</button>${net.code&&net.role?`<span class="badge ${net.role==="reconnecting"?"gold":"blue"}">Raum ${net.code}${net.role==="host"?" · Host":""}</span>`:""}${extra||""}${home?"":`<button class="btn small ghost narrow-hide" id="caller" aria-pressed="${caller!=="off"}" title="Caller-Einstellungen">Caller: ${caller==="off"?"aus":caller.startsWith("pro")?"Profi":"Handy"}</button><button class="btn small ghost narrow-hide" id="sound" aria-pressed="${sound}">${sound?"Klick an":"Klick aus"}</button>`}</div></header>`}
 function typeLabel(p){return p.remote?'<span class="badge blue">Online</span>':p.bot?`<span class="badge gold">${BOTS[p.bot].l.replace("Bot · ","Bot ")}</span>`:""}
 
+/* Spielstart direkt im Online-Bereich (für den Host) */
+function renderHostStart(){
+  const M=MODES[cfg.mode],o=optsFor(cfg.mode),min=M.minPlayers||1,max=M.maxPlayers||8,bad=cfg.players.length<min||cfg.players.length>max;
+  const waiting=cfg.players.filter(p=>p.remote&&!net.conns[p.remote]).length;
+  return`<div class="hoststart">
+    <div class="setrow"><div class="rectxt"><b>${M.name}</b><span>${optSummary(M,o)||"Standardregeln"}</span></div><button class="btn small" data-tab="play">Ändern</button></div>
+    <div class="hplayers">${cfg.players.map((p,i)=>`<span class="hp"><i style="background:${COLORS[i%8]}"></i>${esc(p.name||"Spieler "+(i+1))}${p.remote?`<em class="${net.conns[p.remote]?"on":"off"}">${net.conns[p.remote]?"online":"getrennt"}</em>`:p.bot?'<em>Bot</em>':""}</span>`).join("")}</div>
+    ${bad?`<p class="rules" style="border-color:var(--red)">${M.name} ${min===max?`ist für genau ${min} Spieler`:cfg.players.length<min?`braucht mindestens ${min} Spieler`:`erlaubt höchstens ${max} Spieler`}.</p>`:waiting?`<div class="status">${waiting===1?"1 Online-Spieler ist gerade getrennt.":waiting+" Online-Spieler sind gerade getrennt."} Du kannst trotzdem starten und für sie eintragen.</div>`:""}
+    <button class="btn primary start" id="go" ${bad?"disabled":""}>${M.name} starten</button>
+  </div>`;
+}
 function renderOnlineCard(){
   let body;
   if(net.role==="host"){
@@ -2032,6 +2048,7 @@ function renderOnlineCard(){
     <p class="rules">Teile die Einladung: Wer auf den Link tippt, ist sofort drin, mit App oder im Browser. Alternativ unter „Beitreten“ den Code eingeben. ${guests.length?`${on} von ${guests.length} Online-Spielern verbunden.`:"Noch niemand beigetreten."}${sp?` ${sp} Zuschauer.`:""}</p>
     <div class="netrow"><button class="btn primary" id="share">Einladung teilen</button><button class="btn" id="copyLink">Link kopieren</button><button class="btn" id="closeRoom">Raum schließen</button></div>
     <div class="status">Fällt dein Handy aus, übernimmt automatisch ein anderes Gerät den Raum.</div>`;
+    body+=renderHostStart();
   }else if(net.role==="connecting"||net.role==="reconnecting"){
     body=`<div class="waitmsg"><span class="pulse"></span>${esc(net.status||"Verbinde …")}</div><div class="netrow"><button class="btn" id="closeRoom">Abbrechen</button></div>`;
   }else{
