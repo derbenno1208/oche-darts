@@ -60,6 +60,7 @@ public class MainActivity extends Activity {
         root.addView(web, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         root.setOnApplyWindowInsetsListener(new InsetsListener());
         setContentView(root);
+        enableEdgeToEdge();
         if (Build.VERSION.SDK_INT >= 33)
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new BackInvoked());
 
@@ -242,6 +243,14 @@ public class MainActivity extends Activity {
         }
     }
 
+    /* Wie EdgeToEdge.enable(): auch unter Android 14 und älter randlos zeichnen, Leisten durchsichtig, Abstände per InsetsListener */
+    void enableEdgeToEdge() {
+        if (Build.VERSION.SDK_INT >= 30) getWindow().setDecorFitsSystemWindows(false);
+        else getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        if (Build.VERSION.SDK_INT < 35) { getWindow().setStatusBarColor(Color.TRANSPARENT); getWindow().setNavigationBarColor(Color.TRANSPARENT); }
+        if (Build.VERSION.SDK_INT >= 29) { getWindow().setStatusBarContrastEnforced(false); getWindow().setNavigationBarContrastEnforced(false); }
+    }
+
     class InsetsListener implements View.OnApplyWindowInsetsListener {
         @Override
         public WindowInsets onApplyWindowInsets(View v, WindowInsets in) {
@@ -271,7 +280,6 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             int c = Color.parseColor(light ? "#eef1ec" : "#0d1512");
-            if (Build.VERSION.SDK_INT < 35) { getWindow().setStatusBarColor(c); getWindow().setNavigationBarColor(c); }
             web.setBackgroundColor(c);
             if (root != null) root.setBackgroundColor(c);
             if (Build.VERSION.SDK_INT >= 30 && getWindow().getInsetsController() != null) {
@@ -361,6 +369,39 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void speechStop() { runOnUiThread(() -> speech.stop()); }
+
+        /* Ergebnis als Bild teilen */
+        @JavascriptInterface
+        public void shareImage(String b64, String text) {
+            try {
+                byte[] png = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                java.io.File dir = new java.io.File(getCacheDir(), "share");
+                dir.mkdirs();
+                java.io.File f = new java.io.File(dir, "oche-darts.png");
+                try (java.io.FileOutputStream o = new java.io.FileOutputStream(f)) { o.write(png); }
+                Uri uri = Uri.parse("content://" + ShareProvider.AUTH + "/oche-darts.png");
+                runOnUiThread(() -> {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("image/png");
+                    i.putExtra(Intent.EXTRA_STREAM, uri);
+                    if (text != null) i.putExtra(Intent.EXTRA_TEXT, text);
+                    i.setClipData(android.content.ClipData.newRawUri("", uri));
+                    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    try { startActivity(Intent.createChooser(i, null)); } catch (Exception ignored) { }
+                });
+            } catch (Exception ignored) { }
+        }
+
+        /* Tägliche Erinnerung */
+        @JavascriptInterface
+        public void setReminder(int hour, int minute, String title, String text) {
+            Reminder.set(MainActivity.this, hour, minute, title, text);
+            if (hour >= 0 && Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED)
+                runOnUiThread(() -> requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 15));
+        }
+
+        @JavascriptInterface
+        public void markPlayed(String day) { Reminder.markPlayed(MainActivity.this, day); }
 
         @JavascriptInterface
         public void askReview() { runOnUiThread(() -> mon.askReview()); }

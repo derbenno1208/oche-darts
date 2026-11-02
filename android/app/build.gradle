@@ -41,7 +41,9 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
     }
@@ -59,4 +61,6 @@ dependencies {
     playImplementation "com.google.android.ump:user-messaging-platform:3.2.0"
     playImplementation "com.android.billingclient:billing:8.0.0"
     playImplementation "com.google.android.play:review:2.0.2"
+    // neuere Fassung statt der veralteten 1.1.0, die über die Google-Bibliotheken hereinkommt
+    playImplementation "androidx.fragment:fragment:1.8.5"
 }
