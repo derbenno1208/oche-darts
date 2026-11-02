@@ -9,6 +9,7 @@ public class Monetization {
     public void init() { }
     public void showAfterGame() { }
     public void showPrivacyOptions() { }
+    public void askReview() { }
     public void buy() { }
     public String stateJson() { return "{\"enabled\":false}"; }
 }

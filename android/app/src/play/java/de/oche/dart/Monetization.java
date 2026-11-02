@@ -26,6 +26,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.UserMessagingPlatform;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +97,16 @@ public class Monetization {
             @Override public void onAdFailedToShowFullScreenContent(@NonNull AdError e) { loadAd(); }
         });
         ad.show(act);
+    }
+
+    /** Googles Bewertungsfenster (In-App Review). Google entscheidet selbst, ob und wie oft es erscheint. */
+    public void askReview() {
+        try {
+            ReviewManager m = ReviewManagerFactory.create(act);
+            m.requestReviewFlow().addOnCompleteListener(t -> {
+                if (t.isSuccessful()) m.launchReviewFlow(act, t.getResult());
+            });
+        } catch (Exception ignored) { }
     }
 
     public void showPrivacyOptions() {

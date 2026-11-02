@@ -350,6 +350,9 @@ public class MainActivity extends Activity {
         public void buyNoAds() { runOnUiThread(() -> mon.buy()); }
 
         @JavascriptInterface
+        public void askReview() { runOnUiThread(() -> mon.askReview()); }
+
+        @JavascriptInterface
         public void adPrivacy() { runOnUiThread(() -> mon.showPrivacyOptions()); }
 
         @JavascriptInterface

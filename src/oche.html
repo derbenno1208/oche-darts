@@ -932,6 +932,7 @@ function endGame(){
   g.over=true;g.winList=MODES[g.mode].winners(g).map(w=>g.players.indexOf(w));view="result";
   if(net.role!=="guest"){recordGame();tourRecord()}
   render();
+  maybeReview();
   if(g.mode!=="x01"){const w=g.winList.map(i=>g.players[i].name);callEv(w.length===1?{k:"win",name:w[0]}:{k:"draw"})}
 }
 function undo(){
@@ -2052,11 +2053,24 @@ let mon={enabled:false};
 function monRefresh(){try{if(window.AndroidTTS&&window.AndroidTTS.monState)mon=JSON.parse(window.AndroidTTS.monState())}catch(e){}}
 window.ocheMon=st=>{mon=st||{enabled:false};if(view!=="game")render()};
 window.ocheToast=t=>toastLocal(t,"green");
-let lastAd=0;
+let lastAd=0,reviewNow=false;
+/* Bewertung im Play Store: nach einem Sieg eines Spielers auf diesem Gerät, frühestens nach 3 Spielen,
+   höchstens alle 30 Tage und insgesamt 4-mal. Google entscheidet zusätzlich selbst, ob das Fenster erscheint. */
+function maybeReview(){
+  try{
+    if(!mon.enabled||!window.AndroidTTS||!window.AndroidTTS.askReview||!g||g.fast||net.role==="guest")return;
+    const R=store.get("oche.review",{g:0,n:0,t:0});R.g++;
+    const won=(g.winList||[]).length===1&&g.players[g.winList[0]],p=won;
+    const mine=p&&!p.bot&&(!net.role||p.owner===net.token);
+    if(mine&&R.g>=3&&R.n<4&&Date.now()-R.t>30*864e5){R.n++;R.t=Date.now();reviewNow=true;setTimeout(()=>{try{window.AndroidTTS.askReview()}catch(e){}},1800)}
+    store.set("oche.review",R);
+  }catch(e){}
+}
 /* Wird beim Verlassen des Ergebnisbildschirms aufgerufen: höchstens alle 3 Minuten, nie bei Bot-Schnellspielen */
 function adAfterGame(){
   if(!mon.enabled||mon.adsRemoved||!window.AndroidTTS||!window.AndroidTTS.showAd)return;
   if(g&&g.fast)return;
+  if(reviewNow){reviewNow=false;return}
   if(Date.now()-lastAd<180000)return;
   lastAd=Date.now();try{window.AndroidTTS.showAd()}catch(e){}
 }
