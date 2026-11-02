@@ -30,7 +30,7 @@ Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchs
    - **App-Zugriff:** „Alle Funktionen sind ohne besonderen Zugriff verfügbar.“
    - **Anzeigen:** „**Ja**, meine App enthält Anzeigen.“
    - **Werbe-ID:** „Ja, die App verwendet die Werbe-ID“, Zweck: **Werbung oder Marketing**.
-   - **Einstufung des Inhalts (IARC):** Kategorie „Alle anderen App-Typen“. Gewalt, Sexualität, Sprache, Drogen, Glücksspiel: jeweils **Nein**. „Können Nutzer miteinander interagieren oder Inhalte austauschen?“ → **Ja** (im Online-Modus sehen Mitspielende den gewählten Spielernamen). Standortweitergabe: Nein. Digitale Käufe: Nein.
+   - **Einstufung des Inhalts (IARC):** Kategorie „Alle anderen App-Typen“. Gewalt, Sexualität, Sprache, Drogen, Glücksspiel: jeweils **Nein**. „Können Nutzer miteinander interagieren oder Inhalte austauschen?“ → **Ja** (im Online-Modus sehen Mitspielende den gewählten Spielernamen). Standortweitergabe: Nein. Digitale Käufe: **Ja** (Einmalkauf „Werbung entfernen“).
    - **Zielgruppe:** **13 Jahre und älter** (also nicht „für Kinder“, sonst gelten die strengeren Familien-Richtlinien).
    - **Datensicherheit:** siehe eigener Abschnitt unten.
    - **Behörden-Apps, Finanzfunktionen, Gesundheit:** jeweils Nein.
