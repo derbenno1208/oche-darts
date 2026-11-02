@@ -1,12 +1,9 @@
 {
- "version": "2.3",
- "code": 14,
+ "version": "2.4",
+ "code": 15,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
  "date": "2026-11-02",
  "notes": [
-  "Englisch als Standardsprache + Spanisch, Französisch, Italienisch, Niederländisch, Polnisch, Portugiesisch",
-  "Größere Triple- und Double-Felder auf der Scheibe",
-  "Größerer Umschalter für die Eingabe im Spiel",
-  "Eigene Stimme: kompletten Caller selbst einsprechen"
+  "Echte Werbe-IDs in der Play-Version (Web und GitHub-APK unverändert werbefrei)"
  ]
 }
