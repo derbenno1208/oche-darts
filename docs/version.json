@@ -1,10 +1,12 @@
 {
- "version": "2.2",
- "code": 13,
+ "version": "2.3",
+ "code": 14,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
- "date": "2026-11-01",
+ "date": "2026-11-02",
  "notes": [
-  "Online-Spiele direkt im Bereich Online starten",
-  "Neuer Bau mit Gradle"
+  "Englisch als Standardsprache + Spanisch, Französisch, Italienisch, Niederländisch, Polnisch, Portugiesisch",
+  "Größere Triple- und Double-Felder auf der Scheibe",
+  "Größerer Umschalter für die Eingabe im Spiel",
+  "Eigene Stimme: kompletten Caller selbst einsprechen"
  ]
 }

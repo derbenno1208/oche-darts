@@ -20,7 +20,7 @@ Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchs
 
 1. **App erstellen** (Play Console → „App erstellen“)
    - App-Name: `Oche Darts – Dart-Zähler`
-   - Standardsprache: Deutsch (de-DE)
+   - Standardsprache: Englisch (en-US). Danach unter „Store-Präsenz → Übersetzungen“ Deutsch (Texte unten) hinzufügen und für es, fr, it, nl, pl, pt die automatische Übersetzung von Google nutzen – die App selbst spricht diese Sprachen alle.
    - App oder Spiel: **App**
    - Kostenlos
    - Erklärungen zu Richtlinien und Exportbestimmungen bestätigen.

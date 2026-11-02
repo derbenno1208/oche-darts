@@ -1,6 +1,6 @@
 # Oche Darts
 
-Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-Caller, Online-Spiel ohne eigenen Server mit Einladungslink, Turniere (auch online), Statistiken mit Erfolgen und Tagesaufgabe, helles und dunkles Design, Deutsch und Englisch.
+Dart-Zähler für Android und Browser: 12 Spielmodi, Bots in 6 Stärken, Profi-Caller, Online-Spiel ohne eigenen Server mit Einladungslink, Turniere (auch online), Statistiken mit Erfolgen und Tagesaufgabe, helles und dunkles Design, 8 Sprachen (Englisch, Deutsch, Spanisch, Französisch, Italienisch, Niederländisch, Polnisch, Portugiesisch).
 
 **Web-Version:** https://derbenno1208.github.io/oche-darts/ (sobald GitHub Pages aktiviert ist, siehe unten)
 
