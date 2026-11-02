@@ -34,7 +34,7 @@ Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchs
    - **Zielgruppe:** **13 Jahre und älter** (also nicht „für Kinder“, sonst gelten die strengeren Familien-Richtlinien).
    - **Datensicherheit:** siehe eigener Abschnitt unten.
    - **Behörden-Apps, Finanzfunktionen, Gesundheit:** jeweils Nein.
-   - **App-Kategorie:** Sport. **Kontaktdaten:** eine E-Mail-Adresse, die im Store öffentlich angezeigt wird.
+   - **App-Kategorie:** Sport. **Kontaktdaten:** `ochedarts@gmx.de` (wird im Store öffentlich angezeigt), Website `https://derbenno1208.github.io/oche-darts/`.
 
 3. **Store-Eintrag** (Wachstum → Store-Präsenz → Haupteintrag): Texte von unten, Symbol, Vorstellungsgrafik, Screenshots. Unter „Übersetzungen verwalten“ Englisch hinzufügen und die englischen Texte und Bilder eintragen.
 
