@@ -401,6 +401,16 @@ body.tv .last{font-size:clamp(14px,1.6vw,24px)}
 .stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));grid-auto-rows:30px;flex-shrink:0;gap:4px;height:180px;overflow:auto;margin:10px 0;padding:2px}
 .stgrid button{border:1px solid var(--line);background:var(--bg);border-radius:7px;padding:5px 2px;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stgrid button.ok{background:color-mix(in srgb,var(--green,#2e9e5b) 22%,var(--bg));border-color:var(--green,#2e9e5b)}.stgrid button.cur{outline:2px solid var(--gold);outline-offset:1px}
+.avbtn{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 22%,var(--bg));color:var(--fg);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.av{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 22%,var(--bg));font-size:18px;vertical-align:middle}.av.big{width:48px;height:48px;font-size:26px}
+.pav{font-style:normal;margin-right:6px;font-size:1.05em;line-height:1}
+.colgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.colbtn{aspect-ratio:1;border-radius:50%;border:3px solid transparent;min-height:36px}.colbtn[aria-pressed="true"]{border-color:var(--fg);box-shadow:0 0 0 2px var(--bg) inset}
+.avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}.avgrid button{aspect-ratio:1;border:1px solid var(--line);background:var(--bg);border-radius:10px;font-size:22px;font-weight:700}.avgrid button[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.mleg{margin-top:14px}.stats.mtab{min-width:0}.mlh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.mtab td,.mtab th{text-align:center;padding:4px 6px}.mtab td.rest{color:var(--muted);font-size:.9em}.mtab td.bust{color:var(--red-t,var(--red));font-weight:700}.mtab td.fin{color:var(--green);font-weight:700}.mtab td.ton{color:var(--gold);font-weight:700}.mtab tfoot td{font-weight:600;font-size:.9em}
+.plan .pdots{display:flex;gap:6px;margin:8px 0 2px}.plan .pdots i{flex:1;height:6px;border-radius:3px;background:var(--line)}.plan .pdots i.on{background:var(--green)}.plan .pdots i.cur{background:var(--gold)}
+.planopt{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-top:10px}.planopt ol{margin:8px 0 0 20px;font-size:.92em;line-height:1.45}.planopt .dhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.micbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--fg);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.micbtn[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--red) 30%,transparent)}
+.voicebar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--red) 12%,var(--bg));font-size:.95em}
 .recbtns{display:flex;gap:6px;align-items:center}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}.chk input{width:18px;height:18px;accent-color:var(--red)}
 @media (max-width:560px){.modes{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mode{padding:10px 11px}.mode small{display:none}.mode .tag{position:static;order:-1}.mode b{font-size:19px}}
@@ -419,7 +429,7 @@ const COLORS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a
 const BOTS=[{l:"Mensch"},{l:"Bot · Anfänger",s:41.5},{l:"Bot · Hobby",s:26.5},{l:"Bot · Kneipe",s:18.5},{l:"Bot · Liga",s:14.3},{l:"Bot · Profi",s:10},{l:"Bot · Weltklasse",s:7}];
 const BOTAVG=["","Ø 20–30","Ø 30–40","Ø 40–50","Ø 50–65","Ø 65–85","Ø 85–105"];
 const IS_APP=/OcheApp/.test(navigator.userAgent);
-const OCHE_VERSION="2.4";
+const OCHE_VERSION="2.5";
 const IS_PLAY=/OcheApp\/\S*\s+Play\b/.test(navigator.userAgent);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -887,7 +897,7 @@ function canInput(p){
 /* ================= Engine ================= */
 function startGame(o){
   const mode=o?o.mode:cfg.mode,M=MODES[mode],list=o?o.players:cfg.players;
-  const ps=list.map((p,i)=>({name:(p.name||"").trim()||defName(i+1),color:COLORS[i%COLORS.length],bot:p.remote?0:(p.bot|0),owner:p.remote||(net.role==="host"?net.token:null),darts:0,hits:0,turns:0,out:false}));
+  const ps=list.map((p,i)=>({name:(p.name||"").trim()||defName(i+1),color:profColor(p,i),av:!p.bot&&!p.remote&&(profGet(p.name)||{}).av||null,bot:p.remote?0:(p.bot|0),owner:p.remote||(net.role==="host"?net.token:null),darts:0,hits:0,turns:0,out:false}));
   g={id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),mode,opts:o?o.opts:optsFor(mode),tour:o&&o.tour||null,fast:!!(o&&o.tour&&ps.every(p=>p.bot)),players:ps,cur:0,start:0,round:1,turn:[],last:null,over:false,winIdx:null,winList:null};
   M.init(g);beginTurn();hist=[];mult=1;sumBuf="";view="game";sayStop();callEv({k:"gameon",name:ps[g.cur].name});callRequire();render();
 }
@@ -910,6 +920,7 @@ function finishTurn(r,win){
   p.turns++;
   const ts=M.turnEnd?M.turnEnd(g,p,r):g.turn.reduce((a,d)=>a+val(d),0);
   g.last={name:p.name,color:p.color,darts:g.turn.map(d=>d.tot!=null?{tot:d.tot,n:0,m:0}:{n:d.n,m:d.m,pos:d.pos}),total:ts,bust:!!r.bust};
+  logTurn(p,r,ts,win);
   if(r.toast)toast(...r.toast);
   callTurn(g,p,r,ts,win);
   if(win){if(r.call==="shanghai")g.shHit=true;if(g.winIdx==null&&["shanghai","cricket","gotcha"].includes(g.mode))g.winIdx=g.cur;endGame();return}
@@ -943,6 +954,7 @@ function endGame(){
   g.over=true;g.winList=MODES[g.mode].winners(g).map(w=>g.players.indexOf(w));view="result";
   if(net.role!=="guest"){recordGame();tourRecord()}
   render();
+  maybeReview();
   if(g.mode!=="x01"){const w=g.winList.map(i=>g.players[i].name);callEv(w.length===1?{k:"win",name:w[0]}:{k:"draw"})}
 }
 function undo(){
@@ -1157,7 +1169,7 @@ function studioHTML(){
   <div class="opt"><span class="label">Automatisch weiter</span><div class="seg"><button data-stauto="1" aria-pressed="${S.auto}">An</button><button data-stauto="0" aria-pressed="${!S.auto}">Aus</button></div></div>
   <div class="stgrid" data-notr>${OWN_ITEMS.map((x,i)=>`<button class="${OWN.bufs[x.k]?"ok":""}${i===S.i?" cur":""}" data-sti="${i}" title="${esc(x.en)}">${x.num?x.de:esc(x.en.replace(/[!…]/g,"").replace(/^Game shot, and the /,"GS "))}</button>`).join("")}</div>
   <div class="row"><button class="btn" data-st="del" ${has?"":"disabled"}>Diese Aufnahme löschen</button><button class="btn${S.sure?" primary":""}" data-st="clear" ${n?"":"disabled"}>${S.sure?"Wirklich alle löschen?":"Alle löschen"}</button><button class="btn primary" data-st="done">Fertig</button></div>
-  <p class="foot" style="text-align:left">Die Aufnahmen bleiben nur auf diesem Gerät und sind nicht im Backup enthalten.</p></div>`;
+  <p class="foot" style="text-align:left">Die Aufnahmen bleiben auf diesem Gerät und sind im Backup enthalten.</p></div>`;
 }
 function studioRender(){if(studio&&studio.o)studio.o.innerHTML=studioHTML()}
 function studioStopRec(save){
@@ -1308,6 +1320,9 @@ pt:["+ Jogador","+ Bot","Cancelar","A seguir","Ligado","Desligado","Auto","Inici
 /* Muster: [Regex, en, es, fr, it, nl, pl, pt]  ·  $1 = Gruppe roh, @1 = Gruppe übersetzt,
    {1|ein|mehr} bzw. {1|1|2-4|5+} (Polnisch) = Plural nach Gruppe 1. Ein einzelner Text gilt für alle Sprachen. */
 const PAT=[
+ [/^Einheit (\d+) von 7 geschafft$/,"Session $1 of 7 done","Sesión $1 de 7 completada","Séance $1 sur 7 réussie","Sessione $1 di 7 completata","Sessie $1 van 7 gehaald","Sesja $1 z 7 ukończona","Sessão $1 de 7 concluída"],
+ [/^Einheit (\d+) von 7$/,"Session $1 of 7","Sesión $1 de 7","Séance $1 sur 7","Sessione $1 di 7","Sessie $1 van 7","Sesja $1 z 7","Sessão $1 de 7"],
+ [/^Farbe (#\w+)$/,"Colour $1","Color $1","Couleur $1","Colore $1","Kleur $1","Kolor $1","Cor $1"],
  [/^Eigene Stimme: (\d+) von (\d+) Ansagen aufgenommen, der Rest kommt von der Profi-Stimme\.$/,"Own voice: $1 of $2 calls recorded, the rest comes from the pro voice.","Voz propia: $1 de $2 anuncios grabados, el resto lo pone la voz pro.","Ma voix : $1 annonces sur $2 enregistrées, le reste vient de la voix pro.","La tua voce: $1 di $2 annunci registrati, il resto è della voce pro.","Eigen stem: $1 van $2 aankondigingen opgenomen, de rest komt van de pro-stem.","Własny głos: nagrano $1 z $2 zapowiedzi, resztę mówi głos pro.","Voz própria: $1 de $2 anúncios gravados, o resto vem da voz pro."],
  [/^(.+) ist dran$/,"$1 to throw","Turno de $1","À $1 de lancer","Tocca a $1","$1 is aan de beurt","Rzuca $1","É a vez de $1"],
  [/^(.+) wirft …$/,"$1 throwing …","$1 lanza …","$1 lance …","$1 lancia …","$1 gooit …","$1 rzuca …","$1 a lançar …"],
@@ -1414,7 +1429,7 @@ const PAT=[
 ];
 
 /* Nachträge: [Deutsch, en, es, fr, it, nl, pl, pt] */
-[["Eigene Stimme", "Own voice", "Voz propia", "Ma voix", "La tua voce", "Eigen stem", "Własny głos", "Voz própria"],["🎙 Eigene Stimme aufnehmen", "🎙 Record your own voice", "🎙 Grabar tu propia voz", "🎙 Enregistrer ta voix", "🎙 Registra la tua voce", "🎙 Eigen stem opnemen", "🎙 Nagraj własny głos", "🎙 Gravar a tua voz"],["Eigene Stimme aufnehmen", "Record your own voice", "Grabar tu propia voz", "Enregistrer ta voix", "Registra la tua voce", "Eigen stem opnemen", "Nagraj własny głos", "Gravar a tua voz"],["Sprich jede Ansage einmal ein. Die Aufnahme startet, sobald du sprichst, und endet nach einer kurzen Pause von selbst. Danach geht es automatisch weiter. Was fehlt, übernimmt die Profi-Stimme.", "Say each call once. Recording starts as soon as you speak and stops by itself after a short pause, then moves on automatically. Anything missing is covered by the pro voice.", "Di cada anuncio una vez. La grabación empieza en cuanto hablas y se detiene sola tras una pausa corta; luego pasa al siguiente. Lo que falte lo cubre la voz pro.", "Dis chaque annonce une fois. L’enregistrement démarre dès que tu parles et s’arrête seul après une courte pause, puis passe à la suivante. Ce qui manque est assuré par la voix pro.", "Pronuncia ogni annuncio una volta. La registrazione parte appena parli e si ferma da sola dopo una breve pausa, poi passa al successivo. Ciò che manca lo copre la voce pro.", "Spreek elke aankondiging één keer in. De opname start zodra je praat en stopt na een korte pauze vanzelf, daarna gaat het automatisch verder. Wat ontbreekt, neemt de pro-stem over.", "Nagraj każdą zapowiedź raz. Nagrywanie startuje, gdy zaczniesz mówić, i kończy się samo po krótkiej przerwie, potem przechodzi dalej. Brakujące zapowiedzi przejmie głos pro.", "Diz cada anúncio uma vez. A gravação começa assim que falas e para sozinha após uma pausa curta, depois avança automaticamente. O que faltar fica a cargo da voz pro."],["Ansage", "Call", "Anuncio", "Annonce", "Annuncio", "Aankondiging", "Zapowiedź", "Anúncio"],["Aufnahme läuft …", "Recording …", "Grabando …", "Enregistrement …", "Registrazione …", "Opnemen …", "Nagrywanie …", "A gravar …"],["Bereit, sprich jetzt.", "Ready, speak now.", "Listo, habla ahora.", "Prêt, parle maintenant.", "Pronto, parla ora.", "Klaar, spreek nu.", "Gotowe, mów teraz.", "Pronto, fala agora."],["Neu aufnehmen", "Record again", "Grabar de nuevo", "Réenregistrer", "Registra di nuovo", "Opnieuw opnemen", "Nagraj ponownie", "Gravar de novo"],["▶ Anhören", "▶ Listen", "▶ Escuchar", "▶ Écouter", "▶ Ascolta", "▶ Beluisteren", "▶ Odsłuchaj", "▶ Ouvir"],["Vorherige", "Previous", "Anterior", "Précédente", "Precedente", "Vorige", "Poprzednia", "Anterior"],["Nächste", "Next", "Siguiente", "Suivante", "Successivo", "Volgende", "Następna", "Seguinte"],["Automatisch weiter", "Auto advance", "Avanzar automáticamente", "Suite automatique", "Avanti automatico", "Automatisch verder", "Automatycznie dalej", "Avançar automaticamente"],["Diese Aufnahme löschen", "Delete this recording", "Borrar esta grabación", "Supprimer cet enregistrement", "Elimina questa registrazione", "Deze opname verwijderen", "Usuń to nagranie", "Apagar esta gravação"],["Alle löschen", "Delete all", "Borrar todo", "Tout supprimer", "Elimina tutto", "Alles verwijderen", "Usuń wszystko", "Apagar tudo"],["Wirklich alle löschen?", "Really delete all?", "¿Borrar todo de verdad?", "Vraiment tout supprimer ?", "Eliminare davvero tutto?", "Echt alles verwijderen?", "Na pewno usunąć wszystko?", "Apagar mesmo tudo?"],["Die Aufnahmen bleiben nur auf diesem Gerät und sind nicht im Backup enthalten.", "Recordings stay on this device only and are not included in the backup.", "Las grabaciones se quedan solo en este dispositivo y no se incluyen en la copia de seguridad.", "Les enregistrements restent sur cet appareil et ne sont pas inclus dans la sauvegarde.", "Le registrazioni restano solo su questo dispositivo e non sono incluse nel backup.", "Opnames blijven alleen op dit apparaat en zitten niet in de back-up.", "Nagrania zostają tylko na tym urządzeniu i nie trafiają do kopii zapasowej.", "As gravações ficam só neste dispositivo e não entram na cópia de segurança."],["Nichts gehört. Tippe auf „Aufnehmen“, um es noch einmal zu versuchen.", "Didn't hear anything. Tap “Record” to try again.", "No se ha oído nada. Toca “Grabar” para intentarlo de nuevo.", "Rien entendu. Touche « Enregistrer » pour réessayer.", "Non ho sentito nulla. Tocca “Registra” per riprovare.", "Niets gehoord. Tik op ‘Opnemen’ om het opnieuw te proberen.", "Nic nie słychać. Stuknij „Nagraj”, aby spróbować ponownie.", "Não se ouviu nada. Toca em “Gravar” para tentar de novo."],["Aufnahme konnte nicht gespeichert werden.", "Recording could not be saved.", "No se pudo guardar la grabación.", "Impossible d’enregistrer.", "Impossibile salvare la registrazione.", "Opname kon niet worden opgeslagen.", "Nie udało się zapisać nagrania.", "Não foi possível guardar a gravação."],["Fertig! Alle Ansagen sind aufgenommen.", "Done! All calls are recorded.", "¡Listo! Todos los anuncios están grabados.", "Terminé ! Toutes les annonces sont enregistrées.", "Fatto! Tutti gli annunci sono registrati.", "Klaar! Alle aankondigingen zijn opgenomen.", "Gotowe! Wszystkie zapowiedzi nagrane.", "Feito! Todos os anúncios estão gravados."],["Alle Aufnahmen gelöscht.", "All recordings deleted.", "Todas las grabaciones borradas.", "Tous les enregistrements supprimés.", "Tutte le registrazioni eliminate.", "Alle opnames verwijderd.", "Usunięto wszystkie nagrania.", "Todas as gravações apagadas."],["Darts","Darts","Dardos","Fléchettes","Freccette","Pijlen","Lotki","Dardos"],["180er","180s","180s","180s","180","180's","180-tki","180s"],["Ø 3 Darts","3-dart avg","Prom. 3 dardos","Moy. 3 fl.","Media 3 frecce","Gem. 3 pijlen","Śr. 3 lotek","Média 3 dardos"]]
+[["Eigene Stimme", "Own voice", "Voz propia", "Ma voix", "La tua voce", "Eigen stem", "Własny głos", "Voz própria"],["🎙 Eigene Stimme aufnehmen", "🎙 Record your own voice", "🎙 Grabar tu propia voz", "🎙 Enregistrer ta voix", "🎙 Registra la tua voce", "🎙 Eigen stem opnemen", "🎙 Nagraj własny głos", "🎙 Gravar a tua voz"],["Eigene Stimme aufnehmen", "Record your own voice", "Grabar tu propia voz", "Enregistrer ta voix", "Registra la tua voce", "Eigen stem opnemen", "Nagraj własny głos", "Gravar a tua voz"],["Sprich jede Ansage einmal ein. Die Aufnahme startet, sobald du sprichst, und endet nach einer kurzen Pause von selbst. Danach geht es automatisch weiter. Was fehlt, übernimmt die Profi-Stimme.", "Say each call once. Recording starts as soon as you speak and stops by itself after a short pause, then moves on automatically. Anything missing is covered by the pro voice.", "Di cada anuncio una vez. La grabación empieza en cuanto hablas y se detiene sola tras una pausa corta; luego pasa al siguiente. Lo que falte lo cubre la voz pro.", "Dis chaque annonce une fois. L’enregistrement démarre dès que tu parles et s’arrête seul après une courte pause, puis passe à la suivante. Ce qui manque est assuré par la voix pro.", "Pronuncia ogni annuncio una volta. La registrazione parte appena parli e si ferma da sola dopo una breve pausa, poi passa al successivo. Ciò che manca lo copre la voce pro.", "Spreek elke aankondiging één keer in. De opname start zodra je praat en stopt na een korte pauze vanzelf, daarna gaat het automatisch verder. Wat ontbreekt, neemt de pro-stem over.", "Nagraj każdą zapowiedź raz. Nagrywanie startuje, gdy zaczniesz mówić, i kończy się samo po krótkiej przerwie, potem przechodzi dalej. Brakujące zapowiedzi przejmie głos pro.", "Diz cada anúncio uma vez. A gravação começa assim que falas e para sozinha após uma pausa curta, depois avança automaticamente. O que faltar fica a cargo da voz pro."],["Ansage", "Call", "Anuncio", "Annonce", "Annuncio", "Aankondiging", "Zapowiedź", "Anúncio"],["Aufnahme läuft …", "Recording …", "Grabando …", "Enregistrement …", "Registrazione …", "Opnemen …", "Nagrywanie …", "A gravar …"],["Bereit, sprich jetzt.", "Ready, speak now.", "Listo, habla ahora.", "Prêt, parle maintenant.", "Pronto, parla ora.", "Klaar, spreek nu.", "Gotowe, mów teraz.", "Pronto, fala agora."],["Neu aufnehmen", "Record again", "Grabar de nuevo", "Réenregistrer", "Registra di nuovo", "Opnieuw opnemen", "Nagraj ponownie", "Gravar de novo"],["▶ Anhören", "▶ Listen", "▶ Escuchar", "▶ Écouter", "▶ Ascolta", "▶ Beluisteren", "▶ Odsłuchaj", "▶ Ouvir"],["Vorherige", "Previous", "Anterior", "Précédente", "Precedente", "Vorige", "Poprzednia", "Anterior"],["Nächste", "Next", "Siguiente", "Suivante", "Successivo", "Volgende", "Następna", "Seguinte"],["Automatisch weiter", "Auto advance", "Avanzar automáticamente", "Suite automatique", "Avanti automatico", "Automatisch verder", "Automatycznie dalej", "Avançar automaticamente"],["Diese Aufnahme löschen", "Delete this recording", "Borrar esta grabación", "Supprimer cet enregistrement", "Elimina questa registrazione", "Deze opname verwijderen", "Usuń to nagranie", "Apagar esta gravação"],["Alle löschen", "Delete all", "Borrar todo", "Tout supprimer", "Elimina tutto", "Alles verwijderen", "Usuń wszystko", "Apagar tudo"],["Wirklich alle löschen?", "Really delete all?", "¿Borrar todo de verdad?", "Vraiment tout supprimer ?", "Eliminare davvero tutto?", "Echt alles verwijderen?", "Na pewno usunąć wszystko?", "Apagar mesmo tudo?"],["Die Aufnahmen bleiben nur auf diesem Gerät und sind nicht im Backup enthalten.", "Recordings stay on this device only and are not included in the backup.", "Las grabaciones se quedan solo en este dispositivo y no se incluyen en la copia de seguridad.", "Les enregistrements restent sur cet appareil et ne sont pas inclus dans la sauvegarde.", "Le registrazioni restano solo su questo dispositivo e non sono incluse nel backup.", "Opnames blijven alleen op dit apparaat en zitten niet in de back-up.", "Nagrania zostają tylko na tym urządzeniu i nie trafiają do kopii zapasowej.", "As gravações ficam só neste dispositivo e não entram na cópia de segurança."],["Nichts gehört. Tippe auf „Aufnehmen“, um es noch einmal zu versuchen.", "Didn't hear anything. Tap “Record” to try again.", "No se ha oído nada. Toca “Grabar” para intentarlo de nuevo.", "Rien entendu. Touche « Enregistrer » pour réessayer.", "Non ho sentito nulla. Tocca “Registra” per riprovare.", "Niets gehoord. Tik op ‘Opnemen’ om het opnieuw te proberen.", "Nic nie słychać. Stuknij „Nagraj”, aby spróbować ponownie.", "Não se ouviu nada. Toca em “Gravar” para tentar de novo."],["Aufnahme konnte nicht gespeichert werden.", "Recording could not be saved.", "No se pudo guardar la grabación.", "Impossible d’enregistrer.", "Impossibile salvare la registrazione.", "Opname kon niet worden opgeslagen.", "Nie udało się zapisać nagrania.", "Não foi possível guardar a gravação."],["Fertig! Alle Ansagen sind aufgenommen.", "Done! All calls are recorded.", "¡Listo! Todos los anuncios están grabados.", "Terminé ! Toutes les annonces sont enregistrées.", "Fatto! Tutti gli annunci sono registrati.", "Klaar! Alle aankondigingen zijn opgenomen.", "Gotowe! Wszystkie zapowiedzi nagrane.", "Feito! Todos os anúncios estão gravados."],["Alle Aufnahmen gelöscht.", "All recordings deleted.", "Todas las grabaciones borradas.", "Tous les enregistrements supprimés.", "Tutte le registrazioni eliminate.", "Alle opnames verwijderd.", "Usunięto wszystkie nagrania.", "Todas as gravações apagadas."],["Farbe", "Colour", "Color", "Couleur", "Colore", "Kleur", "Kolor", "Cor"],["Profilbild", "Profile picture", "Imagen de perfil", "Photo de profil", "Immagine del profilo", "Profielfoto", "Zdjęcie profilowe", "Imagem de perfil"],["Farbe und Profilbild", "Colour and profile picture", "Color e imagen de perfil", "Couleur et photo de profil", "Colore e immagine del profilo", "Kleur en profielfoto", "Kolor i zdjęcie profilowe", "Cor e imagem de perfil"],["Gilt für alle Spiele unter diesem Namen.", "Applies to all games under this name.", "Se aplica a todas las partidas con este nombre.", "S'applique à toutes les parties sous ce nom.", "Vale per tutte le partite con questo nome.", "Geldt voor alle potjes onder deze naam.", "Dotyczy wszystkich gier pod tą nazwą.", "Aplica-se a todos os jogos com este nome."],["Spielverlauf", "Match history", "Desarrollo de la partida", "Déroulement de la partie", "Andamento della partita", "Wedstrijdverloop", "Przebieg gry", "Desenrolar do jogo"],["Verlauf", "History", "Desarrollo", "Détails", "Andamento", "Verloop", "Przebieg", "Detalhes"],["nicht beendet", "not finished", "sin terminar", "non terminé", "non finito", "niet afgemaakt", "nieukończony", "não terminado"],["Punkte und Rest je Aufnahme. ✕ = überworfen, grün = Checkout, gold = 100+.", "Score and points left per visit. ✕ = bust, green = checkout, gold = 100+.", "Puntos y restante por tirada. ✕ = pasado, verde = cierre, dorado = 100+.", "Points et reste par volée. ✕ = bust, vert = finish, or = 100+.", "Punti e resto per turno. ✕ = sballato, verde = chiusura, oro = 100+.", "Score en rest per beurt. ✕ = bust, groen = uitgooi, goud = 100+.", "Punkty i reszta na kolejkę. ✕ = przerzut, zielony = zamknięcie, złoty = 100+.", "Pontos e resto por jogada. ✕ = rebentou, verde = fecho, dourado = 100+."],["Trainingspläne", "Training plans", "Planes de entrenamiento", "Plans d'entraînement", "Piani di allenamento", "Trainingsplannen", "Plany treningowe", "Planos de treino"],["Trainingsplan", "Training plan", "Plan de entrenamiento", "Plan d'entraînement", "Piano di allenamento", "Trainingsplan", "Plan treningowy", "Plano de treino"],["Eine Woche gezielt trainieren: Doppel, Scoring oder Checkout", "Train with focus for a week: doubles, scoring or checkouts", "Entrena una semana con un objetivo: dobles, puntuación o cierres", "Une semaine d'entraînement ciblé : doubles, scoring ou finish", "Una settimana di allenamento mirato: doppi, punteggio o chiusure", "Een week gericht trainen: dubbels, scoren of uitgooien", "Tydzień celowanego treningu: podwójne, punktowanie lub zamknięcia", "Uma semana de treino focado: duplos, pontuação ou fechos"],["Plan wählen", "Choose a plan", "Elegir plan", "Choisir un plan", "Scegli un piano", "Plan kiezen", "Wybierz plan", "Escolher plano"],["Plan geschafft!", "Plan complete!", "¡Plan completado!", "Plan terminé !", "Piano completato!", "Plan voltooid!", "Plan ukończony!", "Plano concluído!"],["Alle 7 Einheiten geschafft. Stark!", "All 7 sessions done. Great work!", "Las 7 sesiones completadas. ¡Genial!", "Les 7 séances sont faites. Bravo !", "Tutte e 7 le sessioni completate. Grande!", "Alle 7 sessies gehaald. Sterk!", "Wszystkie 7 sesji ukończone. Świetnie!", "As 7 sessões concluídas. Muito bem!"],["Neuer Plan", "New plan", "Nuevo plan", "Nouveau plan", "Nuovo piano", "Nieuw plan", "Nowy plan", "Novo plano"],["Heute geschafft, morgen geht es weiter", "Done for today, continue tomorrow", "Hecho por hoy, mañana sigues", "Fait pour aujourd'hui, la suite demain", "Fatto per oggi, si continua domani", "Klaar voor vandaag, morgen verder", "Na dziś gotowe, jutro dalej", "Feito por hoje, amanhã continuas"],["Trainingsplan wählen", "Choose a training plan", "Elegir plan de entrenamiento", "Choisir un plan d'entraînement", "Scegli un piano di allenamento", "Trainingsplan kiezen", "Wybierz plan treningowy", "Escolher plano de treino"],["Jeden Tag eine Einheit. Eine Einheit zählt, wenn du ihr Ziel in einem Spiel erreichst.", "One session per day. A session counts when you reach its goal in a game.", "Una sesión al día. Una sesión cuenta cuando alcanzas su objetivo en una partida.", "Une séance par jour. Une séance compte quand tu atteins son objectif dans une partie.", "Una sessione al giorno. Una sessione conta quando raggiungi il suo obiettivo in una partita.", "Elke dag één sessie. Een sessie telt als je het doel in een potje haalt.", "Jedna sesja dziennie. Sesja się liczy, gdy osiągniesz jej cel w grze.", "Uma sessão por dia. Uma sessão conta quando atinges o objetivo num jogo."],["Starten", "Start", "Empezar", "Commencer", "Inizia", "Starten", "Start", "Começar"],["Doppel-Woche", "Doubles week", "Semana de dobles", "Semaine des doubles", "Settimana dei doppi", "Dubbelweek", "Tydzień podwójnych", "Semana de duplos"],["Scoring-Woche", "Scoring week", "Semana de puntuación", "Semaine du scoring", "Settimana del punteggio", "Scoreweek", "Tydzień punktowania", "Semana de pontuação"],["Checkout-Woche", "Checkout week", "Semana de cierres", "Semaine des finishs", "Settimana delle chiusure", "Uitgooiweek", "Tydzień zamknięć", "Semana de fechos"],["Sieben Einheiten rund um Doppel und Finish", "Seven sessions on doubles and finishing", "Siete sesiones de dobles y cierres", "Sept séances autour des doubles et du finish", "Sette sessioni su doppi e chiusure", "Zeven sessies rond dubbels en uitgooien", "Siedem sesji o podwójnych i kończeniu", "Sete sessões sobre duplos e fechos"],["Sieben Einheiten für mehr Punkte pro Aufnahme", "Seven sessions for more points per visit", "Siete sesiones para más puntos por tirada", "Sept séances pour plus de points par volée", "Sette sessioni per più punti a turno", "Zeven sessies voor meer punten per beurt", "Siedem sesji, by zdobywać więcej punktów na kolejkę", "Sete sessões para mais pontos por jogada"],["Sieben Einheiten, um Legs sicher zu beenden", "Seven sessions to finish legs reliably", "Siete sesiones para cerrar legs con seguridad", "Sept séances pour finir tes legs à coup sûr", "Sette sessioni per chiudere i leg con sicurezza", "Zeven sessies om legs zeker uit te gooien", "Siedem sesji, by pewnie kończyć legi", "Sete sessões para fechar legs com segurança"],["Doppel-Training D1 bis Bull: mindestens 15 % Quote", "Doubles practice D1 to bull: at least 15 % hit rate", "Entrenamiento de dobles D1 a bull: al menos 15 % de acierto", "Entraînement aux doubles D1 au bull : au moins 15 % de réussite", "Allenamento sui doppi da D1 al bull: almeno 15 % di precisione", "Dubbeltraining D1 tot bull: minstens 15 % raak", "Trening podwójnych od D1 do bulla: co najmniej 15 % skuteczności", "Treino de duplos D1 ao bull: pelo menos 15 % de acerto"],["Around the Clock nur auf Doppel beenden", "Finish Around the Clock on doubles only", "Termina Around the Clock solo con dobles", "Termine Around the Clock uniquement sur les doubles", "Completa Around the Clock solo sui doppi", "Maak Around the Clock af met alleen dubbels", "Ukończ Around the Clock tylko na podwójnych", "Termina Around the Clock só com duplos"],["Bob's 27 mit mindestens 50 Punkten beenden", "Finish Bob's 27 with at least 50 points", "Termina Bob's 27 con al menos 50 puntos", "Termine Bob's 27 avec au moins 50 points", "Completa Bob's 27 con almeno 50 punti", "Maak Bob's 27 af met minstens 50 punten", "Ukończ Bob's 27 z co najmniej 50 punktami", "Termina o Bob's 27 com pelo menos 50 pontos"],["Top-Doppel: mindestens 20 % Quote", "Top doubles: at least 20 % hit rate", "Dobles favoritos: al menos 20 % de acierto", "Doubles favoris : au moins 20 % de réussite", "Doppi preferiti: almeno 20 % di precisione", "Topdubbels: minstens 20 % raak", "Najlepsze podwójne: co najmniej 20 % skuteczności", "Duplos de topo: pelo menos 20 % de acerto"],["61 mit 10 Versuchen: Ziel 66 oder höher schaffen", "61 with 10 attempts: reach target 66 or higher", "61 con 10 intentos: alcanza el objetivo 66 o más", "61 en 10 essais : atteins la cible 66 ou plus", "61 con 10 tentativi: raggiungi l'obiettivo 66 o più", "61 met 10 pogingen: haal doel 66 of hoger", "61 w 10 próbach: osiągnij cel 66 lub wyższy", "61 com 10 tentativas: chega ao alvo 66 ou mais"],["Bob's 27 beenden, ohne unter null zu fallen", "Finish Bob's 27 without dropping below zero", "Termina Bob's 27 sin bajar de cero", "Termine Bob's 27 sans passer sous zéro", "Completa Bob's 27 senza scendere sotto zero", "Maak Bob's 27 af zonder onder nul te zakken", "Ukończ Bob's 27, nie spadając poniżej zera", "Termina o Bob's 27 sem descer abaixo de zero"],["High Score, 5 Runden: mindestens 200 Punkte", "High Score, 5 rounds: at least 200 points", "High Score, 5 rondas: al menos 200 puntos", "High Score, 5 manches : au moins 200 points", "High Score, 5 turni: almeno 200 punti", "High Score, 5 rondes: minstens 200 punten", "High Score, 5 rund: co najmniej 200 punktów", "High Score, 5 rondas: pelo menos 200 pontos"],["Around the Clock in höchstens 70 Darts", "Around the Clock in 70 darts or fewer", "Around the Clock en 70 dardos o menos", "Around the Clock en 70 fléchettes maximum", "Around the Clock in al massimo 70 freccette", "Around the Clock in hoogstens 70 pijlen", "Around the Clock w najwyżej 70 lotkach", "Around the Clock em 70 dardos ou menos"],["High Score, 10 Runden: mindestens 400 Punkte", "High Score, 10 rounds: at least 400 points", "High Score, 10 rondas: al menos 400 puntos", "High Score, 10 manches : au moins 400 points", "High Score, 10 turni: almeno 400 punti", "High Score, 10 rondes: minstens 400 punten", "High Score, 10 rund: co najmniej 400 punktów", "High Score, 10 rondas: pelo menos 400 pontos"],["Halve-It: mindestens 200 Punkte", "Halve-It: at least 200 points", "Halve-It: al menos 200 puntos", "Halve-It : au moins 200 points", "Halve-It: almeno 200 punti", "Halve-It: minstens 200 punten", "Halve-It: co najmniej 200 punktów", "Halve-It: pelo menos 200 pontos"],["501 Double Out: mit Average ab 40 beenden", "501 double out: finish with an average of 40+", "501 double out: termina con un promedio de 40+", "501 double out : termine avec une moyenne de 40+", "501 double out: chiudi con una media di 40+", "501 double out: uitgooien met een gemiddelde van 40+", "501 double out: zakończ ze średnią 40+", "501 double out: termina com média de 40+"],["501 Double Out: mit Average ab 50 beenden", "501 double out: finish with an average of 50+", "501 double out: termina con un promedio de 50+", "501 double out : termine avec une moyenne de 50+", "501 double out: chiudi con una media di 50+", "501 double out: uitgooien met een gemiddelde van 50+", "501 double out: zakończ ze średnią 50+", "501 double out: termina com média de 50+"],["101 Double Out in höchstens 15 Darts", "101 double out in 15 darts or fewer", "101 double out en 15 dardos o menos", "101 double out en 15 fléchettes maximum", "101 double out in al massimo 15 freccette", "101 double out in hoogstens 15 pijlen", "101 double out w najwyżej 15 lotkach", "101 double out em 15 dardos ou menos"],["81 mit 10 Versuchen: Ziel 86 oder höher schaffen", "81 with 10 attempts: reach target 86 or higher", "81 con 10 intentos: alcanza el objetivo 86 o más", "81 en 10 essais : atteins la cible 86 ou plus", "81 con 10 tentativi: raggiungi l'obiettivo 86 o più", "81 met 10 pogingen: haal doel 86 of hoger", "81 w 10 próbach: osiągnij cel 86 lub wyższy", "81 com 10 tentativas: chega ao alvo 86 ou mais"],["101 mit 10 Versuchen: Ziel 105 oder höher schaffen", "101 with 10 attempts: reach target 105 or higher", "101 con 10 intentos: alcanza el objetivo 105 o más", "101 en 10 essais : atteins la cible 105 ou plus", "101 con 10 tentativi: raggiungi l'obiettivo 105 o più", "101 met 10 pogingen: haal doel 105 of hoger", "101 w 10 próbach: osiągnij cel 105 lub wyższy", "101 com 10 tentativas: chega ao alvo 105 ou mais"],["301 Double Out in höchstens 24 Darts", "301 double out in 24 darts or fewer", "301 double out en 24 dardos o menos", "301 double out en 24 fléchettes maximum", "301 double out in al massimo 24 freccette", "301 double out in hoogstens 24 pijlen", "301 double out w najwyżej 24 lotkach", "301 double out em 24 dardos ou menos"],["Spracheingabe", "Voice input", "Entrada por voz", "Saisie vocale", "Inserimento vocale", "Spraakinvoer", "Wpisywanie głosem", "Introdução por voz"],["Sprich jetzt, z. B. „Triple 20, 19, 5“ oder „100“", "Speak now, e.g. “treble 20, 19, 5” or “100”", "Habla ahora, p. ej. «triple 20, 19, 5» o «100»", "Parle maintenant, p. ex. « triple 20, 19, 5 » ou « 100 »", "Parla ora, ad es. «triplo 20, 19, 5» o «100»", "Spreek nu, bijv. ‘triple 20, 19, 5’ of ‘100’", "Mów teraz, np. „potrójne 20, 19, 5” albo „100”", "Fala agora, p. ex. «triplo 20, 19, 5» ou «100»"],["nicht verstanden", "not understood", "no entendido", "pas compris", "non capito", "niet verstaan", "nie rozpoznano", "não percebi"],["Mikrofon nicht verfügbar. Erlaube den Mikrofonzugriff.", "Microphone not available. Allow microphone access.", "Micrófono no disponible. Permite el acceso al micrófono.", "Micro indisponible. Autorise l'accès au micro.", "Microfono non disponibile. Consenti l'accesso al microfono.", "Microfoon niet beschikbaar. Sta toegang tot de microfoon toe.", "Mikrofon niedostępny. Zezwól na dostęp do mikrofonu.", "Microfone indisponível. Permite o acesso ao microfone."],["Die Aufnahmen bleiben auf diesem Gerät und sind im Backup enthalten.", "Recordings stay on this device and are included in the backup.", "Las grabaciones se quedan en este dispositivo y se incluyen en la copia de seguridad.", "Les enregistrements restent sur cet appareil et sont inclus dans la sauvegarde.", "Le registrazioni restano su questo dispositivo e sono incluse nel backup.", "Opnames blijven op dit apparaat en zitten in de back-up.", "Nagrania zostają na tym urządzeniu i trafiają do kopii zapasowej.", "As gravações ficam neste dispositivo e entram na cópia de segurança."],["Darts","Darts","Dardos","Fléchettes","Freccette","Pijlen","Lotki","Dardos"],["180er","180s","180s","180s","180","180's","180-tki","180s"],["Ø 3 Darts","3-dart avg","Prom. 3 dardos","Moy. 3 fl.","Media 3 frecce","Gem. 3 pijlen","Śr. 3 lotek","Média 3 dardos"]]
  .forEach(r=>{I18N_KEYS.push(r[0]);["en","es","fr","it","nl","pl","pt"].forEach((l,i)=>I18N[l].push(r[i+1]))});
 function pluralIdx(n,l){n=+n;if(l==="pl"){if(n===1)return 0;const t=n%10,h=n%100;return t>=2&&t<=4&&(h<12||h>14)?1:2}return n===1?0:1}
 function fillPat(tpl,m,l){
@@ -1484,10 +1499,17 @@ function buzz(ms){if(!vibOn)return;try{if(window.AndroidTTS&&window.AndroidTTS.v
 function backupText(){
   const data={};
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("oche.")&&k!=="oche.session"&&k!=="oche.token")data[k]=localStorage.getItem(k)}}catch(e){}
-  return JSON.stringify({app:"oche-darts",version:1,created:new Date().toISOString(),data});
+  return {app:"oche-darts",version:1,created:new Date().toISOString(),data};
 }
-function exportBackup(){
-  const txt=backupText(),name=`oche-backup-${new Date().toISOString().slice(0,10)}.json`;
+/* Eigene Caller-Aufnahmen (IndexedDB) kommen als Daten-URLs mit ins Backup */
+async function backupFull(){
+  const o=backupText();
+  try{const all=await ownAll(),voice={};for(const k in all){voice[k]=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.onerror=()=>r(null);fr.readAsDataURL(all[k])})}
+    if(Object.keys(voice).length)o.voice=voice}catch(e){}
+  return JSON.stringify(o);
+}
+async function exportBackup(){
+  const txt=await backupFull(),name=`oche-backup-${new Date().toISOString().slice(0,10)}.json`;
   if(window.AndroidTTS&&window.AndroidTTS.saveFile){window.ocheSaved=ok=>toastLocal(ok?"Backup gespeichert":"Backup nicht gespeichert",ok?"green":"red");window.AndroidTTS.saveFile(name,"application/json",txt);return}
   const show=()=>{const o=document.createElement("div");o.className="overlay";o.innerHTML=`<div class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="bt"><h3 id="bt">Backup</h3><p class="rules">Kopiere diesen Text und speichere ihn als Datei (z. B. oche-backup.json).</p><textarea id="bktxt" readonly rows="8" style="width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:8px;font-size:12px"></textarea><div class="row"><button class="btn primary" id="bkok">Schließen</button></div></div>`;document.body.appendChild(o);const ta=o.querySelector("#bktxt");ta.value=txt;ta.select();o.addEventListener("click",e=>{e.stopPropagation();if(e.target===o||e.target.id==="bkok")o.remove()})};
   try{navigator.clipboard.writeText(txt).then(()=>toastLocal("Backup in die Zwischenablage kopiert","green"),show)}catch(e){show()}
@@ -1502,7 +1524,8 @@ function importBackup(text){
   ov.addEventListener("click",e=>{e.stopPropagation();if(e.target.id==="ibyes"){
     try{const del=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("oche.")&&k!=="oche.token")del.push(k)}del.forEach(k=>localStorage.removeItem(k));
       Object.entries(o.data).forEach(([k,v])=>{if(k.startsWith("oche."))localStorage.setItem(k,v)});
-      toastLocal("Sicherung eingespielt","green");setTimeout(()=>location.reload(),600)}catch(err){toastLocal("Speicher voll: Sicherung konnte nicht eingespielt werden","red")}}
+      (async()=>{if(o.voice){try{await ownClear();for(const k in o.voice){if(!/^data:audio\//.test(o.voice[k]||""))continue;const b=await (await fetch(o.voice[k])).blob();await ownPut(k,b)}}catch(e){}}
+        toastLocal("Sicherung eingespielt","green");setTimeout(()=>location.reload(),600)})()}catch(err){toastLocal("Speicher voll: Sicherung konnte nicht eingespielt werden","red")}}
     if(e.target===ov||e.target.id==="ibno"||e.target.id==="ibyes")ov.remove()});
 }
 /* ================= Turnier (K.-o. oder Liga) ================= */
@@ -1728,9 +1751,11 @@ function recordGame(){
     if(p.dbl)rec.dbl=p.dbl;
     if(p.pos&&p.pos.length)rec.pos=p.pos.slice(-200);
     rec.sh=!!(g.shHit&&rec.won);
-    const e=all[k]=all[k]||{name:p.name.trim(),games:[]};e.name=p.name.trim();e.games.push(rec);if(e.games.length>500)e.games.shift();any=true;
+    if(g.vlog)rec.log={n:g.players.map(q=>q.name),w:g.legW||[],v:g.vlog};
+    const e=all[k]=all[k]||{name:p.name.trim(),games:[]};e.name=p.name.trim();e.games.push(rec);if(e.games.length>500)e.games.shift();e.games.forEach((x,ix)=>{if(ix<e.games.length-40&&x.log)delete x.log});any=true;
     const fresh=[],D=dailyTask();
     if(rec.mode===D.mode&&Object.entries(D.opts).every(([kk,v])=>g.opts[kk]===v)&&D.ok(rec)){e.daily=e.daily||{};if(!e.daily[todayKey()]){e.daily[todayKey()]=1;fresh.push("Tagesaufgabe geschafft")}}
+    planCheck(rec,fresh);
     achCheck(e,rec).forEach(id=>fresh.push(achName(id)));
     if(fresh.length)(g.newAch=g.newAch||[]).push({name:p.name,list:fresh});
   });
@@ -1798,7 +1823,7 @@ function renderStats(embedded){
   const recent=e.games.slice(-15).reverse();
   const key=r=>r.x?`Ø ${(r.darts?r.x.pts/r.darts*3:0).toFixed(1)}`:r.c?`MPR ${(r.darts?r.c.marks/r.darts*3:0).toFixed(2)}`:r.s!=null?`${r.s} Pkt.`:"";
   return head+`<div class="statsview">
-  <div class="proflist" role="tablist" aria-label="Profile">${keys.map(k=>`<button class="profbtn" role="tab" data-prof="${esc(k)}" aria-selected="${k===sel}">${esc(all[k].name)}<small>${all[k].games.length} Spiele</small></button>`).join("")}</div>
+  <div class="proflist" role="tablist" aria-label="Profile">${keys.map(k=>`<button class="profbtn" role="tab" data-prof="${esc(k)}" aria-selected="${k===sel}">${(profGet(all[k].name)||{}).av?`<i class="pav" aria-hidden="true">${profGet(all[k].name).av}</i>`:""}${esc(all[k].name)}<small>${all[k].games.length} Spiele</small></button>`).join("")}</div>
   <section class="card"><div class="profhead"><h2>${esc(e.name)}</h2>${statsConfirm?`<span class="rules">Profil mit ${e.games.length} Spielen löschen?</span><button class="btn small" id="profNo">Behalten</button><button class="btn small primary" id="profYes">Löschen</button>`:`<button class="btn small ghost" id="profDel">Profil löschen</button>`}</div>
     <div class="kpis">${kpi.map(([l,v])=>`<div class="kpi"><span class="label">${l}</span><b>${v}</b></div>`).join("")}</div></section>
   ${S.coA.some(x=>x)?`<section class="card"><h2>Checkout-Quote nach Rest</h2><span class="label">Aufnahmen mit möglichem Checkout und wie oft er gelang</span><div class="cobars">${["2–40","41–100","101–170"].map((l,i)=>{const r=S.coA[i]?S.coH[i]/S.coA[i]:0;return`<div class="cobar"><span>${l}</span><div class="cotrack"><i style="width:${Math.round(r*100)}%"></i></div><b>${S.coA[i]?Math.round(r*100)+" %":"–"}</b><span class="status">${S.coH[i]}/${S.coA[i]}</span></div>`}).join("")}</div></section>`:""}
@@ -1807,7 +1832,7 @@ function renderStats(embedded){
   <section class="card"><h2>Average-Verlauf</h2><span class="label">3-Dart-Average pro X01-Spiel · letzte ${S.series.length} Spiele · gold umrandet = gewonnen</span>${avgChart(S.series,S.avg)}</section>
   ${Object.keys(S.dbl).length?`<section class="card"><h2>Doppelquote je Feld</h2><span class="label">aus dem Doppel-Training</span>${dblGrid(S.dbl)}</section>`:""}
   ${h2h.length?`<section class="card"><h2>Bilanz</h2><div class="tscroll"><table class="stats"><thead><tr><th>Gegner</th><th>Spiele</th><th>Siege</th><th>Niederlagen</th><th>Quote</th></tr></thead><tbody>${h2h.map(([n,h])=>`<tr><td>${esc(n)}</td><td>${h.n}</td><td>${h.w}</td><td>${h.l}</td><td>${pct(h.w,h.n)}</td></tr>`).join("")}</tbody></table></div></section>`:""}
-  <section class="card"><h2>Letzte Spiele</h2><div class="tscroll"><table class="stats"><thead><tr><th>Datum</th><th>Modus</th><th>Ergebnis</th><th>Wert</th><th>Gegner</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${fmtDate(r.t)}</td><td>${esc((MODES[r.mode]||{}).name||r.mode)}<br><span class="status">${esc(r.sub||"")}</span></td><td>${r.won?'<span class="badge green">Sieg</span>':r.draw?'<span class="badge">Remis</span>':r.opp.length?'<span class="badge red">Niederlage</span>':'<span class="badge">Training</span>'}</td><td>${key(r)}</td><td>${esc(r.opp.map(o=>o.name).join(", ")||"–")}</td></tr>`).join("")}</tbody></table></div></section>
+  <section class="card"><h2>Letzte Spiele</h2><div class="tscroll"><table class="stats"><thead><tr><th>Datum</th><th>Modus</th><th>Ergebnis</th><th>Wert</th><th>Gegner</th><th></th></tr></thead><tbody>${recent.map(r=>`<tr><td>${fmtDate(r.t)}</td><td>${esc((MODES[r.mode]||{}).name||r.mode)}<br><span class="status">${esc(r.sub||"")}</span></td><td>${r.won?'<span class="badge green">Sieg</span>':r.draw?'<span class="badge">Remis</span>':r.opp.length?'<span class="badge red">Niederlage</span>':'<span class="badge">Training</span>'}</td><td>${key(r)}</td><td>${esc(r.opp.map(o=>o.name).join(", ")||"–")}</td><td>${r.log?`<button class="btn small" data-match="${esc(r.id)}">Verlauf</button>`:""}</td></tr>`).join("")}</tbody></table></div></section>
   </div>`;
 }
 document.addEventListener("pointermove",e=>{
@@ -2058,16 +2083,235 @@ function closeRoom(msg,notify){
   else{cfg=loadCfg();view="setup";g=null}
   setStatus(msg||"",!!msg);if(msg)toastLocal(msg,"red");render();
 }
+/* ================= Profile: Farbe und Profilbild ================= */
+const AVS=["🎯","🔥","⚡","👑","🦅","🐺","🦁","🐉","🦈","🐻","🚀","💎","🍀","🎸","⭐","🏆","🍺","😎"];
+const PCOLS=["#d9473b","#2f9e5f","#e6b34a","#4c8fd6","#c060c9","#38b6b0","#e07a3a","#9aa86b","#e05a8a","#8a6cf0","#5bc0eb","#b08d57"];
+function profGet(name){const k=statKey(name);if(!k)return null;return (store.get("oche.prof",{})||{})[k]||null}
+function profSet(name,o){const k=statKey(name);if(!k)return;const P=store.get("oche.prof",{})||{};P[k]=Object.assign({},P[k]||{},o);store.set("oche.prof",P)}
+function profColor(p,i){const pr=!p.bot&&!p.remote&&profGet(p.name);return pr&&pr.color||COLORS[i%COLORS.length]}
+function avInner(name){const pr=profGet(name);return pr&&pr.av?pr.av:esc((String(name||"").trim()[0]||"?").toUpperCase())}
+function openProfPicker(i){
+  const p=cfg.players[i];if(!p)return;const name=(p.name||"").trim()||defName(i+1);
+  const o=document.createElement("div");o.className="overlay";
+  const draw=()=>{const pr=profGet(name)||{},col=pr.color||COLORS[i%COLORS.length];
+    o.innerHTML=`<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="ppt"><h3 id="ppt"><span class="av big" style="--c:${col}">${avInner(name)}</span> <span data-notr>${esc(name)}</span></h3>
+    <div class="opt"><span class="label">Farbe</span><div class="colgrid">${PCOLS.map(c=>`<button class="colbtn" data-pcol="${c}" style="background:${c}" aria-pressed="${c===col}" aria-label="Farbe ${c}"></button>`).join("")}</div></div>
+    <div class="opt"><span class="label">Profilbild</span><div class="avgrid" data-notr><button data-pav="" aria-pressed="${!pr.av}">${esc((name[0]||"?").toUpperCase())}</button>${AVS.map(a=>`<button data-pav="${a}" aria-pressed="${pr.av===a}">${a}</button>`).join("")}</div></div>
+    <p class="status">Gilt für alle Spiele unter diesem Namen.</p>
+    <div class="row"><button class="btn primary" id="ppok">Fertig</button></div></div>`};
+  draw();document.body.appendChild(o);
+  o.addEventListener("click",e=>{e.stopPropagation();const t=e.target.closest("button");
+    if(e.target===o||t&&t.id==="ppok"){o.remove();render();return}if(!t)return;
+    if(t.dataset.pcol){profSet(name,{color:t.dataset.pcol});draw();return}
+    if(t.dataset.pav!=null){profSet(name,{av:t.dataset.pav||null});draw();return}});
+}
+
+/* ================= Spielverlauf im Detail (X01) ================= */
+function logTurn(p,r,ts,win){
+  if(g.mode!=="x01")return;
+  const nd=g.turn.length&&g.turn[0].tot!=null?(p._nd||3):g.turn.length;
+  (g.vlog=g.vlog||[]).push([g.legNo||1,g.cur,g.last.darts.map(lbl).join(" "),ts,p.score,r.bust?1:0,nd]);
+  if(r.newLeg||win){(g.legW=g.legW||[]).push(g.cur);g.legNo=(g.legNo||1)+1}
+}
+function openMatch(rec){
+  const Lg=rec.log;if(!Lg)return;const names=Lg.n,legs=[];
+  Lg.v.forEach(v=>{const l=v[0]-1;(legs[l]=legs[l]||[]).push(v)});
+  const html=legs.map((V,l)=>{
+    const per=names.map((_,pi)=>{const mv=V.filter(v=>v[1]===pi);const pts=mv.reduce((a,v)=>a+v[3],0),d=mv.reduce((a,v)=>a+v[6],0);return{mv,pts,d,avg:d?pts/d*3:0,hi:Math.max(0,...mv.map(v=>v[3]))}});
+    const w=Lg.w[l],rows=Math.max(...per.map(x=>x.mv.length));
+    return`<section class="mleg"><div class="mlh"><b>Leg ${l+1}</b>${w!=null?`<span class="badge green" data-notr>${esc(names[w])}</span><span class="status">${per[w].d} Darts</span>`:`<span class="status">nicht beendet</span>`}</div>
+    <div class="tscroll"><table class="stats mtab"><thead><tr><th>#</th>${names.map(n=>`<th colspan="2" data-notr>${esc(n)}</th>`).join("")}</tr></thead><tbody>
+    ${Array.from({length:rows},(_,ri)=>`<tr><td>${ri+1}</td>${per.map(x=>{const v=x.mv[ri];if(!v)return"<td></td><td></td>";return`<td class="${v[5]?"bust":v[4]===0?"fin":v[3]>=100?"ton":""}" title="${esc(v[2])}">${v[5]?"✕":v[3]}</td><td class="rest">${v[4]}</td>`}).join("")}</tr>`).join("")}
+    </tbody><tfoot><tr><td>Ø</td>${per.map(x=>`<td colspan="2">${x.avg.toFixed(1)} · max ${x.hi}</td>`).join("")}</tr></tfoot></table></div></section>`}).join("");
+  const o=document.createElement("div");o.className="overlay";
+  o.innerHTML=`<div class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="mdt"><h3 id="mdt">Spielverlauf</h3><span class="label">${fmtDate(rec.t)} · ${esc(rec.sub||"")}</span>
+    <p class="status">Punkte und Rest je Aufnahme. ✕ = überworfen, grün = Checkout, gold = 100+.</p>${html}<div class="row"><button class="btn primary" id="mdok">Schließen</button></div></div>`;
+  document.body.appendChild(o);
+  o.addEventListener("click",e=>{e.stopPropagation();if(e.target===o||e.target.id==="mdok")o.remove()});
+}
+
+/* ================= Trainingspläne ================= */
+const PLANS=[
+ {id:"dbl",n:"Doppel-Woche",d:"Sieben Einheiten rund um Doppel und Finish",days:[
+  {mode:"doubles",opts:{order:"seq"},t:"Doppel-Training D1 bis Bull: mindestens 15 % Quote",ok:r=>r.dd>0&&r.dh/r.dd>=.15},
+  {mode:"atc",opts:{rule:"double",bull:1},t:"Around the Clock nur auf Doppel beenden",ok:r=>r.s>=21},
+  {mode:"bobs27",opts:{neg:"play"},t:"Bob's 27 mit mindestens 50 Punkten beenden",ok:r=>r.s>=50},
+  {mode:"doubles",opts:{order:"top"},t:"Top-Doppel: mindestens 20 % Quote",ok:r=>r.dd>0&&r.dh/r.dd>=.2},
+  {mode:"c121",opts:{start:61,tries:10,fail:"stay"},t:"61 mit 10 Versuchen: Ziel 66 oder höher schaffen",ok:r=>r.s>=66},
+  {mode:"bobs27",opts:{neg:"out"},t:"Bob's 27 beenden, ohne unter null zu fallen",ok:r=>r.s>0},
+  {mode:"doubles",opts:{order:"rand"},t:"Doppel-Training (zufällig): mindestens 25 % Quote",ok:r=>r.dd>0&&r.dh/r.dd>=.25}]},
+ {id:"score",n:"Scoring-Woche",d:"Sieben Einheiten für mehr Punkte pro Aufnahme",days:[
+  {mode:"highscore",opts:{rounds:5},t:"High Score, 5 Runden: mindestens 200 Punkte",ok:r=>r.s>=200},
+  {mode:"atc",opts:{rule:"single",bull:1},t:"Around the Clock in höchstens 70 Darts",ok:r=>r.s>=21&&r.darts<=70},
+  {mode:"highscore",opts:{rounds:10},t:"High Score, 10 Runden: mindestens 400 Punkte",ok:r=>r.s>=400},
+  {mode:"halveit",opts:{start:40},t:"Halve-It: mindestens 200 Punkte",ok:r=>r.s>=200},
+  {mode:"x01",opts:{start:501,in:"single",out:"double",sets:1,legs:1},t:"501 Double Out: mit Average ab 40 beenden",ok:r=>!!r.x&&r.darts>0&&r.x.pts/r.darts*3>=40},
+  {mode:"highscore",opts:{rounds:10},t:"High Score, 10 Runden: mindestens 450 Punkte",ok:r=>r.s>=450},
+  {mode:"x01",opts:{start:501,in:"single",out:"double",sets:1,legs:1},t:"501 Double Out: mit Average ab 50 beenden",ok:r=>!!r.x&&r.darts>0&&r.x.pts/r.darts*3>=50}]},
+ {id:"co",n:"Checkout-Woche",d:"Sieben Einheiten, um Legs sicher zu beenden",days:[
+  {mode:"c121",opts:{start:61,tries:10,fail:"stay"},t:"61 mit 10 Versuchen: Ziel 66 oder höher schaffen",ok:r=>r.s>=66},
+  {mode:"x01",opts:{start:101,in:"single",out:"double",sets:1,legs:1},t:"101 Double Out in höchstens 15 Darts",ok:r=>!!r.x&&r.won&&r.darts<=15},
+  {mode:"c121",opts:{start:81,tries:10,fail:"stay"},t:"81 mit 10 Versuchen: Ziel 86 oder höher schaffen",ok:r=>r.s>=86},
+  {mode:"doubles",opts:{order:"top"},t:"Top-Doppel: mindestens 20 % Quote",ok:r=>r.dd>0&&r.dh/r.dd>=.2},
+  {mode:"c121",opts:{start:101,tries:10,fail:"stay"},t:"101 mit 10 Versuchen: Ziel 105 oder höher schaffen",ok:r=>r.s>=105},
+  {mode:"x01",opts:{start:301,in:"single",out:"double",sets:1,legs:1},t:"301 Double Out in höchstens 24 Darts",ok:r=>!!r.x&&r.won&&r.darts<=24},
+  {mode:"c121",opts:{start:121,tries:10,fail:"stay"},t:"121 mit 10 Versuchen: Ziel 124 oder höher schaffen",ok:r=>r.s>=124}]}];
+const planState=()=>{const s=store.get("oche.plan",null);return s&&PLANS.some(p=>p.id===s.id)?s:null};
+function planCheck(rec,fresh){
+  const S=planState();if(!S)return;const P=PLANS.find(p=>p.id===S.id),i=S.done.length,T=P.days[i];
+  if(!T||S.done.includes(todayKey()))return;
+  if(rec.mode===T.mode&&Object.entries(T.opts).every(([k,v])=>g.opts[k]===v)&&T.ok(rec)){S.done.push(todayKey());store.set("oche.plan",S);fresh.push(`Trainingsplan: Einheit ${i+1} von 7 geschafft`)}
+}
+function renderPlan(){
+  const S=planState();
+  if(!S)return`<section class="card plan"><div class="dhead"><span class="label">Trainingspläne</span></div><div class="dbody"><b>Eine Woche gezielt trainieren: Doppel, Scoring oder Checkout</b><button class="btn small" id="planPick">Plan wählen</button></div></section>`;
+  const P=PLANS.find(p=>p.id===S.id),i=S.done.length,T=P.days[i],today=S.done.includes(todayKey());
+  const dots=`<div class="pdots">${P.days.map((_,k)=>`<i class="${k<i?"on":k===i?"cur":""}"></i>`).join("")}</div>`;
+  if(!T)return`<section class="card plan"><div class="dhead"><span class="label">Trainingsplan · ${P.n}</span><span class="badge green">Plan geschafft!</span></div>${dots}<div class="dbody"><b>Alle 7 Einheiten geschafft. Stark!</b><button class="btn small" id="planPick">Neuer Plan</button></div></section>`;
+  const active=cfg.mode===T.mode&&Object.entries(T.opts).every(([k,v])=>optsFor(T.mode)[k]===v);
+  return`<section class="card plan"><div class="dhead"><span class="label">Trainingsplan · ${P.n} · Einheit ${i+1} von 7</span><button class="btn small ghost" id="planEnd">Beenden</button></div>${dots}
+    <div class="dbody"><b>${T.t}</b>${today?`<span class="status">Heute geschafft, morgen geht es weiter</span>`:active?`<span class="status">eingestellt, Start unten</span>`:`<button class="btn small" id="planGo">Einstellen</button>`}</div></section>`;
+}
+function openPlanPicker(){
+  const o=document.createElement("div");o.className="overlay";
+  o.innerHTML=`<div class="dialog wide" role="dialog" aria-modal="true" aria-labelledby="plt"><h3 id="plt">Trainingsplan wählen</h3><p class="rules">Jeden Tag eine Einheit. Eine Einheit zählt, wenn du ihr Ziel in einem Spiel erreichst.</p>
+    ${PLANS.map(P=>`<div class="planopt"><div class="dhead"><b>${P.n}</b><button class="btn small primary" data-plan="${P.id}">Starten</button></div><span class="status">${P.d}</span><ol>${P.days.map(d=>`<li>${d.t}</li>`).join("")}</ol></div>`).join("")}
+    <div class="row"><button class="btn" id="plno">Abbrechen</button></div></div>`;
+  document.body.appendChild(o);
+  o.addEventListener("click",e=>{e.stopPropagation();const t=e.target.closest("button");if(e.target===o||t&&t.id==="plno"){o.remove();return}
+    if(t&&t.dataset.plan){store.set("oche.plan",{id:t.dataset.plan,start:todayKey(),done:[]});o.remove();render()}});
+}
+function planGo(){const S=planState();if(!S)return;const T=PLANS.find(p=>p.id===S.id).days[S.done.length];if(!T)return;cfg.mode=T.mode;cfg.opts[T.mode]=Object.assign({},cfg.opts[T.mode]||{},T.opts);saveCfg();render()}
+
+/* ================= Spracheingabe ================= */
+const SRC=window.SpeechRecognition||window.webkitSpeechRecognition;
+const speechNative=()=>!!(window.AndroidTTS&&window.AndroidTTS.speechStart&&(!window.AndroidTTS.speechAvailable||window.AndroidTTS.speechAvailable()));
+const speechAvail=()=>speechNative()||!!SRC;
+let voiceOn=false,voiceMsg="",recog=null,voiceTimer=null,voiceBusy=false;
+function voiceStart(){
+  clearTimeout(voiceTimer);
+  if(!voiceOn)return;
+  if(!g||g.over||view!=="game"){voiceStop();return}
+  if(!canInput(g.players[g.cur])||document.querySelector(".overlay")){voiceTimer=setTimeout(voiceStart,900);return}
+  const left=ac?Math.max(0,proEnd-ac.currentTime):0;
+  if(left>.05){voiceTimer=setTimeout(voiceStart,left*1000+250);return}
+  voiceBusy=true;
+  try{
+    if(speechNative()){window.AndroidTTS.speechStart(LOCALES[lang]||"en-GB");return}
+    recog=new SRC();recog.lang=LOCALES[lang]||"en-GB";recog.interimResults=false;recog.maxAlternatives=4;recog.continuous=false;
+    recog.onresult=e=>{const r=e.results[0];onSpeech({type:"result",alts:Array.from(r,a=>a.transcript)})};
+    recog.onerror=e=>onSpeech({type:"error",code:e.error});recog.onend=()=>onSpeech({type:"end"});recog.start();
+  }catch(e){voiceBusy=false;voiceTimer=setTimeout(voiceStart,1500)}
+}
+function voiceStop(){voiceOn=false;voiceBusy=false;clearTimeout(voiceTimer);try{window.AndroidTTS&&window.AndroidTTS.speechStop&&window.AndroidTTS.speechStop()}catch(e){}try{recog&&recog.abort()}catch(e){}recog=null}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&voiceOn){voiceStop();render()}});
+window.ocheSpeech=ev=>onSpeech(typeof ev==="string"?JSON.parse(ev):ev);
+function onSpeech(ev){
+  if(ev.type==="result"){
+    const alts=(ev.alts||[]).filter(Boolean);let ok=false;
+    for(const a of alts){const r=parseSpeech(a);if(r){voiceMsg="„"+a+"“";applySpeech(r);ok=true;break}}
+    if(!ok&&alts.length){voiceMsg="„"+alts[0]+"“ · nicht verstanden";}
+    const s=document.getElementById("voicemsg");if(s)s.textContent=tr(voiceMsg);
+    if(!ok)render();
+  }
+  if(ev.type==="error"&&/not-allowed|denied|permission/.test(ev.code||"")){voiceOn=false;voiceMsg="Mikrofon nicht verfügbar. Erlaube den Mikrofonzugriff.";render();return}
+  if(ev.type==="end"||ev.type==="error"){voiceBusy=false;if(voiceOn){clearTimeout(voiceTimer);voiceTimer=setTimeout(voiceStart,ev.type==="error"&&ev.code!=="no-speech"&&ev.code!=="no-match"?1200:350)}}
+}
+/* Zahlwörter (Deutsch und Englisch); andere Sprachen liefern die Erkennung meist schon als Ziffern */
+const NW={null:0,zero:0,oh:0,ein:1,eins:1,eine:1,one:1,zwei:2,zwo:2,two:2,drei:3,three:3,vier:4,four:4,"fünf":5,five:5,sechs:6,six:6,sieben:7,seven:7,acht:8,eight:8,neun:9,nine:9,zehn:10,ten:10,elf:11,eleven:11,"zwölf":12,twelve:12,dreizehn:13,thirteen:13,vierzehn:14,fourteen:14,"fünfzehn":15,fifteen:15,sechzehn:16,sixteen:16,siebzehn:17,seventeen:17,achtzehn:18,eighteen:18,neunzehn:19,nineteen:19};
+const TW={zwanzig:20,twenty:20,"dreißig":30,dreissig:30,thirty:30,vierzig:40,forty:40,"fünfzig":50,fifty:50,sechzig:60,sixty:60,siebzig:70,seventy:70,achtzig:80,eighty:80,neunzig:90,ninety:90};
+function deNum(w){
+  if(NW[w]!=null)return NW[w];if(TW[w]!=null)return TW[w];
+  let m=w.match(/^(?:ein)?hundert(?:und)?(.*)$/);if(m){if(!m[1])return 100;const r=deNum(m[1]);return r==null?null:100+r}
+  m=w.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|dreissig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);if(m)return NW[m[1]==="ein"?"eins":m[1]]+TW[m[2]];
+  return null;
+}
+const VW={triple:"T",treble:"T",tripel:"T",trippel:"T",dreifach:"T",triplo:"T",tripla:"T",tripple:"T","potrójne":"T","potrójna":"T","potrójny":"T",trebles:"T",
+  double:"D",doppel:"D",doppelt:"D",doble:"D",doppio:"D",dubbel:"D",dubbele:"D","podwójne":"D","podwójna":"D","podwójny":"D",duplo:"D",dupla:"D",doubles:"D",
+  single:"S",einfach:"S",simple:"S",singolo:"S",enkel:"S",enkele:"S","pojedyncze":"S","pojedyncza":"S",simples:"S",
+  bull:"B",bulle:"B",bulls:"B",bullseye:"BB",bullauge:"BB",
+  miss:"M",daneben:"M",vorbei:"M",fallo:"M","raté":"M",mancato:"M",mis:"M","pudło":"M",falha:"M",nix:"M",
+  undo:"U","zurück":"U","rückgängig":"U",deshacer:"U",annuler:"U",annulla:"U",terug:"U",cofnij:"U",desfazer:"U",
+  next:"N",weiter:"N",siguiente:"N",suivant:"N",avanti:"N",volgende:"N",dalej:"N",seguinte:"N"};
+function speechTokens(text){
+  let s=String(text).toLowerCase().replace(/bull'?s[ -]?eye/g,"bullseye").replace(/kein(en)? score|no score|nichts/g," noscore ").replace(/[.,;:!?„“"'()]/g," ").replace(/-/g," ");
+  s=s.replace(/\b([tdsm])\s*(\d{1,2})\b/g,(m,a,b)=>({t:"triple",d:"double",s:"single",m:"miss"})[a]+" "+b);
+  const words=s.split(/\s+/).filter(Boolean),out=[];let acc=null;
+  const flush=()=>{if(acc!=null)out.push({n:acc});acc=null};
+  for(const w of words){
+    if(/^\d+$/.test(w)){flush();out.push({n:+w});continue}
+    if(w==="hundred"){acc=(acc&&acc<10?acc:1)*100;continue}
+    if((w==="and"||w==="und")&&acc!=null&&acc>=100&&acc%100===0)continue;
+    const v=deNum(w);
+    if(v!=null){
+      if(acc==null)acc=v;
+      else if(acc>=100&&acc%100===0&&v<100)acc+=v;
+      else if(acc>=20&&acc%10===0&&acc%100!==0&&v>0&&v<10&&/^(one|two|three|four|five|six|seven|eight|nine)$/.test(w))acc+=v;
+      else{flush();acc=v}
+      continue}
+    flush();
+    if(w==="noscore"){out.push({z:1});continue}
+    if(VW[w]){out.push({c:VW[w]});continue}
+  }
+  flush();return out;
+}
+function parseSpeech(text){
+  if(!g||g.over)return null;
+  const M=MODES[g.mode],hasSum=!!M.visit,im=inputMode==="sum"&&hasSum?"sum":"darts";
+  const tk=speechTokens(text);if(!tk.length)return null;
+  if(tk.length===1&&tk[0].c==="U")return{cmd:"undo"};
+  if(tk.length===1&&tk[0].c==="N")return{cmd:"next"};
+  if(tk.some(t=>t.z))return hasSum&&!g.turn.length?{total:0}:{darts:[{n:0,m:0},{n:0,m:0},{n:0,m:0}]};
+  const nums=tk.filter(t=>t.n!=null),mods=tk.filter(t=>t.c&&"TDSB".includes(t.c[0]));
+  if(hasSum&&nums.length===1&&!mods.length&&!g.turn.length&&(im==="sum"||(nums[0].n>20&&nums[0].n!==25&&nums[0].n!==50))){const v=nums[0].n;return v>=0&&v<=180?{total:v}:null}
+  const darts=[];let m=1;
+  for(const t of tk){
+    if(t.c==="T"){m=3;continue}if(t.c==="D"){m=2;continue}if(t.c==="S"){m=1;continue}
+    if(t.c==="BB"){darts.push({n:25,m:2});m=1;continue}
+    if(t.c==="B"){darts.push({n:25,m:m===2?2:1});m=1;continue}
+    if(t.c==="M"){darts.push({n:0,m:0});m=1;continue}
+    if(t.n!=null){const n=t.n;
+      if(n===0){darts.push({n:0,m:0})}
+      else if(n>=1&&n<=20)darts.push({n,m});
+      else if(n===25)darts.push({n:25,m:m===2?2:1});
+      else if(n===50)darts.push({n:25,m:2});
+      else if(m>1&&n%m===0&&n/m>=1&&n/m<=20)darts.push({n:n/m,m});
+      else return null;
+      m=1}
+  }
+  if(!darts.length)return null;
+  return{darts:darts.slice(0,3-g.turn.length)};
+}
+function applySpeech(r){
+  if(r.cmd==="undo"){if(isGuest())guestSend({t:"undo"});else undo();return}
+  if(r.cmd==="next"){if(isGuest())guestSend({t:"fill"});else fillTurn();return}
+  if(r.total!=null){submitSum(r.total);return}
+  if(r.darts){const c=g.cur;for(const d of r.darts){if(!g||g.over||g.cur!==c)break;input(d)}}
+}
+
 /* ================= Werbung nach dem Spiel und Freikauf (nur Play-Fassung) ================= */
 let mon={enabled:false};
 function monRefresh(){try{if(window.AndroidTTS&&window.AndroidTTS.monState)mon=JSON.parse(window.AndroidTTS.monState())}catch(e){}}
 window.ocheMon=st=>{mon=st||{enabled:false};if(view!=="game")render()};
 window.ocheToast=t=>toastLocal(t,"green");
-let lastAd=0;
+let lastAd=0,reviewNow=false;
+/* Bewertung im Play Store: nach einem Sieg eines Spielers auf diesem Gerät, frühestens nach 3 Spielen,
+   höchstens alle 30 Tage und insgesamt 4-mal. Google entscheidet zusätzlich selbst, ob das Fenster erscheint. */
+function maybeReview(){
+  try{
+    if(!mon.enabled||!window.AndroidTTS||!window.AndroidTTS.askReview||!g||g.fast||net.role==="guest")return;
+    const R=store.get("oche.review",{g:0,n:0,t:0});R.g++;
+    const won=(g.winList||[]).length===1&&g.players[g.winList[0]],p=won;
+    const mine=p&&!p.bot&&(!net.role||p.owner===net.token);
+    if(mine&&R.g>=3&&R.n<4&&Date.now()-R.t>30*864e5){R.n++;R.t=Date.now();reviewNow=true;setTimeout(()=>{try{window.AndroidTTS.askReview()}catch(e){}},1800)}
+    store.set("oche.review",R);
+  }catch(e){}
+}
 /* Wird beim Verlassen des Ergebnisbildschirms aufgerufen: höchstens alle 3 Minuten, nie bei Bot-Schnellspielen */
 function adAfterGame(){
   if(!mon.enabled||mon.adsRemoved||!window.AndroidTTS||!window.AndroidTTS.showAd)return;
   if(g&&g.fast)return;
+  if(reviewNow){reviewNow=false;return}
   if(Date.now()-lastAd<180000)return;
   lastAd=Date.now();try{window.AndroidTTS.showAd()}catch(e){}
 }
@@ -2258,13 +2502,13 @@ const OPT_SHORT={legs:["Leg","Legs"],sets:["Set","Sets"],rounds:["Runde","Runden
 function optSummary(M,o){return M.options.map(x=>{const v=x.v.find(v=>v[0]===o[x.k]);const l=v?v[1]:String(o[x.k]);const sh=OPT_SHORT[x.k];return sh&&/^\d+$/.test(l)?`${l} ${+l===1?sh[0]:sh[1]}`:l}).join(" · ")}
 function renderPlay(){
   const M=MODES[cfg.mode],o=optsFor(cfg.mode),min=M.minPlayers||1,max=M.maxPlayers||8,bad=cfg.players.length<min||cfg.players.length>max;
-  return renderUpdate()+renderDaily()+`<section class="card modecard">
+  return renderUpdate()+renderDaily()+renderPlan()+`<section class="card modecard">
     <button class="modehead" id="modePick" aria-label="Spielmodus wechseln"><span class="label">${M.tag}</span><b>${M.name}</b><small>${M.desc}</small><span class="chev">Modus wechseln ›</span></button>
     ${M.options.length?`<button class="optsum" id="optsToggle" aria-expanded="${optsOpen}"><span class="label">Regeln</span><span>${optSummary(M,o)}</span><span class="chev">${optsOpen?"Fertig":"Ändern"}</span></button>
     ${optsOpen?`<p class="rules">${M.rules}</p><div class="opts">${M.options.map(x=>`<div class="opt"><span class="label">${x.l}</span><div class="seg">${x.v.map(([v,l])=>`<button data-opt="${x.k}" data-val='${JSON.stringify(v)}' aria-pressed="${o[x.k]===v}">${l}</button>`).join("")}${x.custom?`<input type="number" inputmode="numeric" class="numin" id="opt-${x.k}" data-optnum="${x.k}" min="${x.custom.min}" max="${x.custom.max}" placeholder="${x.custom.l}" value="${x.v.some(v=>v[0]===o[x.k])?"":o[x.k]}" aria-label="${x.l}: ${x.custom.l}">`:""}</div></div>`).join("")}</div>`:""}`:`<p class="rules">${M.rules}</p>`}
   </section>
   <section class="card"><h2>Spieler</h2>
-    <div class="players">${cfg.players.map((p,i)=>`<div class="prow"><span class="dot" style="background:${COLORS[i%8]}"></span>${p.remote?`<input value="${esc(p.name)}" disabled aria-label="Name"><span class="rtag"><span class="badge blue">Online</span><span class="status">${net.conns[p.remote]?"verbunden":"getrennt"}</span></span>`:`<input id="pn${i}" data-pi="${i}" list="proflist" autocomplete="off" value="${esc(p.name)}" maxlength="18" placeholder="Spieler ${i+1}" aria-label="Name Spieler ${i+1}"><select id="pb${i}" data-bot="${i}" aria-label="Typ Spieler ${i+1}">${BOTS.map((b,k)=>`<option value="${k}" ${(p.bot|0)===k?"selected":""}>${b.l}${k?" ("+BOTAVG[k]+")":""}</option>`).join("")}</select>`}<button class="iconbtn" data-up="${i}" ${i===0?"disabled":""} aria-label="Nach oben">↑</button><button class="iconbtn" data-del="${i}" ${cfg.players.length<=1?"disabled":""} aria-label="Entfernen">✕</button></div>`).join("")}</div>
+    <div class="players">${cfg.players.map((p,i)=>`<div class="prow">${p.remote||p.bot?`<span class="dot" style="background:${COLORS[i%8]}"></span>`:`<button class="avbtn" data-avp="${i}" style="--c:${profColor(p,i)}" aria-label="Farbe und Profilbild">${avInner((p.name||"").trim()||defName(i+1))}</button>`}${p.remote?`<input value="${esc(p.name)}" disabled aria-label="Name"><span class="rtag"><span class="badge blue">Online</span><span class="status">${net.conns[p.remote]?"verbunden":"getrennt"}</span></span>`:`<input id="pn${i}" data-pi="${i}" list="proflist" autocomplete="off" value="${esc(p.name)}" maxlength="18" placeholder="Spieler ${i+1}" aria-label="Name Spieler ${i+1}"><select id="pb${i}" data-bot="${i}" aria-label="Typ Spieler ${i+1}">${BOTS.map((b,k)=>`<option value="${k}" ${(p.bot|0)===k?"selected":""}>${b.l}${k?" ("+BOTAVG[k]+")":""}</option>`).join("")}</select>`}<button class="iconbtn" data-up="${i}" ${i===0?"disabled":""} aria-label="Nach oben">↑</button><button class="iconbtn" data-del="${i}" ${cfg.players.length<=1?"disabled":""} aria-label="Entfernen">✕</button></div>`).join("")}</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="addp" ${cfg.players.length>=8?"disabled":""}>+ Spieler</button><button class="btn" id="addbot" ${cfg.players.length>=8?"disabled":""}>+ Bot</button><button class="btn ghost" id="shuf" ${cfg.players.length<2?"disabled":""}>Mischen</button></div>
   </section>
   <div class="startbar">
@@ -2322,7 +2566,7 @@ function renderGame(){
     <div class="quick">${[26,41,45,60,81,85,100,140].map(v=>`<button data-sumq="${v}">${v}</button>`).join("")}</div>
     <div class="keys numpad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-num="${n}">${n}</button>`).join("")}<button data-num="del" class="undo" aria-label="Ziffer löschen">⌫</button><button data-num="0">0</button><button data-num="ok" class="okbtn">OK</button></div>
     <div class="boardrow">${info&&info.opened&&info.rest<=170&&checkout(info.rest,3,info.out)?`<button class="btn" id="sumrest">Check ${info.rest}</button>`:""}<button class="btn" id="sumzero">Kein Score</button><button class="btn" id="undo" ${(isGuest()?net.canUndo:hist.length>0)?"":"disabled"}>↶ Zurück</button></div>`;
-  const strip=`<div class="strip">${g.players.map((q,i)=>{const c=M.card(g,q);const tag=q.bot?'<span class="badge gold">Bot</span>':q.owner&&net.role?(q.owner===net.token?'<span class="badge blue">Du</span>':(net.role==="host"?net.conns[q.owner]:(net.online||[]).includes(q.owner))?'<span class="badge blue">Online</span>':'<span class="badge">Offline</span>'):"";return`<div class="pc ${i===g.cur?"active":""} ${q.out?"out":""}" style="--pcol:${q.color}"><div class="nm"><span>${esc(q.name)}</span>${c.legs?`<span class="legs">${Array.from({length:g.opts.legs},(_,k)=>`<i class="${k<q.legs?"on":""}"></i>`).join("")}</span>`:tag}</div><div class="big">${c.big}</div><div class="sub">${c.sub}</div>${c.prog!=null?`<div class="progress"><span style="width:${c.prog*100}%"></span></div>`:""}</div>`}).join("")}</div>`;
+  const strip=`<div class="strip">${g.players.map((q,i)=>{const c=M.card(g,q);const tag=q.bot?'<span class="badge gold">Bot</span>':q.owner&&net.role?(q.owner===net.token?'<span class="badge blue">Du</span>':(net.role==="host"?net.conns[q.owner]:(net.online||[]).includes(q.owner))?'<span class="badge blue">Online</span>':'<span class="badge">Offline</span>'):"";return`<div class="pc ${i===g.cur?"active":""} ${q.out?"out":""}" style="--pcol:${q.color}"><div class="nm"><span>${q.av?`<i class="pav" aria-hidden="true">${q.av}</i>`:""}${esc(q.name)}</span>${c.legs?`<span class="legs">${Array.from({length:g.opts.legs},(_,k)=>`<i class="${k<q.legs?"on":""}"></i>`).join("")}</span>`:tag}</div><div class="big">${c.big}</div><div class="sub">${c.sub}</div>${c.prog!=null?`<div class="progress"><span style="width:${c.prog*100}%"></span></div>`:""}</div>`}).join("")}</div>`;
   const last=g.last?`Letzte Aufnahme · <b style="color:${g.last.color}">${esc(g.last.name)}</b>: ${g.last.darts.map(lbl).join(" ")}${g.last.bust?" · <b style='color:var(--red-t)'>überworfen</b>":` · <b>${g.last.total}</b>`}`:"Erster Wurf. Viel Glück.";
   const hl=n=>tg&&((tg.nums&&tg.nums.includes(n))||(tg.list&&tg.list.some(x=>x.n===n)))?"target":"";
   const undoOk=isGuest()?net.canUndo:hist.length>0;
@@ -2344,7 +2588,7 @@ function renderGame(){
   ${strip}
   <div class="play">
     <section class="active-panel" style="--pcol:${p.color}">
-      <div class="who"><span class="dot" style="background:${p.color}"></span>${esc(p.name)} ist dran<span class="badge" style="margin-left:auto">Dart ${Math.min(3,g.turn.length+1)}/3</span></div>
+      <div class="who">${p.av?`<span class="pav" aria-hidden="true">${p.av}</span>`:`<span class="dot" style="background:${p.color}"></span>`}${esc(p.name)} ist dran<span class="badge" style="margin-left:auto">Dart ${Math.min(3,g.turn.length+1)}/3</span></div>
       <div class="hero">${h.v}<small>${h.sm}</small></div>
       <div class="darts">${[0,1,2].map(i=>dslot(g.turn[i])).join("")}</div>
       <div class="hint">${M.hint(g,p)}</div>
@@ -2352,7 +2596,8 @@ function renderGame(){
       <div class="last">${last}</div>
     </section>
     <section class="input ${mine?"":"locked"}">
-      <div class="inhead"><span class="label">Eingabe</span><div class="seg imode" role="group" aria-label="Eingabe"><button data-input="keys" aria-pressed="${im==="keys"}"><i aria-hidden="true">⌨</i><span>Einzeln</span></button><button data-input="board" aria-pressed="${im==="board"}"><i aria-hidden="true">◎</i><span>Scheibe</span></button>${hasSum?`<button data-input="sum" aria-pressed="${im==="sum"}"><i aria-hidden="true">Σ</i><span>Summe</span></button>`:""}</div></div>
+      <div class="inhead"><span class="label">Eingabe</span>${speechAvail()&&mine?`<button class="micbtn" id="micBtn" aria-pressed="${voiceOn}" aria-label="Spracheingabe" title="Spracheingabe"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2z"/></svg></button>`:""}<div class="seg imode" role="group" aria-label="Eingabe"><button data-input="keys" aria-pressed="${im==="keys"}"><i aria-hidden="true">⌨</i><span>Einzeln</span></button><button data-input="board" aria-pressed="${im==="board"}"><i aria-hidden="true">◎</i><span>Scheibe</span></button>${hasSum?`<button data-input="sum" aria-pressed="${im==="sum"}"><i aria-hidden="true">Σ</i><span>Summe</span></button>`:""}</div></div>
+      ${voiceOn&&mine?`<div class="voicebar"><span class="pulse"></span><span id="voicemsg">${esc(voiceMsg||"Sprich jetzt, z. B. „Triple 20, 19, 5“ oder „100“")}</span></div>`:""}
       ${wait}${hostUndo?`<div>${hostUndo}</div>`:""}
       ${im==="board"?board:im==="sum"&&!g.turn.length?sumpad:keys}
     </section>
@@ -2377,6 +2622,7 @@ function renderResult(){
 }
 
 function render(){
+  if(voiceOn&&(view!=="game"||!g||g.over))voiceStop();
   const app=$("#app");
   document.body.classList.toggle("tv",view==="game"&&tvMode);
   const ae=document.activeElement,fid=ae&&ae.id&&ae.tagName==="INPUT"?ae.id:null,sel=fid?[ae.selectionStart,ae.selectionEnd]:null;
@@ -2419,11 +2665,16 @@ document.addEventListener("click",e=>{
   if(view==="setup"&&tab==="stats"||view==="stats"){
     if(t.id==="statsBack"){view="setup";statsConfirm=false;render();return}
     if(t.dataset.prof){statsSel=t.dataset.prof;statsConfirm=false;render();return}
+    if(t.dataset.match){const all=statsAll(),k=statsSel&&all[statsSel]?statsSel:Object.keys(all).sort((a,b)=>all[b].games.length-all[a].games.length)[0];const rec=all[k]&&all[k].games.find(x=>x.id===t.dataset.match);if(rec)openMatch(rec);return}
     if(t.id==="profDel"){statsConfirm=true;render();return}
     if(t.id==="profNo"){statsConfirm=false;render();return}
     if(t.id==="profYes"){const all=statsAll(),k=statsSel&&all[statsSel]?statsSel:Object.keys(all).sort((a,b)=>all[b].games.length-all[a].games.length)[0];delete all[k];store.set("oche.stats",all);statsSel=null;statsConfirm=false;render();return}
   }
   if(view==="setup"){
+    if(t.id==="planPick"){openPlanPicker();return}
+    if(t.id==="planGo"){planGo();return}
+    if(t.id==="planEnd"){store.set("oche.plan",null);render();return}
+    if(t.dataset.avp!=null){openProfPicker(+t.dataset.avp);return}
     if(t.id==="dailyGo"){const D=dailyTask();cfg.mode=D.mode;cfg.opts[D.mode]=Object.assign({},cfg.opts[D.mode]||{},D.opts);saveCfg();render();return}
     if(t.id==="modePick"){modePicker=true;render();window.scrollTo(0,0);return}
     if(t.id==="modeClose"){modePicker=false;render();return}
@@ -2442,6 +2693,7 @@ document.addEventListener("click",e=>{
     if(t.id==="closeRoom"){closeRoom("",net.role==="host");return}
   }
   if(view==="game"){
+    if(t.id==="micBtn"){if(voiceOn){voiceStop();voiceMsg=""}else{voiceOn=true;voiceMsg="";try{audioCtx()}catch(e){}voiceStart()}render();return}
     if(t.id==="tvBtn"){tvMode=!tvMode;store.set("oche.tv",tvMode);render();return}
     if(t.dataset.input){inputMode=t.dataset.input;store.set("oche.input",inputMode);render();return}
     if(t.id==="quit"){confirmQuit();return}

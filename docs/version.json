@@ -1,9 +1,13 @@
 {
- "version": "2.4",
- "code": 15,
+ "version": "2.5",
+ "code": 16,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
  "date": "2026-11-02",
  "notes": [
-  "Echte Werbe-IDs in der Play-Version (Web und GitHub-APK unverändert werbefrei)"
+  "Spracheingabe für Punkte",
+  "Spielverlauf Aufnahme für Aufnahme",
+  "Profile mit Farbe und Profilbild",
+  "Trainingspläne",
+  "Eigene Caller-Stimme im Backup"
  ]
 }

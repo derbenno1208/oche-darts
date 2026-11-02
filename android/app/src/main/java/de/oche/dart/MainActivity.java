@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
     ValueCallback<Uri[]> fileCallback;
     String pendingJoin;
     Monetization mon;
+    Speech speech;
     FrameLayout root;
     boolean pageReady = false;
 
@@ -79,6 +80,7 @@ public class MainActivity extends Activity {
         tts = new TextToSpeech(this, new TtsInit());
         web.addJavascriptInterface(new Bridge(), "AndroidTTS");
         mon = new Monetization(this, web);
+        speech = new Speech(this, web);
         mon.init();
 
         if (saved != null) web.restoreState(saved);
@@ -181,6 +183,7 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int code, String[] perms, int[] results) {
         super.onRequestPermissionsResult(code, perms, results);
+        if (code == Speech.REQ_SPEECH) { speech.permissionResult(results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED); return; }
         if (code != REQ_MIC || pendingPermission == null) return;
         if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED)
             pendingPermission.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
@@ -349,6 +352,16 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void buyNoAds() { runOnUiThread(() -> mon.buy()); }
 
+        /* Spracheingabe */
+        @JavascriptInterface
+        public boolean speechAvailable() { return speech != null && speech.available(); }
+
+        @JavascriptInterface
+        public void speechStart(String lang) { runOnUiThread(() -> speech.start(lang)); }
+
+        @JavascriptInterface
+        public void speechStop() { runOnUiThread(() -> speech.stop()); }
+
         @JavascriptInterface
         public void askReview() { runOnUiThread(() -> mon.askReview()); }
 
@@ -392,6 +405,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (tts != null) tts.shutdown();
+        if (speech != null) speech.destroy();
         if (web != null) web.destroy();
         super.onDestroy();
     }
