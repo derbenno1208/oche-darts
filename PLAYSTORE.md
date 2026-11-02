@@ -123,7 +123,7 @@ Oche ist der Dart-Zähler für dein Board zu Hause, in der Kneipe oder im Verein
 • Party: Gotcha und Scram für zwei
 
 PROFI-CALLER
-Echte Hallen-Atmosphäre: jede Punktzahl angesagt, „You require 141“, „Game shot, and the leg!“ und natürlich die gedehnte „One hundred and eighty!“ mit jubelndem Publikum. Auf Englisch oder Deutsch, oder mit deinen eigenen Aufnahmen.
+Echte Hallen-Atmosphäre: jede Punktzahl angesagt, „You require 141“, „Game shot, and the leg!“ und natürlich die gedehnte „One hundred and eighty!“ mit jubelndem Publikum. Auf Englisch oder Deutsch, oder du sprichst den kompletten Caller mit deiner eigenen Stimme ein.
 
 SCHNELL EINGEBEN
 Einzelne Darts per Tasten, per Tipp auf die Dartscheibe oder als Aufnahme-Summe. Checkout-Vorschläge wie bei den Profis, mit deinem Lieblingsdoppel.
@@ -141,7 +141,7 @@ STATISTIK
 Average-Verlauf, First-9-Average, 180er, Checkout-Quote nach Rest, Doppelquote je Feld, Trefferbild, Bilanz gegen deine Gegner, 22 Erfolge und eine tägliche Trainingsaufgabe.
 
 UND MEHR
-Großanzeige für Tablet oder Fernseher, helles und dunkles Design, Deutsch und Englisch, Daten sichern und wiederherstellen.
+Großanzeige für Tablet oder Fernseher, helles und dunkles Design, 8 Sprachen (Deutsch, Englisch, Spanisch, Französisch, Italienisch, Niederländisch, Polnisch, Portugiesisch), Daten sichern und wiederherstellen.
 
 Kein Konto nötig. Werbung nur kurz nach einem Spiel, für 2,99 € dauerhaft abschaltbar.
 ```
@@ -173,10 +173,10 @@ Oche is the dart scorer for your board at home, at the pub or at the club. Enter
 • Party: Gotcha and Scram for two
 
 PRO CALLER
-Real arena atmosphere: every score called, "You require 141", "Game shot, and the leg!" and of course the long "One hundred and eighty!" with a roaring crowd. In English or German, or with your own recordings.
+Real arena atmosphere: every score called, "You require 141", "Game shot, and the leg!" and of course the long "One hundred and eighty!" with a roaring crowd. In English or German, or record the complete caller in your own voice.
 
 FAST INPUT
-Single darts on the keypad, by tapping the dartboard, or as a visit total. Checkout suggestions like the pros, with your favourite double.
+Single darts on the keypad, by tapping the dartboard (with extra-wide trebles and doubles), or as a visit total. Checkout suggestions like the pros, with your favourite double.
 
 PLAY THE BOTS
 Six levels from beginner (avg 20–30) to world class (avg 85–105).
@@ -191,7 +191,7 @@ STATS
 Average history, first-9 average, 180s, checkout rate by score left, doubles rate per field, hit map, head-to-head records, 22 achievements and a daily practice challenge.
 
 AND MORE
-Big screen mode for tablets or TVs, light and dark theme, English and German, backup and restore.
+Big screen mode for tablets or TVs, light and dark theme, 8 languages (English, German, Spanish, French, Italian, Dutch, Polish, Portuguese), backup and restore.
 
 No account needed. Ads only briefly after a game, removable for good for €2.99.
 ```
