@@ -1,13 +1,11 @@
 {
- "version": "2.6",
- "code": 17,
+ "version": "2.7",
+ "code": 18,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
- "date": "2026-11-02",
+ "date": "2026-11-11",
  "notes": [
-  "Teams zu zweit",
-  "Ergebnis als Bild teilen",
-  "Reaktionen im Online-Spiel",
-  "Statistik als CSV",
-  "Tägliche Erinnerung (App)"
+  "Einführung für neue Spieler",
+  "Hilfe & häufige Fragen",
+  "App bewerten und Feedback senden"
  ]
 }

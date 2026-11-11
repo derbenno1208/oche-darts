@@ -15,7 +15,6 @@ tools/caller/kokoro/
 tools/caller/**/out*/
 tools/caller/**/.key
 !docs/OcheDarts.apk
-!docs/OcheDarts-*.aab
 android/local.properties
 android/.gradle/
 android/app/build/
