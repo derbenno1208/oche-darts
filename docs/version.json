@@ -1,11 +1,9 @@
 {
- "version": "2.7",
- "code": 19,
+ "version": "2.8",
+ "code": 20,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
- "date": "2026-11-12",
+ "date": "2026-11-16",
  "notes": [
-  "Einführung für neue Spieler",
-  "Hilfe & häufige Fragen",
-  "App bewerten und Feedback senden"
+  "Profilbilder vor den Spielernamen entfernt"
  ]
 }
