@@ -1,9 +1,13 @@
 {
- "version": "2.8",
- "code": 20,
+ "version": "2.9",
+ "code": 21,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
  "date": "2026-11-16",
  "notes": [
-  "Profilbilder vor den Spielernamen entfernt"
+  "Checkout-Trainer mit zufälligen Finishes",
+  "Wochenübersicht in der Statistik",
+  "Zuletzt gespielte Namen antippen",
+  "Revanche: Verlierer beginnt",
+  "Bildschirm bleibt im Spiel an (Web)"
  ]
 }
