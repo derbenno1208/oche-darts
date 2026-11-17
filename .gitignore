@@ -19,3 +19,5 @@ tools/caller/**/.key
 android/local.properties
 android/.gradle/
 android/app/build/
+# Pakete zum Verschicken (werden aus store/ erzeugt)
+*.zip
