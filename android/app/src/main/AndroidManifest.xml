@@ -7,8 +7,6 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <!-- Mikrofon nur optional, damit die App auch auf Geräten ohne Mikrofon (Fernseher, manche Tablets) installierbar ist -->
-    <uses-feature android:name="android.hardware.microphone" android:required="false"/>
     <queries>
         <intent><action android:name="android.intent.action.TTS_SERVICE"/></intent>
         <intent><action android:name="android.speech.RecognitionService"/></intent>
@@ -37,7 +35,7 @@
                 <data android:scheme="https" android:host="derbenno1208.github.io" android:path="/oche-darts/index.html"/>
             </intent-filter>
         </activity>
-        <provider android:name=".ShareProvider" android:authorities="${applicationId}.share" android:exported="false" android:grantUriPermissions="true"/>
+        <provider android:name=".ShareProvider" android:authorities="de.oche.dart.share" android:exported="false" android:grantUriPermissions="true"/>
         <!-- nicht exportiert: Systemmeldungen (Neustart, App-Update) und der eigene Wecker kommen trotzdem an -->
         <receiver android:name=".Reminder" android:exported="false">
             <intent-filter>

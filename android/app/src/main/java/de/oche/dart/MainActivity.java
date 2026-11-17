@@ -73,8 +73,8 @@ public class MainActivity extends Activity {
         s.setAllowContentAccess(true);
         String ver = "";
         try { ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception ignored) { }
-        boolean play = getResources().getBoolean(R.bool.play_store), tv = getResources().getBoolean(R.bool.tv_device);
-        s.setUserAgentString(s.getUserAgentString() + " OcheApp/" + ver + (play ? " Play" : tv ? " TV" : ""));
+        boolean play = getResources().getBoolean(R.bool.play_store);
+        s.setUserAgentString(s.getUserAgentString() + " OcheApp/" + ver + (play ? " Play" : ""));
 
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new Chrome());
@@ -379,7 +379,7 @@ public class MainActivity extends Activity {
                 dir.mkdirs();
                 java.io.File f = new java.io.File(dir, "oche-darts.png");
                 try (java.io.FileOutputStream o = new java.io.FileOutputStream(f)) { o.write(png); }
-                Uri uri = Uri.parse("content://" + ShareProvider.auth(MainActivity.this) + "/oche-darts.png");
+                Uri uri = Uri.parse("content://" + ShareProvider.AUTH + "/oche-darts.png");
                 runOnUiThread(() -> {
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("image/png");

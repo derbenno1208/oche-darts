@@ -18,13 +18,12 @@ Dart-Zähler für Android und Browser: 13 Spielmodi, Bots in 6 Stärken, Profi-C
 
 ## App bauen
 
-Der Android-Teil ist ein Gradle-Projekt mit drei Fassungen:
+Der Android-Teil ist ein Gradle-Projekt mit zwei Fassungen:
 
 | Fassung | Ergebnis | Besonderheiten |
 |---|---|---|
 | `github` | `OcheDarts.apk` | werbefrei, eigener Update-Hinweis über `docs/version.json` |
 | `play` | `OcheDarts.aab` | Werbung nach dem Spiel (AdMob, mit DSGVO-Einwilligung), Einmalkauf „Werbung entfernen“ (`remove_ads`), Updates nur über Google Play |
-| `firetv` | `OcheDarts-FireTV.apk` (`./build.sh tv`) | Fernseher-Anzeige für den Amazon Appstore, Paketname `de.oche.dart.tv`, gesteuert vom Handy (siehe [AMAZON.md](AMAZON.md)) |
 
 Voraussetzungen: JDK 17 oder neuer, Python 3, Gradle 8.14 und ein Android-SDK im Standardaufbau (`platforms/android-36`, `build-tools/36.1.0`). Fehlende SDK-Teile lädt Gradle selbst nach.
 

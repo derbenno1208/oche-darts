@@ -1,10 +1,12 @@
 {
- "version": "3.1",
- "code": 23,
+ "version": "3.0",
+ "code": 22,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
  "date": "2026-11-17",
  "notes": [
-  "Fernseher als Anzeigetafel: Optionen → Fernseher",
-  "Fire-TV-App und Browser-Ansicht mit ?tv"
+  "Viele Fehler behoben, z. B. Cricket-Sieg und Doppelquote bei Summen-Eingabe",
+  "Farben im dunklen Design wieder richtig",
+  "Sicherung im Browser als Datei",
+  "Online-Spiel und Sicherungen besser abgesichert"
  ]
 }
