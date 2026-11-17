@@ -14,18 +14,28 @@ android {
 
     buildFeatures { buildConfig true }
 
-    // Zwei Fassungen: "github" (Direkt-Download, werbefrei, eigener Update-Hinweis)
-    // und "play" (Google Play, Werbung nach dem Spiel, Freikauf über Google Play)
+    // Drei Fassungen: "github" (Direkt-Download, werbefrei, eigener Update-Hinweis),
+    // "play" (Google Play, Werbung nach dem Spiel, Freikauf über Google Play)
+    // und "firetv" (Amazon Appstore für Fire TV: nur Anzeige, gesteuert vom Handy, werbefrei)
     flavorDimensions += "store"
     productFlavors {
         github {
             dimension "store"
             resValue "bool", "play_store", "false"
+            resValue "bool", "tv_device", "false"
+            manifestPlaceholders = [admobAppId: ""]
+        }
+        firetv {
+            dimension "store"
+            applicationIdSuffix ".tv"
+            resValue "bool", "play_store", "false"
+            resValue "bool", "tv_device", "true"
             manifestPlaceholders = [admobAppId: ""]
         }
         play {
             dimension "store"
             resValue "bool", "play_store", "true"
+            resValue "bool", "tv_device", "false"
             manifestPlaceholders = [admobAppId: project.findProperty("admobAppId")]
             buildConfigField "String", "ADMOB_INTERSTITIAL", "\"${project.findProperty("admobInterstitialId")}\""
         }
@@ -52,7 +62,10 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     // Die eingebaute Web-App liegt in build/generated/oche-assets (erzeugt von build.sh)
-    sourceSets { main { assets.srcDirs += ["build/generated/oche-assets"] } }
+    sourceSets {
+        main { assets.srcDirs += ["build/generated/oche-assets"] }
+        firetv { java.srcDirs += ["src/github/java"] }   // gleiche werbefreie Monetization wie die GitHub-Fassung
+    }
     packaging { resources { excludes += ["META-INF/*.kotlin_module"] } }
 }
 

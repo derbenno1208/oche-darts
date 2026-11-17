@@ -2,7 +2,8 @@
 # Baut Oche Darts mit Gradle.
 #   ./build.sh          → OcheDarts.apk  (Fassung "github": werbefrei, eigener Update-Hinweis)
 #   ./build.sh play     → OcheDarts.aab  (Fassung "play": Werbung nach dem Spiel, Freikauf über Google Play)
-#   ./build.sh both     → beides
+#   ./build.sh both     → APK und AAB
+#   ./build.sh tv       → OcheDarts-FireTV.apk (Fassung "firetv": Fernseher-Anzeige für den Amazon Appstore)
 # Umgebungsvariablen: SDK (Android-SDK-Ordner, Standardaufbau mit platforms/ und build-tools/),
 #                     VERSION_CODE, VERSION_NAME, HTML (Pfad zur App-Datei, Standard ../src/oche.html)
 set -e
@@ -25,6 +26,9 @@ PROPS=""
 TASKS=""
 [ "$WHAT" = "apk" -o "$WHAT" = "both" ] && TASKS="$TASKS :app:assembleGithubRelease"
 [ "$WHAT" = "play" -o "$WHAT" = "both" ] && TASKS="$TASKS :app:bundlePlayRelease"
+[ "$WHAT" = "tv" ] && TASKS="$TASKS :app:assembleFiretvRelease"
 gradle --console=plain -q $PROPS $TASKS
-[ -f app/build/outputs/apk/github/release/app-github-release.apk ] && [ "$WHAT" != "play" ] && cp app/build/outputs/apk/github/release/app-github-release.apk ../OcheDarts.apk && echo "→ OcheDarts.apk"
-[ -f app/build/outputs/bundle/playRelease/app-play-release.aab ] && [ "$WHAT" != "apk" ] && cp app/build/outputs/bundle/playRelease/app-play-release.aab ../OcheDarts.aab && echo "→ OcheDarts.aab"
+# Ergebnisse in den Hauptordner kopieren
+if [ "$WHAT" = "apk" -o "$WHAT" = "both" ]; then cp app/build/outputs/apk/github/release/app-github-release.apk ../OcheDarts.apk && echo "→ OcheDarts.apk"; fi
+if [ "$WHAT" = "play" -o "$WHAT" = "both" ]; then cp app/build/outputs/bundle/playRelease/app-play-release.aab ../OcheDarts.aab && echo "→ OcheDarts.aab"; fi
+if [ "$WHAT" = "tv" ]; then cp app/build/outputs/apk/firetv/release/app-firetv-release.apk ../OcheDarts-FireTV.apk && echo "→ OcheDarts-FireTV.apk"; fi

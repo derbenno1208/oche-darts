@@ -13,7 +13,8 @@ import java.io.FileNotFoundException;
 
 /** Stellt geteilte Bilder aus dem Cache-Ordner "share" für andere Apps bereit (nur lesend, mit Freigabe per Intent). */
 public class ShareProvider extends ContentProvider {
-    static final String AUTH = "de.oche.dart.share";
+    /** Kennung des Providers: Paketname + ".share" (Fire-TV-Fassung hat einen eigenen Paketnamen). */
+    static String auth(android.content.Context c) { return c.getPackageName() + ".share"; }
 
     @Override public boolean onCreate() { return true; }
 
