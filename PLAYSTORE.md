@@ -6,7 +6,7 @@ Alles, was du in der Play Console brauchst. Texte zum Kopieren stehen weiter unt
 
 | Was | Datei |
 |---|---|
-| App Bundle | `OcheDarts.aab` (gebaut mit `FLAVOR=play ./build.sh` im Ordner `android/`) |
+| App Bundle | `OcheDarts.aab` (gebaut mit `./build.sh play` im Ordner `android/`) |
 | App-Symbol 512 × 512 | `store/icon-512.png` |
 | Vorstellungsgrafik 1024 × 500 | `store/feature-graphic-de.png` bzw. `-en.png` |
 | Handy-Screenshots 1080 × 1920 | `store/screenshots/de/` bzw. `en/` (je 6) |
@@ -49,7 +49,7 @@ Die Play-Fassung zeigt **nach einem Spiel eine Vollbild-Werbung** (AdMob, höchs
 
 ## Signatur: wichtig
 
-- `android/oche-release.jks` ist dein **Upload-Schlüssel**. Google signiert die App im Store mit einem eigenen Schlüssel („Play App Signing“, bei neuen Apps Standard). Den Upload-Schlüssel gut sichern; geht er verloren, kann man ihn über den Play-Support zurücksetzen lassen.
+- `android/app/oche-release.jks` ist dein **Upload-Schlüssel**. Google signiert die App im Store mit einem eigenen Schlüssel („Play App Signing“, bei neuen Apps Standard). Den Upload-Schlüssel gut sichern; geht er verloren, kann man ihn über den Play-Support zurücksetzen lassen.
 - Die APK von GitHub und die Play-Store-App haben dadurch **unterschiedliche Signaturen**. Wer von der GitHub-APK zur Play-Store-Version wechseln will, muss die App einmal deinstallieren. Vorher unter Optionen → „Daten sichern“ ein Backup machen, danach wiederherstellen.
 - Der Paketname `de.oche.dart` lässt sich nach der Veröffentlichung nicht mehr ändern.
 
@@ -72,7 +72,7 @@ Diese Angaben verantwortest du. Für die Werbung gelten die Angaben, die Google 
 
 1. **AdMob-Konto** auf admob.google.com anlegen (gleiches Google-Konto wie die Play Console), Zahlungsdaten hinterlegen.
 2. In AdMob **App hinzufügen** (Android, „noch nicht veröffentlicht“), dann einen **Anzeigenblock vom Typ „Interstitial“** anlegen.
-3. Die beiden IDs in `android/gradle.properties` eintragen: `admobAppId` (Form `ca-app-pub-…~…`) und `admobInterstitialId` (Form `ca-app-pub-…/…`). Bis dahin nutzt die App Googles **Test-IDs** und zeigt Testwerbung.
+3. Die beiden IDs in `android/gradle.properties` eintragen: `admobAppId` (Form `ca-app-pub-…~…`) und `admobInterstitialId` (Form `ca-app-pub-…/…`). Die IDs von Oche Darts sind dort bereits eingetragen.
 4. In AdMob unter **Datenschutz und Mitteilungen** eine **DSGVO-Mitteilung** (Europäische Vorschriften) anlegen und veröffentlichen. Ohne sie erscheint kein Einwilligungsdialog.
 5. **Zahlungsprofil** in der Play Console einrichten (Einstellungen → Zahlungsprofil). Ohne Zahlungsprofil kannst du keine Kaufprodukte anlegen.
 6. Nachdem ein App Bundle mit der Play-Fassung hochgeladen ist: **Monetarisieren → Produkte → In-App-Produkte → Produkt erstellen**, Produkt-ID **`remove_ads`**, Name „Werbung entfernen“, Preis **2,99 €**, aktivieren.
@@ -83,9 +83,12 @@ Diese Angaben verantwortest du. Für die Werbung gelten die Angaben, die Google 
 
 | Berechtigung | Wofür |
 |---|---|
-| Internet, Netzwerkstatus | Online-Spiel |
-| Mikrofon | nur für eigene Caller-Aufnahmen, wird erst beim Aufnehmen abgefragt |
+| Internet, Netzwerkstatus | Online-Spiel, Werbung (Play-Fassung) |
+| Mikrofon | eigene Caller-Aufnahmen und Spracheingabe, wird erst bei der ersten Nutzung abgefragt |
 | Vibration | Vibration bei der Eingabe |
+| Benachrichtigungen | tägliche Erinnerung, wird erst beim Einschalten der Erinnerung abgefragt (ab Android 13) |
+| Nach dem Neustart ausführen | die tägliche Erinnerung nach einem Neustart des Handys wieder einplanen |
+| Werbe-ID, Abrechnung | kommen mit den Google-Bibliotheken für Werbung und Kauf (nur Play-Fassung) |
 
 ## Vorher prüfen
 
@@ -107,7 +110,7 @@ Oche Darts – Dart-Zähler
 **Kurzbeschreibung** (max. 80 Zeichen)
 
 ```
-Dart-Zähler mit 12 Spielmodi, Profi-Caller, Bots, Turnieren und Online-Spiel
+Dart-Zähler mit 13 Spielmodi, Profi-Caller, Bots, Turnieren und Online-Spiel
 ```
 
 **Vollständige Beschreibung** (max. 4000 Zeichen)
@@ -115,11 +118,11 @@ Dart-Zähler mit 12 Spielmodi, Profi-Caller, Bots, Turnieren und Online-Spiel
 ```
 Oche ist der Dart-Zähler für dein Board zu Hause, in der Kneipe oder im Verein. Trag deine Würfe ein, Oche rechnet, sagt an und führt Statistik.
 
-12 SPIELMODI
+13 SPIELMODI
 • X01 (101 bis 2001, Double In/Out, Master Out, Legs und Sets)
 • Cricket und Cut-Throat Cricket
 • Around the Clock, Shanghai, Killer, Halve-It, High Score
-• Training: Bob's 27, 121 Checkout-Training, Doppel-Training
+• Training: Bob's 27, 121 Checkout-Training, Checkout-Trainer, Doppel-Training
 • Party: Gotcha und Scram für zwei
 
 PROFI-CALLER
@@ -157,7 +160,7 @@ Oche Darts – Dart Scorer
 **Short description** (max. 80 characters)
 
 ```
-Dart scorer with 12 game modes, pro caller, bots, tournaments and online play
+Dart scorer with 13 game modes, pro caller, bots, tournaments and online play
 ```
 
 **Full description** (max. 4000 characters)
@@ -165,11 +168,11 @@ Dart scorer with 12 game modes, pro caller, bots, tournaments and online play
 ```
 Oche is the dart scorer for your board at home, at the pub or at the club. Enter your darts, Oche does the maths, calls the scores and keeps your stats.
 
-12 GAME MODES
+13 GAME MODES
 • X01 (101 to 2001, double in/out, master out, legs and sets)
 • Cricket and cut-throat cricket
 • Around the Clock, Shanghai, Killer, Halve-It, High Score
-• Practice: Bob's 27, 121 checkout practice, doubles practice
+• Practice: Bob's 27, 121 checkout practice, checkout trainer, doubles practice
 • Party: Gotcha and Scram for two
 
 PRO CALLER

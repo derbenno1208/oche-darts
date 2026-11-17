@@ -4,7 +4,7 @@ const OUT=require('path').join(__dirname,'out')+'/';require('fs').mkdirSync(OUT,
 const errs=[];pg.on('pageerror',e=>errs.push(e.stack));
 await pg.addInitScript(()=>{window.OCHE_FAST=0.004;if(!localStorage.getItem('oche.cfg'))localStorage.setItem('oche.cfg',JSON.stringify({mode:'x01',opts:{x01:{sets:2,legs:2}},players:[{name:'A',bot:4},{name:'B',bot:6},{name:'C',bot:2}]}))});
 await pg.goto(''+URL+'');
-for(const mode of ['x01','cricket','atc','shanghai','killer','bobs27','halveit','highscore','c121','gotcha','doubles','scram']){
+for(const mode of ['x01','cricket','atc','shanghai','killer','bobs27','halveit','highscore','c121','cotrain','gotcha','doubles','scram']){
  await pg.click('#modePick');await pg.click(`[data-mode=${mode}]`);
  if(mode==='scram') await pg.click('[data-del="2"]');
  await pg.click('#go');

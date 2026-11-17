@@ -1,11 +1,11 @@
 Oche is the dart scorer for your board at home, at the pub or at the club. Enter your darts, Oche does the maths, calls every score like on TV and keeps detailed stats of every game. No account, no sign-up, just open the app and throw.
 
-12 GAME MODES
+13 GAME MODES
 • X01: 101 to 2001, straight in or double in, double out, master out or single out, with legs and sets
 • Cricket and cut-throat cricket, without a round limit
 • Around the Clock with jump and doubles-only variants
 • Shanghai, Killer, Halve-It and High Score
-• Practice: Bob's 27, 121 checkout practice and doubles practice with your hit rate per double
+• Practice: Bob's 27, 121 checkout practice, a checkout trainer with random finishes and doubles practice with your hit rate per double
 • Party modes: Gotcha and Scram for two players
 
 A REAL CALLER

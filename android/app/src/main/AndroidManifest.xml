@@ -36,7 +36,8 @@
             </intent-filter>
         </activity>
         <provider android:name=".ShareProvider" android:authorities="de.oche.dart.share" android:exported="false" android:grantUriPermissions="true"/>
-        <receiver android:name=".Reminder" android:exported="true">
+        <!-- nicht exportiert: Systemmeldungen (Neustart, App-Update) und der eigene Wecker kommen trotzdem an -->
+        <receiver android:name=".Reminder" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>

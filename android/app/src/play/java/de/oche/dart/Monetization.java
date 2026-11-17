@@ -128,11 +128,20 @@ public class Monetization {
             @Override public void onBillingSetupFinished(@NonNull BillingResult r) {
                 if (r.getResponseCode() != BillingClient.BillingResponseCode.OK) return;
                 queryProduct();
-                billing.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
-                        (res, list) -> onPurchases(res, list));
+                queryOwned();
             }
             @Override public void onBillingServiceDisconnected() { }
         });
+    }
+
+    /** Beim Zurückkehren in die App: Bestand neu abfragen (ausstehende Zahlung bestätigt, Kauf erstattet …). */
+    public void refresh() {
+        if (billing != null && billing.isReady()) queryOwned();
+    }
+
+    void queryOwned() {
+        billing.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                (res, list) -> { if (res.getResponseCode() == BillingClient.BillingResponseCode.OK) handlePurchases(res, list, false); });
     }
 
     void queryProduct() {
@@ -151,7 +160,13 @@ public class Monetization {
         billing.launchBillingFlow(act, params);
     }
 
-    void onPurchases(BillingResult r, List<Purchase> purchases) {
+    /** Ergebnis des Kaufablaufs. */
+    void onPurchases(BillingResult r, List<Purchase> purchases) { handlePurchases(r, purchases, true); }
+
+    /** fromFlow: direkt nach einem Kauf. Den Hinweis auf eine ausstehende Zahlung gibt es nur dann, nicht bei jeder Abfrage. */
+    void handlePurchases(BillingResult r, List<Purchase> purchases, boolean fromFlow) {
+        // Schon gekauft (z. B. auf einem anderen Gerät): den Bestand neu abfragen, damit die Werbung sofort verschwindet
+        if (r.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) { queryOwned(); return; }
         if (r.getResponseCode() != BillingClient.BillingResponseCode.OK || purchases == null) return;
         boolean owned = false;
         for (Purchase p : purchases) {
@@ -160,7 +175,7 @@ public class Monetization {
                 owned = true;
                 if (!p.isAcknowledged())
                     billing.acknowledgePurchase(AcknowledgePurchaseParams.newBuilder().setPurchaseToken(p.getPurchaseToken()).build(), res -> { });
-            } else if (p.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+            } else if (fromFlow && p.getPurchaseState() == Purchase.PurchaseState.PENDING) {
                 toast("Zahlung ausstehend. Die Werbung verschwindet, sobald sie bestätigt ist.");
             }
         }
@@ -180,7 +195,7 @@ public class Monetization {
         String price = null;
         if (product != null && product.getOneTimePurchaseOfferDetails() != null) price = product.getOneTimePurchaseOfferDetails().getFormattedPrice();
         return "{\"enabled\":true,\"adsRemoved\":" + adsRemoved + ",\"privacy\":" + privacyRequired()
-                + ",\"price\":" + (price == null ? "null" : "\"" + price.replace("\"", "") + "\"") + "}";
+                + ",\"price\":" + (price == null ? "null" : org.json.JSONObject.quote(price)) + "}";
     }
 
     void push() {

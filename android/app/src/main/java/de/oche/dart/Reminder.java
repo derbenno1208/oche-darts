@@ -56,6 +56,22 @@ public class Reminder extends BroadcastReceiver {
 
     static void markPlayed(Context c, String day) { prefs(c).edit().putString("played", day).apply(); }
 
+    /** Texte je Tag (JSON, Schlüssel "yyyy-MM-dd", dazu "*" als allgemeiner Text). */
+    static void setTexts(Context c, String json) { prefs(c).edit().putString("texts", json == null ? "" : json).apply(); }
+
+    /** Text für heute; fehlt er, der allgemeine Text und zuletzt der beim Einstellen übergebene. */
+    static String textFor(SharedPreferences p, String day) {
+        String fallback = p.getString("text", "");
+        try {
+            String json = p.getString("texts", "");
+            if (json.isEmpty()) return fallback;
+            org.json.JSONObject o = new org.json.JSONObject(json);
+            String t = o.optString(day, "");
+            if (t.isEmpty()) t = o.optString("*", "");
+            return t.isEmpty() ? fallback : t;
+        } catch (Exception e) { return fallback; }
+    }
+
     @Override public void onReceive(Context c, Intent intent) {
         String a = intent.getAction();
         if (Intent.ACTION_BOOT_COMPLETED.equals(a) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(a)) { schedule(c); return; }
@@ -69,7 +85,7 @@ public class Reminder extends BroadcastReceiver {
         Intent open = new Intent(c, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pi = PendingIntent.getActivity(c, 2, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, CHANNEL) : new Notification.Builder(c);
-        String text = p.getString("text", "");
+        String text = textFor(p, today());
         b.setSmallIcon(R.drawable.ic_stat_oche)
                 .setContentTitle(p.getString("title", "Oche Darts"))
                 .setContentText(text)

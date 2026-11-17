@@ -9,6 +9,7 @@ android/build/
 android/www/test.html
 tests/out/
 node_modules/
+__pycache__/
 tools/caller/venv/
 tools/caller/models/
 tools/caller/kokoro/

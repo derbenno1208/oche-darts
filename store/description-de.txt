@@ -1,11 +1,11 @@
 Oche ist der Dart-Zähler für dein Board zu Hause, in der Kneipe oder im Verein. Trag deine Darts ein, Oche rechnet, sagt jede Punktzahl an wie im Fernsehen und führt genaue Statistik über jedes Spiel. Kein Konto, keine Anmeldung: App öffnen und loswerfen.
 
-12 SPIELMODI
+13 SPIELMODI
 • X01: 101 bis 2001, Straight In oder Double In, Double Out, Master Out oder Single Out, mit Legs und Sets
 • Cricket und Cut-Throat Cricket, ohne Rundenlimit
 • Around the Clock, auch mit Sprung oder nur Doppeln
 • Shanghai, Killer, Halve-It und High Score
-• Training: Bob's 27, 121 Checkout-Training und Doppel-Training mit Quote für jedes Doppel
+• Training: Bob's 27, 121 Checkout-Training, Checkout-Trainer mit zufälligen Finishes und Doppel-Training mit Quote für jedes Doppel
 • Party-Modi: Gotcha und Scram für zwei Spieler
 
 EIN ECHTER CALLER

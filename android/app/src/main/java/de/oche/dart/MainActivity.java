@@ -84,8 +84,8 @@ public class MainActivity extends Activity {
         speech = new Speech(this, web);
         mon.init();
 
-        if (saved != null) web.restoreState(saved);
-        else web.loadUrl("https://" + HOST + "/index.html");
+        // Lässt sich der gesicherte Zustand nicht wiederherstellen, die App normal laden (sonst bliebe die Seite leer)
+        if (saved == null || web.restoreState(saved) == null) web.loadUrl("https://" + HOST + "/index.html");
         handleIntent(getIntent());
     }
 
@@ -172,7 +172,7 @@ public class MainActivity extends Activity {
             if (acc != null && acc.length > 0 && acc[0] != null && acc[0].startsWith("audio")) type = "audio/*";
             i.setType(type);
             try {
-                startActivityForResult(Intent.createChooser(i, "Audiodatei wählen"), REQ_FILE);
+                startActivityForResult(Intent.createChooser(i, null), REQ_FILE);
             } catch (Exception e) {
                 fileCallback = null;
                 return false;
@@ -309,7 +309,7 @@ public class MainActivity extends Activity {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, text);
-            try { startActivity(Intent.createChooser(i, "Raumcode teilen")); } catch (Exception ignored) { }
+            try { startActivity(Intent.createChooser(i, null)); } catch (Exception ignored) { }
         }
     }
 
@@ -392,13 +392,18 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) { }
         }
 
-        /* Tägliche Erinnerung */
+        /* Tägliche Erinnerung. Nach der Erlaubnis für Benachrichtigungen wird nur gefragt, wenn die Uhrzeit neu gewählt wurde. */
         @JavascriptInterface
         public void setReminder(int hour, int minute, String title, String text) {
+            boolean changed = Reminder.prefs(MainActivity.this).getInt("hour", -1) != hour;
             Reminder.set(MainActivity.this, hour, minute, title, text);
-            if (hour >= 0 && Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED)
+            if (changed && hour >= 0 && Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED)
                 runOnUiThread(() -> requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 15));
         }
+
+        /* Texte der Erinnerung je Tag als JSON: {"2026-11-17":"…", …, "*":"allgemeiner Text"} */
+        @JavascriptInterface
+        public void setReminderTexts(String json) { Reminder.setTexts(MainActivity.this, json); }
 
         @JavascriptInterface
         public void markPlayed(String day) { Reminder.markPlayed(MainActivity.this, day); }
@@ -431,11 +436,19 @@ public class MainActivity extends Activity {
         if (p.endsWith(".png")) return "image/png";
         if (p.endsWith(".svg")) return "image/svg+xml";
         if (p.endsWith(".json")) return "application/json";
+        if (p.endsWith(".mp3")) return "audio/mpeg";
         return "application/octet-stream";
     }
 
     @Override
     public void onBackPressed() { handleBack(); }
+
+    /* Käufe neu abfragen, z. B. wenn eine ausstehende Zahlung inzwischen bestätigt wurde */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mon != null) mon.refresh();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle out) {

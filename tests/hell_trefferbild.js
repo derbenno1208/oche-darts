@@ -1,5 +1,6 @@
-const {chromium}=require('playwright');const SP=''+OUT+'';
+const {chromium}=require('playwright');
 const OUT=require('path').join(__dirname,'out')+'/';require('fs').mkdirSync(OUT,{recursive:true});const URL=process.env.OCHE_URL||'http://127.0.0.1:8765/test.html';
+const SP=''+OUT+'';
 (async()=>{const b=await chromium.launch();
 const c=await b.newContext({userAgent:'Mozilla/5.0 OcheApp',viewport:{width:390,height:844},deviceScaleFactor:2,colorScheme:'light'});const p=await c.newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.stack));
@@ -14,9 +15,14 @@ let guard=0;
 while(!(await p.$('.winner'))&&guard++<400){
   const mine=await p.evaluate(()=>!!document.querySelector('.input')&&!document.querySelector('.input.locked'));
   if(mine){const rest=await p.$eval('.hero',e=>parseInt(e.textContent));
+    // Ziel wählen: T20, solange danach kein Rest von 1 bleibt; sonst auf 40 stellen und das Doppel werfen
+    const ORDER=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+    const at=(n,r)=>{const a=ORDER.indexOf(n)*18*Math.PI/180;return[r*Math.sin(a),-r*Math.cos(a)]};
     let tgt=[0,-103]; // T20
-    if(rest<=40&&rest%2===0){const n=rest/2;const ORDER=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];const i=ORDER.indexOf(n);if(i>=0){const a=i*18*Math.PI/180;tgt=[166*Math.sin(a),-166*Math.cos(a)]}}
-    else if(rest<60){const ORDER=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];const n=Math.min(20,rest-32>0?rest-32:1);const i=ORDER.indexOf(n);const a=i*18*Math.PI/180;tgt=[134*Math.sin(a),-134*Math.cos(a)]}
+    if(rest<=40&&rest%2===0)tgt=at(rest/2,166);
+    else if(rest<=40)tgt=at(1,134);
+    else if(rest<=60)tgt=at(rest-40,134);
+    else if(rest===61)tgt=at(5,134);
     const q=await toPx(tgt[0]+(Math.random()-.5)*14,tgt[1]+(Math.random()-.5)*14);await p.mouse.click(q.x,q.y);
   } else await p.waitForTimeout(150);
 }

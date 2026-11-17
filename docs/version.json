@@ -1,13 +1,12 @@
 {
- "version": "2.9",
- "code": 21,
+ "version": "3.0",
+ "code": 22,
  "apk": "https://derbenno1208.github.io/oche-darts/OcheDarts.apk",
- "date": "2026-11-16",
+ "date": "2026-11-17",
  "notes": [
-  "Checkout-Trainer mit zufälligen Finishes",
-  "Wochenübersicht in der Statistik",
-  "Zuletzt gespielte Namen antippen",
-  "Revanche: Verlierer beginnt",
-  "Bildschirm bleibt im Spiel an (Web)"
+  "Viele Fehler behoben, z. B. Cricket-Sieg und Doppelquote bei Summen-Eingabe",
+  "Farben im dunklen Design wieder richtig",
+  "Sicherung im Browser als Datei",
+  "Online-Spiel und Sicherungen besser abgesichert"
  ]
 }

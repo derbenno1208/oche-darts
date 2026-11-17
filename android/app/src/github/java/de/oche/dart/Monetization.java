@@ -11,5 +11,6 @@ public class Monetization {
     public void showPrivacyOptions() { }
     public void askReview() { }
     public void buy() { }
+    public void refresh() { }
     public String stateJson() { return "{\"enabled\":false}"; }
 }

@@ -1,6 +1,7 @@
-const {chromium}=require('playwright');const SP=''+OUT+'';
+const {chromium}=require('playwright');
 const OUT=require('path').join(__dirname,'out')+'/';require('fs').mkdirSync(OUT,{recursive:true});const URL=process.env.OCHE_URL||'http://127.0.0.1:8765/test.html';
-(async()=>{const b=await chromium.launch();const c=await b.newContext({userAgent:'Mozilla/5.0 OcheApp',viewport:{width:390,height:844},deviceScaleFactor:2});const p=await c.newPage();
+const SP=''+OUT+'';
+(async()=>{const b=await chromium.launch();const c=await b.newContext({userAgent:'Mozilla/5.0 OcheApp',viewport:{width:390,height:844},deviceScaleFactor:2,acceptDownloads:true});const p=await c.newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.stack));
 await p.addInitScript(()=>{if(!localStorage.getItem('oche.cfg'))localStorage.setItem('oche.cfg',JSON.stringify({mode:'x01',opts:{x01:{start:301}},players:[{name:'Anna',bot:5},{name:'Bert',bot:4},{name:'Cleo',bot:3},{name:'Dirk',bot:2},{name:'Emil',bot:6}]}));localStorage.setItem('oche.caller',JSON.stringify('off'))});
 await p.goto(''+URL+'');
@@ -27,10 +28,10 @@ await p.screenshot({path:SP+'tour_league.png',fullPage:true});
 // Settings: Lieblingsdoppel + Backup
 await p.click('[data-tab=settings]');await p.click('[data-prefdbl="16"]');
 await p.screenshot({path:SP+'settings2.png',fullPage:true});
-await p.click('#bkExport');await p.waitForTimeout(400);
-const txt=await p.evaluate(()=>{const t=document.querySelector('#bktxt');return t?t.value:null});
-console.log('Backup-Text Länge',txt&&txt.length);
-if(await p.$('#bkok'))await p.click('#bkok');
+// Im Browser wird die Sicherung als Datei gespeichert
+const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#bkExport')]);
+const txt=require('fs').readFileSync(await dl.path(),'utf8');
+console.log('Backup-Datei',dl.suggestedFilename(),'Länge',txt.length);
 // Import: Statistik löschen, dann Backup einspielen
 const before=await p.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('oche.stats')||'{}')).length);
 await p.evaluate(()=>{localStorage.removeItem('oche.stats')});
